@@ -1,0 +1,4 @@
+{
+	"organization": "TLTH",
+	"mongoDbURI": "mongodb://firefox:firefox@ds013260.mlab.com:13260/tlth-events-server"
+}
