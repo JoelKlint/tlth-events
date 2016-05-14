@@ -87,7 +87,7 @@ app.get('/calendar', cas.bounce, function(req, res) {
 				<div id='view' style="height: 100vh; width: 100vw; margin: 0; font-family: Roboto, sans-serif"><div>${html}</div></div>
 
 			</body>
-			<script src='js/index.js' type='text/javascript'></script>
+			<script src='index.js' type='text/javascript'></script>
 		</html>`);
 
 })
