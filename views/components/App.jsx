@@ -24,7 +24,6 @@ export default class App extends React.Component {
 	componentDidMount() {
 		this.props.getAllGuilds();
 		this.props.getAllEvents();
-		this.props.login();
 	}
 
 	showEventDetails(ImmutableEventMap) {

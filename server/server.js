@@ -1,7 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var conf = require('./config/config');
+var conf = require('./config/config.json');
 
 mongoose.connect(conf.mongoDbURI);
 var port = 3000;
@@ -20,7 +20,6 @@ app.use(function(req, res, next) {
 })
 
 var CASAuthentication = require('cas-authentication');
-
 
 
 var session = require('express-session')
@@ -66,31 +65,30 @@ app.get('/hej', cas.block, function(req, res) {
 	res.send(req.session);
 });
 
-app.use(express.static('app'));
+app.use(express.static('public'));
 
-import TempComp from './views/TempComp.js';
+import TempComp from '../views/TempComp.js';
 import React from 'react';
 import { renderToString } from 'react-dom/server'
-import configureStore from './store/configureStore.jsx';
-app.get('/', function(req, res) {
-	const store = configureStore();
-	const html = renderToString(<TempComp store={store}/>);
-	console.log(html);
-	res.send(`
-    <!doctype html>
-    <html>
-      <head>
-        <title>Redux Universal Example</title>
-      </head>
-      <body>
-        <div id="view">${html}</div>
-        <script src="js/index.js"></script>
-      </body>
-    </html>
-    `);
+import configureStore from '../store/configureStore.jsx';
+app.get('/calendar', cas.bounce, function(req, res) {
+	// const store = configureStore();
+	const html = renderToString(<TempComp/>);
+	res.send(`<!DOCTYPE html>
+		<html>
+			<head>
+				<meta charset="UTF-8">
+				<link href='https://fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
+				<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css">
+			</head>
 
+			<body style='margin: 0'>
 
-	// res.render('index.html');
+				<div id='view' style="height: 100vh; width: 100vw; margin: 0; font-family: Roboto, sans-serif"><div>${html}</div></div>
+
+			</body>
+			<script src='js/index.js' type='text/javascript'></script>
+		</html>`);
 
 })
 

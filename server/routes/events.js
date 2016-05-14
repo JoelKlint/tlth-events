@@ -1,6 +1,6 @@
 var router = require('express').Router();
-var Event = require('../models/event');
-var Guild = require('../models/guild');
+var Event = require('../../models/event');
+var Guild = require('../../models/guild');
 var ParameterError = require('../config/ParameterError');
 
 router.route('/')

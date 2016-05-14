@@ -5,8 +5,6 @@ import { getAllGuilds } from '../../actions/GuildActions.jsx';
 import { handleGuildClick } from '../../actions/CatalogFilterActions.jsx';
 import Immutable from 'immutable';
 
-import { login } from '../../actions/LoginActions.jsx';
-
 const getVisibleEvents = (events, activeGuilds) => {
 	return events.filter((event) => {
 		// Return true for those events that has atleast one of the guilds in
@@ -41,9 +39,6 @@ const mapDispatchToProps = (dispatch) => {
 		},
 		addNewEvent: (ImmutableEventData) => {
 			dispatch(addNewEvent(ImmutableEventData));
-		},
-		login: () => {
-			dispatch(login());
 		}
 	}
 }
