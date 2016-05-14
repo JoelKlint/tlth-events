@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import CheckBox from 'material-ui/CheckBox';
+import CheckBox from 'material-ui/Checkbox';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
 export default class Guild extends Component {

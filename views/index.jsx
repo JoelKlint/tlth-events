@@ -17,6 +17,6 @@ injectTapEventPlugin();
 const store = configureStore();
 
 ReactDOM.render(
-	<TempComp store={store}/>,
+	<TempComp/>,
 	document.getElementById('view')
 );

@@ -1,0 +1,15 @@
+{
+  "entry": "./views/index.jsx",
+  "output": {
+    "path": "public",
+    "filename": "js/index.js"
+  },
+  "module": {
+    "loaders": [
+      {
+        "loader": "babel",
+				"exclude": "/node_modules/"
+      }
+    ]
+  }
+}
