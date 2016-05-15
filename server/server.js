@@ -72,8 +72,8 @@ import React from 'react';
 import { renderToString } from 'react-dom/server'
 import configureStore from '../store/configureStore.jsx';
 app.get('/calendar', cas.bounce, function(req, res) {
-	// const store = configureStore();
-	const html = renderToString(<TempComp/>);
+	const store = configureStore();
+	const html = renderToString(<TempComp store={store}/>);
 	res.send(`<!DOCTYPE html>
 		<html>
 			<head>
@@ -87,7 +87,7 @@ app.get('/calendar', cas.bounce, function(req, res) {
 				<div id='view' style="height: 100vh; width: 100vw; margin: 0; font-family: Roboto, sans-serif"><div>${html}</div></div>
 
 			</body>
-			<script src='index.js' type='text/javascript'></script>
+			<script src='bundle.js' type='text/javascript'></script>
 		</html>`);
 
 })

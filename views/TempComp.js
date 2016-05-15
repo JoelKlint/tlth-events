@@ -8,9 +8,8 @@ import configureStore from '../store/configureStore.jsx';
 export default class TempComp extends Component {
 
 	render() {
-		const store = configureStore();
 		return (
-			<Provider store={store}>
+			<Provider store={this.props.store}>
 				<MuiThemeProvider muiTheme={getMuiTheme()}>
 			    <VisibleApp />
 			  </MuiThemeProvider>
