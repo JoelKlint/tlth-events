@@ -9,7 +9,6 @@ var common = {
 		'./views/index.jsx'
 	],
 	output: {
-		path: 'public',
 		filename: 'bundle.js'
 	},
 	module: {
@@ -28,6 +27,9 @@ if(TARGET === 'dev') {
 			'webpack-dev-server/client?http://localhost:8080',
 			'webpack/hot/only-dev-server',
 		],
+		output: {
+			path: 'views'
+		},
 		module: {
 			loaders: [
 				{
@@ -45,14 +47,18 @@ if(TARGET === 'dev') {
 		devServer: {
 			hot: true,
 			inline: true,
-			contentBase: path.resolve(__dirname, 'public'),
+			contentBase: path.resolve(__dirname, 'views'),
 			proxy: {
-				'/*': 'http://localhost:3000'
+				'/api/*': 'http://localhost:3000'
 			}
 		}
 	})
 }
 
 if(TARGET === 'build') {
-	module.exports = common;
+	module.exports = merge(common, {
+		output: {
+			path: 'public'
+		}
+	})
 }
