@@ -18,12 +18,13 @@ injectTapEventPlugin();
 // Get initial state from server
 const stateFromServer = window.__INITIAL_STATE__;
 // Transform state to immutable
-const serverEvents = Immutable.fromJS(stateFromServer.events.serverSide).toSet();
-const localEvents = Immutable.fromJS(stateFromServer.events.local).toSet();
-const events = Map({ serverSide: serverEvents, local: localEvents });
+const events = Map({
+	serverSide: Immutable.fromJS(stateFromServer.events.serverSide).toSet(),
+	local: Immutable.fromJS(stateFromServer.events.local).toSet() });
 const guilds = Immutable.fromJS(stateFromServer.guilds).toOrderedSet();
 const activeGuilds = Immutable.fromJS(stateFromServer.activeGuilds).toSet();
-const initialState = { events, guilds, activeGuilds };
+const user = Immutable.fromJS(stateFromServer.user);
+const initialState = { events, guilds, activeGuilds, user };
 
 const store = configureStore(initialState);
 
