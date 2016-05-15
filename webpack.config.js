@@ -59,6 +59,13 @@ if(TARGET === 'build') {
 	module.exports = merge(common, {
 		output: {
 			path: 'public'
-		}
+		},
+		plugins: [
+			new webpack.DefinePlugin({
+				'process.env.NODE_ENV': JSON.stringify('production')
+			}),
+			new webpack.optimize.UglifyJsPlugin(),
+			new webpack.optimize.OccurrenceOrderPlugin()
+		]
 	})
 }
