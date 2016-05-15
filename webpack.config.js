@@ -14,7 +14,7 @@ var common = {
 	module: {
 		loaders: [
 			{
-				loaders: ['babel'],
+				loader: 'babel',
 				exclude: '/node_modules/'
 			}
 		]
@@ -33,7 +33,7 @@ if(TARGET === 'dev') {
 		module: {
 			loaders: [
 				{
-					loaders: ['react-hot'],
+					loader: 'react-hot',
 					exclude: '/node_modules'
 				}
 			]
