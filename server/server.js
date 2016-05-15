@@ -1,93 +1,26 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
-var conf = require('./config/config.json');
+import express from 'express';
+import mongoose from 'mongoose';
+import conf from './config/config.json'
 
-mongoose.connect(conf.mongoDbURI);
-var port = 3000;
-var app = express();
-
-// Middleware
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(function(req, res, next) {
-	var time = new Date();
-	console.log(time.toString());
-	console.log(req.ip);
-	console.log(req.method + ' ' + req.originalUrl);
-	console.log();
-	next();
-})
-
-var CASAuthentication = require('cas-authentication');
-
-
-var session = require('express-session')
-
-app.use( session({
-    secret            : 'super secret key',
-    resave            : false,
-    saveUninitialized : true
-}));
-
-var cas = new CASAuthentication({
-    cas_url     : 'https://cas.lu.se/cas',
-    service_url : 'http://localhost:3000',
-		cas_version     : '2.0',
-		renew           : false,
-    is_dev_mode     : false,
-    dev_mode_user   : '',
-    dev_mode_info   : {},
-    session_name    : 'cas_user',
-    session_info    : 'cas_userinfo',
-    destroy_session : false
-});
-
-// Routing
-var events = require('./routes/events');
-app.use('/api/events', events);
-
-var icalEvents = require('./routes/ical-events');
-app.use('/api/ical-events', icalEvents);
-
-var users = require('./routes/users');
-app.use('/api/users', users);
-
-var guilds = require('./routes/guilds');
-app.use('/api/guilds', guilds);
-
-
-app.get('/login', cas.bounce, function(req, res) {
-	res.send(req.session.cas_user);
-});
-
-app.get('/hej', cas.block, function(req, res) {
-	res.send(req.session);
-});
-
+const port = 3000;
+const app = express();
 app.use(express.static('public'));
+mongoose.connect(conf.mongoDbURI);
 
-import TempComp from '../views/TempComp.js';
-import React from 'react';
-import { renderToString } from 'react-dom/server'
-import configureStore from '../store/configureStore.jsx';
-import consolidate from 'consolidate';
+import viewEngine from './config/viewEngine';
+viewEngine(app);
 
-app.engine('html', consolidate.handlebars)
-app.set('view engine', 'html');
-import path from 'path';
-app.set('views', path.resolve(__dirname, 'view-templates'));
+import applyPreRouteMiddleware from './middleware/preRoute';
+applyPreRouteMiddleware(app);
 
-app.get('/calendar', function(req, res) {
-	const store = configureStore();
-	const html = renderToString(<TempComp store={store}/>);
-	res.render('index', { html: html});
-});
 
-// Error handling Middleware
-// Must be declared last so it can handle errors after they happen
-var errorHandler = require('./config/errorHandler');
-app.use(errorHandler);
+import { applyApiRoutes, applyAppRoutes } from './routes';
+applyApiRoutes(app);
+applyAppRoutes(app);
+
+
+import applyPostRouteMiddleware from './middleware/postRoute';
+applyPostRouteMiddleware(app);
 
 // Start server
 app.listen(port);

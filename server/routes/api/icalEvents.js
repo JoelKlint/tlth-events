@@ -1,10 +1,10 @@
 var router = require('express').Router();
-var Event = require('../../models/event');
-var Guild = require('../../models/guild');
+var Event = require('../../../models/event');
+var Guild = require('../../../models/guild');
 var VCalendar = require('cozy-ical').VCalendar;
 var VEvent = require('cozy-ical').VEvent;
-var conf = require('../config/config.json');
-var ParameterError = require('../config/ParameterError.js');
+var conf = require('../../config/config.json');
+var ParameterError = require('../../config/ParameterError.js');
 var moment = require('moment');
 
 // Gets all events for any of the specified guilds
