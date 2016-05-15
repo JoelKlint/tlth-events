@@ -45,16 +45,16 @@ var cas = new CASAuthentication({
 
 // Routing
 var events = require('./routes/events');
-app.use('/events', events);
+app.use('/api/events', events);
 
 var icalEvents = require('./routes/ical-events');
-app.use('/ical-events', icalEvents);
+app.use('/api/ical-events', icalEvents);
 
 var users = require('./routes/users');
-app.use('/users', users);
+app.use('/api/users', users);
 
 var guilds = require('./routes/guilds');
-app.use('/guilds', guilds);
+app.use('/api/guilds', guilds);
 
 
 app.get('/login', cas.bounce, function(req, res) {

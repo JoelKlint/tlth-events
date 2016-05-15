@@ -45,7 +45,10 @@ if(TARGET === 'dev') {
 		devServer: {
 			hot: true,
 			inline: true,
-			contentBase: path.resolve(__dirname, 'public')
+			contentBase: path.resolve(__dirname, 'public'),
+			proxy: {
+				'/*': 'http://localhost:3000'
+			}
 		}
 	})
 }
