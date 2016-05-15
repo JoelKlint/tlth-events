@@ -71,26 +71,18 @@ import TempComp from '../views/TempComp.js';
 import React from 'react';
 import { renderToString } from 'react-dom/server'
 import configureStore from '../store/configureStore.jsx';
-app.get('/calendar', cas.bounce, function(req, res) {
+import consolidate from 'consolidate';
+
+app.engine('html', consolidate.handlebars)
+app.set('view engine', 'html');
+import path from 'path';
+app.set('views', path.resolve(__dirname, 'view-templates'));
+
+app.get('/calendar', function(req, res) {
 	const store = configureStore();
 	const html = renderToString(<TempComp store={store}/>);
-	res.send(`<!DOCTYPE html>
-		<html>
-			<head>
-				<meta charset="UTF-8">
-				<link href='https://fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
-				<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css">
-			</head>
-
-			<body style='margin: 0'>
-
-				<div id='view' style="height: 100vh; width: 100vw; margin: 0; font-family: Roboto, sans-serif"><div>${html}</div></div>
-
-			</body>
-			<script src='bundle.js' type='text/javascript'></script>
-		</html>`);
-
-})
+	res.render('index', { html: html});
+});
 
 // Error handling Middleware
 // Must be declared last so it can handle errors after they happen
