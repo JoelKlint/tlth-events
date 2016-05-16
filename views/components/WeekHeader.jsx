@@ -81,9 +81,11 @@ export default class WeekHeader extends Component {
 						/>
 					</Paper>
 				</div>
+				{/*
 				<div style={styles.weekDays}>
 					{this.renderWeekDayHeaders()}
 				</div>
+				*/}
 				<Divider/>
 			</div>
 		)
