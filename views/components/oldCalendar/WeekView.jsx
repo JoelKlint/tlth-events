@@ -5,14 +5,11 @@ import WeekHeader from './WeekHeader.jsx';
 import Divider from 'material-ui/Divider';
 import moment from 'moment';
 import Immutable from 'immutable';
-import BigCalendar from 'react-big-calendar';
-import css from 'react-big-calendar/lib/css/react-big-calendar.css';
 
 export default class WeekView extends Component {
 
 	constructor(props) {
 		super(props);
-		BigCalendar.momentLocalizer(moment);
 		this.nextWeek = this.nextWeek.bind(this);
 		this.previousWeek = this.previousWeek.bind(this);
 		this.goToToday = this.goToToday.bind(this);
@@ -34,36 +31,6 @@ export default class WeekView extends Component {
 	}
 
 	render() {
-		// const events = [
-		// 	{
-		// 		_id: '5733659e65b2b4f021b92a57',
-		// 	  name: 'We Dont Fucking Know Slasque',
-		// 	  description: 'dsa',
-		// 	  location: 'dsa',
-		// 	  startDate: new Date('2016-05-16T08:00:00.000Z'),
-		// 	  endDate: new Date('2016-05-16T12:00:00.000Z'),
-		// 	  guilds: [
-		// 	    {
-		// 	      _id: '572cb23d505ec79319ff6e7a',
-		// 	      name: 'F'
-		// 	    }
-		// 	  ]
-		// 	},
-		// 	{
-		// 		_id: '5733659e65b2b4f021b92a57',
-		// 	  name: 'We Dont Fucking Know Slasque',
-		// 	  description: 'dsa',
-		// 	  location: 'dsa',
-		// 	  startDate: new Date('2016-05-16T11:00:00.000Z'),
-		// 	  endDate: new Date('2016-05-16T19:00:00.000Z'),
-		// 	  guilds: [
-		// 	    {
-		// 	      _id: '572cb23d505ec79319ff6e7a',
-		// 	      name: 'F'
-		// 	    }
-		// 	  ]
-		// 	}
-		// ];
 		const styles = {
 			base: {
 				width: '100%',
@@ -76,16 +43,10 @@ export default class WeekView extends Component {
 				flexShrink: '0'
 			},
 			eventsHolder: {
-				height: '100%',
-				overflowY: 'hidden'
+				display: 'flex',
+				flexGrow: '1'
 			}
 		}
-		const events = this.props.events.toJS()
-		.map((event) => {
-			event.startDate = moment(event.startDate).toDate();
-			event.endDate = moment(event.endDate).toDate();
-			return event;
-		});
 		return (
 			<div style={styles.base}>
 				<div style={styles.headerHolder}>
@@ -97,14 +58,10 @@ export default class WeekView extends Component {
 					/>
 				</div>
 				<div style={styles.eventsHolder}>
-					<BigCalendar
-						date={this.state.currentTime.toDate()}
-						events={events}
-						titleAccessor='name'
-						startAccessor='startDate'
-						endAccessor='endDate'
-						toolbar={false}
-						view='week'
+					<DayListHolder
+						events={this.props.events}
+						currentTime={this.state.currentTime}
+						eventOpener={this.props.eventOpener}
 					/>
 				</div>
 			</div>
