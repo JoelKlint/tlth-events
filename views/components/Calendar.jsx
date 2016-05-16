@@ -5,6 +5,7 @@ import moment from 'moment';
 import Immutable from 'immutable';
 import BigCalendar from 'react-big-calendar';
 import css from 'react-big-calendar/lib/css/react-big-calendar.css';
+import EventDetailView from './EventDetailView.jsx';
 
 export default class Calendar extends Component {
 
@@ -14,9 +15,13 @@ export default class Calendar extends Component {
 		this.nextWeek = this.nextWeek.bind(this);
 		this.previousWeek = this.previousWeek.bind(this);
 		this.goToToday = this.goToToday.bind(this);
+		this.showEventDetails = this.showEventDetails.bind(this);
+		this.hideEventDetails = this.hideEventDetails.bind(this);
+		this.renderCurrentEventDetails = this.renderCurrentEventDetails.bind(this);
 		this.state = {
 			currentTime: moment(),
-			currentView: 'week'
+			currentView: 'week',
+			showEventDetails: false
 	 };
 	}
 
@@ -32,6 +37,19 @@ export default class Calendar extends Component {
 	previousWeek() {
 		const previousWeek = this.state.currentTime.subtract(1, this.state.currentView);
 		this.setState({ currentTime: previousWeek });
+	}
+
+	showEventDetails(NonImmutableEventData) {
+		NonImmutableEventData.startDate = NonImmutableEventData.startDate.toISOString();
+		NonImmutableEventData.endDate = NonImmutableEventData.endDate.toISOString();
+		this.setState({
+			currentEvent: Immutable.fromJS(NonImmutableEventData),
+			showEventDetails: true
+		});
+	}
+
+	hideEventDetails() {
+		this.setState({ showEventDetails: false });
 	}
 
 	render() {
@@ -71,7 +89,7 @@ export default class Calendar extends Component {
 					<BigCalendar
 						date={this.state.currentTime.toDate()}
 						events={events}
-						onSelectEvent={this.props.eventOpener}
+						onSelectEvent={this.showEventDetails}
 						titleAccessor='name'
 						startAccessor='startDate'
 						endAccessor='endDate'
@@ -82,12 +100,23 @@ export default class Calendar extends Component {
 						onNavigate='garbage'
 					/>
 				</div>
+				{this.renderCurrentEventDetails()}
 			</div>
+		)
+	}
+
+	renderCurrentEventDetails() {
+		if(!Immutable.Map.isMap(this.state.currentEvent)) return;
+		return (
+			<EventDetailView
+				open={this.state.showEventDetails}
+				close={this.hideEventDetails}
+				event={this.state.currentEvent}
+			/>
 		)
 	}
 }
 
 Calendar.propTypes = {
-	events: ImmutablePropTypes.set.isRequired,
-	eventOpener: PropTypes.func.isRequired
+	events: ImmutablePropTypes.set.isRequired
 }
