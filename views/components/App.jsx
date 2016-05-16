@@ -44,12 +44,25 @@ export default class App extends React.Component {
 				height: '100%',
 				width: '100%'
 			},
+			calendar: {
+				display: 'flex',
+				height: '100%',
+				width: '100%'
+			},
 			sideBar: {
 				width: '13em',
 				height: '100%',
 				borderRight: '1px solid black'
 			}
 		}
+						// <WeekView
+						// 	events={this.props.events}
+						// 	eventOpener={this.showEventDetails}
+						// />
+						// <Calendar
+						// 	events={this.props.events}
+						// 	eventOpener={this.showEventDetails}
+						// />
 		return(
 			<div style={styles.base}>
 				<div style={styles.sideBar}>
@@ -63,7 +76,7 @@ export default class App extends React.Component {
 				<WeekView
 					events={this.props.events}
 					eventOpener={this.showEventDetails}
-					/>
+				/>
 
 				{this.renderCurrentEventDetails()}
 

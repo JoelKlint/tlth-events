@@ -14,9 +14,14 @@ var common = {
 	module: {
 		loaders: [
 			{
-				loader: 'babel',
+				test: /\.jsx?$/,
+				loaders: ['babel'],
 				exclude: '/node_modules/'
-			}
+			},
+			{
+				test: /\.css$/,
+				loaders: ['style', 'css']
+			},
 		]
 	}
 }
