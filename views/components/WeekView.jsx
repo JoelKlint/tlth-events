@@ -82,8 +82,9 @@ export default class WeekView extends Component {
 		}
 		const events = this.props.events.toJS()
 		.map((event) => {
-			event.startDate = new Date(event.startDate);
-			event.endDate = new Date(event.endDate);
+			event.startDate = moment(event.startDate).toDate();
+			event.endDate = moment(event.endDate).toDate();
+			return event;
 		});
 		return (
 			<div style={styles.base}>
