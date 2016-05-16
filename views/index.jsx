@@ -10,7 +10,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import configureStore from '../store/configureStore.jsx';
 import VisibleApp from './components/VisibleApp.jsx';
 
-import TempComp from './tempComp.js';
+import TempComp from './TempComp.jsx';
 import Immutable, { OrderedSet, Map, Set } from 'immutable';
 
 injectTapEventPlugin();

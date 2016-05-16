@@ -4,7 +4,7 @@ var merge = require('webpack-merge');
 
 var TARGET = process.env.npm_lifecycle_event;
 
-var common = {
+var client = {
 	entry: [
 		'./views/index.jsx'
 	],
@@ -14,9 +14,9 @@ var common = {
 	module: {
 		loaders: [
 			{
-				test: /\.jsx?$/,
+				test: /\.(jsx|js)$/,
 				loaders: ['babel'],
-				exclude: '/node_modules/'
+				exclude: /node_modules/
 			},
 			{
 				test: /\.css$/,
@@ -27,7 +27,7 @@ var common = {
 }
 
 if(TARGET === 'dev') {
-	module.exports = merge(common, {
+	client = merge(client, {
 		entry: [
 			'webpack-dev-server/client?http://localhost:8080',
 			'webpack/hot/only-dev-server',
@@ -39,7 +39,7 @@ if(TARGET === 'dev') {
 			loaders: [
 				{
 					loader: 'react-hot',
-					exclude: '/node_modules'
+					exclude: /node_modules/
 				}
 			]
 		},
@@ -61,9 +61,9 @@ if(TARGET === 'dev') {
 }
 
 if(TARGET === 'build') {
-	module.exports = merge(common, {
+	client = merge(client, {
 		output: {
-			path: 'public'
+			path: path.join(__dirname, 'public')
 		},
 		plugins: [
 			new webpack.DefinePlugin({
@@ -76,3 +76,43 @@ if(TARGET === 'build') {
 		]
 	})
 }
+
+var server = {
+	target: 'node',
+	entry: [
+		'./server/serverRenderer.jsx'
+	],
+	output: {
+		path: path.join(__dirname, 'public'),
+		filename: 'serverRenderer.js',
+		libraryTarget: 'commonjs2'
+	},
+	module: {
+		loaders: [
+			{
+				test: /\.(jsx|js)$/,
+				loader: 'babel',
+				exclude: /node_modules/
+			},
+			{
+				test: /\.json$/,
+				loader: 'json'
+			},
+			{
+				test: /\.css$/,
+				loader: 'css'
+			}
+		]
+	},
+	plugins: [
+		new webpack.DefinePlugin({
+			'process.env.NODE_ENV': JSON.stringify('production')
+		}),
+		new webpack.optimize.UglifyJsPlugin({
+			compress: { warnings: false }
+		}),
+		new webpack.optimize.OccurrenceOrderPlugin()
+	]
+}
+
+module.exports = [ client, server ];
