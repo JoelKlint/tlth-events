@@ -1,7 +1,8 @@
-var mongoose = require('mongoose')
-var Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
+import { Guild } from './ModelNames';
 
-var guildSchema = new Schema({
+const guildSchema = new Schema({
 	name: {
 		type: String,
 		required: [true, 'A guild must have a name'],
@@ -12,4 +13,4 @@ var guildSchema = new Schema({
 	createdAt: { type: Date, select: false }
 }, { timestamps: true } );
 
-module.exports = mongoose.model('Guild', guildSchema);
+module.exports = mongoose.model(Guild, guildSchema);

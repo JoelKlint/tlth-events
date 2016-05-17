@@ -1,8 +1,8 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
+import { Event, Guild } from './ModelNames';
 
-var Guild = require('./guild');
-var eventSchema = new Schema({
+const eventSchema = new Schema({
 	name: { type: String, required: [true, 'Must have a name'] },
 	startDate: { type: Date, required: [true, 'Must have a start time'] },
 	endDate: { type: Date, required: [true, 'Must have an end time'] },
@@ -10,7 +10,7 @@ var eventSchema = new Schema({
 	location: String,
 	url: String,
 	guilds: {
-		type: [{ type: Schema.Types.ObjectId, ref: 'Guild' }],
+		type: [{ type: Schema.Types.ObjectId, ref: Guild }],
 			required: [true, 'Not a valid guild']
 	},
 	__v: { type: Number, select: false },
@@ -18,4 +18,4 @@ var eventSchema = new Schema({
 	createdAt: { type: Date, select: false }
 }, { timestamps: true } );
 
-module.exports = mongoose.model('Event', eventSchema);
+module.exports = mongoose.model(Event, eventSchema);

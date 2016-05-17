@@ -1,7 +1,8 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
+import { User } from './ModelNames';
 
-var userSchema = new Schema({
+const userSchema = new Schema({
 	username: { type: String, required: [ true, 'Username is required'] },
 	__v: { type: Number, select: false },
 	updatedAt: { type: Date, select: false },
@@ -11,4 +12,4 @@ var userSchema = new Schema({
 import findOrCreate from 'mongoose-findorcreate';
 userSchema.plugin(findOrCreate);
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model(User, userSchema);
