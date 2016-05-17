@@ -6,7 +6,7 @@ import icalEventRoutes from './api/icalEvents';
 import userRoutes from './api/users';
 import guildRoutes from './api/guilds';
 
-export const applyApiRoutes = (app) => {
+const applyApiRoutes = (app) => {
 	const router = express.Router();
 	router.use('/events', eventRoutes);
 	router.use('/ical-events', icalEventRoutes);
@@ -19,6 +19,13 @@ export const applyApiRoutes = (app) => {
 // App routes
 import appRoutes from './app';
 
-export const applyAppRoutes = (app) => {
+const applyAppRoutes = (app) => {
 	app.use('/', appRoutes);
 }
+
+const applyRoutes = (app) => {
+	applyApiRoutes(app);
+	applyAppRoutes(app);
+}
+
+export default applyRoutes;

@@ -14,9 +14,8 @@ import applyPreRouteMiddleware from './middleware/preRoute';
 applyPreRouteMiddleware(app);
 
 
-import { applyApiRoutes, applyAppRoutes } from './routes';
-applyApiRoutes(app);
-applyAppRoutes(app);
+import applyRoutes from './routes';
+applyRoutes(app);
 
 
 import applyPostRouteMiddleware from './middleware/postRoute';
