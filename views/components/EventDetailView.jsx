@@ -167,6 +167,7 @@ export default class EventDetailView extends Component {
 		return (
 			<a
 				href={this.props.event.get('url')}
+				target='_blank'
 				style={linkStyles}
 			>
 				<FontAwesome
