@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
-import { Guild } from './ModelNames';
 
 const guildSchema = new Schema({
 	name: {
@@ -13,4 +12,4 @@ const guildSchema = new Schema({
 	createdAt: { type: Date, select: false }
 }, { timestamps: true } );
 
-module.exports = mongoose.model(Guild, guildSchema);
+export default guildSchema;

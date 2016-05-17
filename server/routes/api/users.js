@@ -1,5 +1,5 @@
 var router = require('express').Router();
-var User = require('../../../models/user');
+import { User } from '../../../models';
 
 router.route('/')
 	.get(function(req, res, next) {

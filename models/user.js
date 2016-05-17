@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
-import { User } from './ModelNames';
 
 const userSchema = new Schema({
 	username: { type: String, required: [ true, 'Username is required'] },
@@ -12,4 +11,4 @@ const userSchema = new Schema({
 import findOrCreate from 'mongoose-findorcreate';
 userSchema.plugin(findOrCreate);
 
-module.exports = mongoose.model(User, userSchema);
+export default userSchema;

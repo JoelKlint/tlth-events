@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
-import { Event, Guild } from './ModelNames';
+import modelNames from './ModelNames';
 
 const eventSchema = new Schema({
 	name: { type: String, required: [true, 'Must have a name'] },
@@ -10,7 +10,7 @@ const eventSchema = new Schema({
 	location: String,
 	url: String,
 	guilds: {
-		type: [{ type: Schema.Types.ObjectId, ref: Guild }],
+		type: [{ type: Schema.Types.ObjectId, ref: modelNames.Guild }],
 			required: [true, 'Not a valid guild']
 	},
 	__v: { type: Number, select: false },
@@ -18,4 +18,4 @@ const eventSchema = new Schema({
 	createdAt: { type: Date, select: false }
 }, { timestamps: true } );
 
-module.exports = mongoose.model(Event, eventSchema);
+export default eventSchema;
