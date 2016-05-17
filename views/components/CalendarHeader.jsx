@@ -2,10 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import WeekDayHeader from './WeekDayHeader.jsx';
 import FontAwesome from 'react-fontawesome';
 import Paper from 'material-ui/Paper';
-import Divider from 'material-ui/Divider';
 import moment from 'moment';
 
-export default class WeekHeader extends Component {
+export default class CalendarHeader extends Component {
 
 	constructor(props) {
 		super(props);
@@ -75,13 +74,12 @@ export default class WeekHeader extends Component {
 						/>
 					</Paper>
 				</div>
-				<Divider/>
 			</div>
 		)
 	}
 }
 
-WeekHeader.propTypes = {
+CalendarHeader.propTypes = {
 	currentTime: PropTypes.instanceOf(moment).isRequired,
 	nextWeek: PropTypes.func.isRequired,
 	previousWeek: PropTypes.func.isRequired,

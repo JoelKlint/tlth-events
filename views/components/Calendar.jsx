@@ -4,7 +4,7 @@ import CalendarHeader from './CalendarHeader.jsx';
 import moment from 'moment';
 import Immutable from 'immutable';
 import BigCalendar from 'react-big-calendar';
-import css from 'react-big-calendar/lib/css/react-big-calendar.css';
+import css from './calendar.css'
 import EventDetailView from './EventDetailView.jsx';
 
 export default class Calendar extends Component {
@@ -19,24 +19,24 @@ export default class Calendar extends Component {
 		this.hideEventDetails = this.hideEventDetails.bind(this);
 		this.renderCurrentEventDetails = this.renderCurrentEventDetails.bind(this);
 		this.state = {
-			currentTime: moment(),
-			currentView: 'week',
+			time: moment(),
+			calendarView: 'week',
 			showEventDetails: false
 	 };
 	}
 
 	goToToday() {
-		this.setState({ currentTime: moment() });
+		this.setState({ time: moment() });
 	}
 
 	nextWeek() {
-		const nextWeek = this.state.currentTime.add(1, this.state.currentView);
-		this.setState({ currentTime: nextWeek });
+		const nextWeek = this.state.time.add(1, this.state.calendarView);
+		this.setState({ time: nextWeek });
 	}
 
 	previousWeek() {
-		const previousWeek = this.state.currentTime.subtract(1, this.state.currentView);
-		this.setState({ currentTime: previousWeek });
+		const previousWeek = this.state.time.subtract(1, this.state.calendarView);
+		this.setState({ time: previousWeek });
 	}
 
 	showEventDetails(NonImmutableEventData) {
@@ -65,8 +65,8 @@ export default class Calendar extends Component {
 				flexShrink: '0'
 			},
 			eventsHolder: {
-				height: '100%',
-				overflowY: 'hidden'
+				width: '100%',
+				display: 'flex',
 			}
 		}
 		const events = this.props.events.toJS()
@@ -75,11 +75,26 @@ export default class Calendar extends Component {
 			event.endDate = moment(event.endDate).toDate();
 			return event;
 		});
+		const calendarFormats = {
+			// dateFormat: "HH:mm",
+		  dayFormat: "ddd D MMM",
+		  // weekdayFormat: "HH:mm",
+		  // monthHeaderFormat: "HH:mm",
+		  // weekHeaderFormat: "HH:mm",
+		  // dayHeaderFormat: "HH:mm",
+		  // agendaHeaderFormat: "HH:mm",
+		  // selectRangeFormat: "HH:mm",
+		  // agendaDateFormat: "HH:mm",
+		  // agendaTimeFormat: "HH:mm",
+		  // agendaTimeRangeFormat: "HH:mm",
+			timeGutterFormat: 'HH'
+		}
 		return (
 			<div style={styles.base}>
+				{this.renderCurrentEventDetails()}
 				<div style={styles.headerHolder}>
 					<CalendarHeader
-						currentTime={this.state.currentTime}
+						currentTime={this.state.time}
 						nextWeek={this.nextWeek}
 						previousWeek={this.previousWeek}
 						goToToday={this.goToToday}
@@ -87,20 +102,20 @@ export default class Calendar extends Component {
 				</div>
 				<div style={styles.eventsHolder}>
 					<BigCalendar
-						date={this.state.currentTime.toDate()}
+						date={this.state.time.toDate()}
 						events={events}
 						onSelectEvent={this.showEventDetails}
 						titleAccessor='name'
 						startAccessor='startDate'
 						endAccessor='endDate'
+						view={this.state.calendarView}
 						toolbar={false}
-						view={this.state.currentView}
+						formats={calendarFormats}
 						popup={true}
 						onView='garbage'
 						onNavigate='garbage'
 					/>
 				</div>
-				{this.renderCurrentEventDetails()}
 			</div>
 		)
 	}
