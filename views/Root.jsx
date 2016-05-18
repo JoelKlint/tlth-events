@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import VisibleApp from './components/VisibleApp.jsx';
 import configureStore from '../store/configureStore.jsx';
 
-export default class TempComp extends Component {
+export default class Root extends Component {
 
 	render() {
 		return (

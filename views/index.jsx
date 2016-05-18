@@ -10,7 +10,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import configureStore from '../store/configureStore.jsx';
 import VisibleApp from './components/VisibleApp.jsx';
 
-import TempComp from './TempComp.jsx';
+import Root from './Root.jsx';
 import Immutable, { OrderedSet, Map, Set } from 'immutable';
 
 injectTapEventPlugin();
@@ -36,6 +36,6 @@ if(stateFromServer) {
 const store = configureStore(initialState);
 
 ReactDOM.render(
-	<TempComp store={store}/>,
+	<Root store={store}/>,
 	document.getElementById('view')
 );
