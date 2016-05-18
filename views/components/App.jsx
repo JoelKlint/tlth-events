@@ -25,33 +25,44 @@ export default class App extends React.Component {
 		const styles = {
 			base: {
 				display: 'flex',
+				flexDirection: 'column',
 				height: '100%',
-				width: '100%'
+				width: '100%',
 			},
-			calendar: {
+			topBar: {
 				display: 'flex',
-				height: '100%',
-				width: '100%'
+				flexShrink: '0',
+				height: '3em',
+				boxShadow: '0px 2px 3px 1px #ccc',
+				backgroundColor: '#3366ff'
+			},
+			content: {
+				display: 'flex',
 			},
 			sideBar: {
+				display: 'flex',
 				width: '13em',
-				height: '100%',
-				borderRight: '1px solid black'
+				borderRight: '1px solid black',
 			}
 		}
 		return(
 			<div style={styles.base}>
-				<div style={styles.sideBar}>
-					<SideBar
-						guilds={this.props.guilds}
-						activeGuilds={this.props.activeGuilds}
-						handleGuildClick={this.props.handleGuildClick}
-						addNewEvent={this.props.addNewEvent}
+				<div style={styles.topBar}>
+
+				</div>
+				<div style={styles.content}>
+					<div style={styles.sideBar}>
+						<SideBar
+							guilds={this.props.guilds}
+							activeGuilds={this.props.activeGuilds}
+							handleGuildClick={this.props.handleGuildClick}
+							addNewEvent={this.props.addNewEvent}
+						/>
+					</div>
+					<Calendar
+						events={this.props.events}
 					/>
 				</div>
-				<Calendar
-					events={this.props.events}
-				/>
 			</div>
 		);
 	}

@@ -56,7 +56,7 @@ export default class Calendar extends Component {
 		const styles = {
 			base: {
 				width: '100%',
-				height: '100%',
+				// height: '100%',
 				display: 'flex',
 				flexDirection: 'column'
 			},

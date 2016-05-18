@@ -30,14 +30,16 @@ export default class SideBar extends Component {
 	render() {
 		const styles = {
 			base: {
-				height: '100%',
+				width: '100%',
+				// height: '100%',
 				display: 'flex',
 				flexDirection: 'column',
 				justifyContent: 'space-between',
 			},
 			guildList: {
 				display: 'flex',
-				flexGrow: '1'
+				// flexDirection: 'column',
+				// flexGrow: '1'
 			},
 			addEvent: {
 				display: 'flex',
@@ -60,6 +62,7 @@ export default class SideBar extends Component {
 						handleClick={this.props.handleGuildClick}
 					/>
 				</div>
+
 				<div style={styles.addEvent} onClick={this.openEventEditor}>
 					Add event
 				</div>
