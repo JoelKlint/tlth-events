@@ -4,6 +4,7 @@ import GuildList from './GuildList.jsx';
 import SideBar from './SideBar.jsx';
 import moment from 'moment';
 import Immutable, { Map, List } from 'immutable';
+import TopBar from './TopBar.jsx';
 
 export default class App extends React.Component {
 
@@ -29,13 +30,6 @@ export default class App extends React.Component {
 				height: '100%',
 				width: '100%',
 			},
-			topBar: {
-				display: 'flex',
-				flexShrink: '0',
-				height: '3em',
-				boxShadow: '0px 2px 3px 1px #ccc',
-				backgroundColor: '#3366ff'
-			},
 			content: {
 				display: 'flex',
 			},
@@ -47,9 +41,7 @@ export default class App extends React.Component {
 		}
 		return(
 			<div style={styles.base}>
-				<div style={styles.topBar}>
-
-				</div>
+				<TopBar/>
 				<div style={styles.content}>
 					<div style={styles.sideBar}>
 						<SideBar
