@@ -22,7 +22,8 @@ const mapStateToProps = (state) => {
 	return {
 		events: visibleSavedEvents.concat(state.events.get('local')),
 		guilds: state.guilds,
-		activeGuilds: state.activeGuilds
+		activeGuilds: state.activeGuilds,
+		user: state.user
 	}
 }
 
