@@ -4,4 +4,4 @@ function ParameterError(message) {
 ParameterError.prototype = Object.create(Error.prototype);
 ParameterError.prototype.name = 'ParameterError';
 
-module.exports = ParameterError;
+export default ParameterError;

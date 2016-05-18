@@ -1,6 +1,6 @@
 var router = require('express').Router();
 import { Guild } from '../../../models';
-var ParameterError = require('../../config/ParameterError.js');
+import ParameterError from '../../config/ParameterError';
 
 router.route('/')
 
@@ -28,7 +28,7 @@ router.route('/:guild_id')
 	.get(function(req, res, next) {
 		Guild.findById(req.params.guild_id).then(function(guild) {
 			if(!guild) {
-				throw err = new ParameterError('Guild does not exist');
+				const err = new ParameterError('Guild does not exist');
 				return next(err);
 			}
 			res.json(guild);
@@ -41,7 +41,7 @@ router.route('/:guild_id')
 	.put(function(req, res, next) {
 		Guild.findByIdAndUpdate(req.params.guild_id, req.body).then(function(guild) {
 			if(!guild) {
-				throw err = new ParameterError('Guild does not exist');
+				const err = new ParameterError('Guild does not exist');
 				return next(err);
 			}
 			res.json(guild);
@@ -54,7 +54,7 @@ router.route('/:guild_id')
 	.delete(function(req, res, next) {
 		Guild.findByIdAndRemove(req.params.guild_id).then(function(guild) {
 			if(!guild) {
-				throw err = new ParameterError('Guild does not exist');
+				const err = new ParameterError('Guild does not exist');
 				return next(err);
 			}
 			res.json(guild);

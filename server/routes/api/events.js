@@ -1,6 +1,6 @@
 var router = require('express').Router();
 import { Event, Guild } from '../../../models';
-var ParameterError = require('../../config/ParameterError');
+import ParameterError from '../../config/ParameterError';
 
 router.route('/')
 
@@ -39,7 +39,7 @@ router.route('/:event_id')
 	.get(function(req, res, next) {
 		Event.findById(req.params.event_id).then(function(event) {
 			if(!event) {
-				throw err = new ParameterError('Event does not exist');
+				const err = new ParameterError('Event does not exist');
 				return next(err);
 			}
 			res.json(event);
@@ -52,7 +52,7 @@ router.route('/:event_id')
 	.put(function(req, res, next) {
 		Event.findByIdAndUpdate(req.params.event_id, req.body).then(function(event) {
 			if(!event) {
-				throw err = new ParameterError('Event does not exist');
+				const err = new ParameterError('Event does not exist');
 				return next(err);
 			}
 			res.json(event);
@@ -65,7 +65,7 @@ router.route('/:event_id')
 	.delete(function(req, res, next) {
 		Event.findByIdAndRemove(req.params.event_id).then(function(event) {
 			if(!event) {
-				throw err = new ParameterError('Event does not exist');
+				const err = new ParameterError('Event does not exist');
 				return next(err);
 			}
 			res.json(event);

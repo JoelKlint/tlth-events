@@ -3,7 +3,7 @@ import { Event, Guild } from '../../../models';
 var VCalendar = require('cozy-ical').VCalendar;
 var VEvent = require('cozy-ical').VEvent;
 var conf = require('../../config/config.json');
-var ParameterError = require('../../config/ParameterError.js');
+import ParameterError from '../../config/ParameterError';
 var moment = require('moment');
 
 // Gets all events for any of the specified guilds
@@ -12,7 +12,7 @@ var moment = require('moment');
 router.get('/', function(req, res, next) {
 	// Validate input was specified
 	if(!req.query.guild) {
-		throw err = new ParameterError('No guilds specified');
+		const err = new ParameterError('No guilds specified');
 		return next(err);
 	}
 	// Place input into array
@@ -24,14 +24,14 @@ router.get('/', function(req, res, next) {
 		inputGuilds = req.query.guild
 	}
 	else {
-		throw err = new ParameterError('Unknown input type');
+		const err = new ParameterError('Unknown input type');
 		return next(err);
 	}
 
 	Guild.find({ name: { $in: inputGuilds } }).then(function(guilds) {
 
 		if(guilds.length === 0) {
-			throw err = new ParameterError('Invalid guild specified');
+			const err = new ParameterError('Invalid guild specified');
 			return next(err);
 		}
 
