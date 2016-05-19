@@ -1,6 +1,4 @@
 import mongoose from 'mongoose';
-import conf from '../server/config/config.json';
-mongoose.connect(conf.mongoDbURI);
 
 import modelNames from './ModelNames';
 
