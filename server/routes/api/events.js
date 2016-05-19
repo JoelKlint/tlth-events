@@ -1,6 +1,7 @@
 var router = require('express').Router();
 import { Event, Guild } from '../../../models';
 import ParameterError from '../../config/ParameterError';
+import cas from '../../middleware/cas';
 
 router.route('/')
 
@@ -15,7 +16,22 @@ router.route('/')
 		});
 	})
 
-	.post(function(req, res, next) {
+	/**
+	 * @api {post} /events Create an event
+	 * @apiName Create new event
+	 * @apiGroup Event
+	 *
+	 * @apiParam {String} name
+	 * @apiParam {String} description
+	 * @apiParam {String} location
+	 * @apiParam {Date} startDate
+	 * @apiParam {Date} endDate
+	 * @apiParam {String} url
+	 * @apiParam {String[]} guilds
+	 *
+	 * @apiSuccess {Object} Populated event data
+	 */
+	.post(cas.block, function(req, res, next) {
 		Guild.find({ _id: { $in: req.body.guilds } }, '_id').then(function(guilds) {
 			var eventParams = req.body;
 			eventParams.guilds = guilds;
