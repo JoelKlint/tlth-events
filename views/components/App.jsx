@@ -55,6 +55,7 @@ export default class App extends React.Component {
 			<div style={styles.base}>
 				<TopBar
 					loggedIn={this.props.user.has('username')}
+					admin={this.props.user.has('admin')}
 					openEventEditor={this.openEventEditor}
 				/>
 				<div style={styles.content}>

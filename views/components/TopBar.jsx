@@ -31,41 +31,55 @@ export default class TopBar extends Component {
 	}
 
 	renderLoggedOutButtons() {
-		return (
-			<div>
-				<FlatButton
-					label='Login'
-					linkButton={true}
-					href='/login'
-				/>
-			</div>
-		)
+		let counter = 1;
+		const buttons = [];
+		buttons.push(
+			<FlatButton
+				label='Login'
+				linkButton={true}
+				href='/login'
+				key={counter++}
+			/>
+		);
+		return buttons;
 	}
 
 	renderLoggedInButtons() {
-		return (
-			<div>
-				<FlatButton
-					label='Add event'
-					onTouchTap={this.props.openEventEditor}
-				/>
-				<FlatButton
-					label='Dashboard'
-				/>
-				<FlatButton
-					label='Logout'
-					linkButton={true}
-					href='/logout'
-				/>
-			</div>
-		)
+		let counter = 1;
+		const buttons = [];
+		buttons.push(
+			<FlatButton
+				label='Dashboard'
+				key={counter++}
+			/>
+		);
+
+		!this.props.admin ? '' : buttons.push(
+			<FlatButton
+				label='Add event'
+				onTouchTap={this.props.openEventEditor}
+				key={counter++}
+			/>
+		);
+
+		buttons.push(
+			<FlatButton
+				label='Logout'
+				linkButton={true}
+				href='/logout'
+				key={counter++}
+			/>
+		);
+		return buttons;
 	}
 }
 
 TopBar.propTypes = {
 	loggedIn: PropTypes.bool,
+	admin: PropTypes.bool,
 	openEventEditor: PropTypes.func.isRequired
 }
 TopBar.defaultProps = {
-	loggedIn: false
+	loggedIn: false,
+	admin: false
 }
