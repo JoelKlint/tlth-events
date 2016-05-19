@@ -5,6 +5,7 @@ import { User } from '../../models';
 import renderFromServer from '../../public/serverRenderer';
 import { fromJS } from 'immutable';
 
+
 router.get('/', function(req, res) {
 	if(req.session.cas_user) {
 		const username = req.session.cas_user;
@@ -22,8 +23,22 @@ router.get('/', function(req, res) {
 	}
 });
 
+/**
+ * @api {get} /login Login user
+ * @apiName Login
+ * @apiGroup Login/Logout
+ *
+ */
 router.get('/login', cas.bounce, function(req, res) {
 	res.redirect('/');
 })
+
+/**
+ * @api {get} /logout Logout user
+ * @apiName Logout
+ * @apiGroup Login/Logout
+ *
+ */
+router.get('/logout', cas.logout );
 
 export default router;

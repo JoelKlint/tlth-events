@@ -53,6 +53,8 @@ export default class TopBar extends Component {
 				/>
 				<FlatButton
 					label='Logout'
+					linkButton={true}
+					href='/logout'
 				/>
 			</div>
 		)
