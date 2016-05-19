@@ -41,7 +41,7 @@ export default class App extends React.Component {
 		}
 		return(
 			<div style={styles.base}>
-				<TopBar/>
+				<TopBar loggedIn={this.props.user.has('username')}/>
 				<div style={styles.content}>
 					<div style={styles.sideBar}>
 						<SideBar
