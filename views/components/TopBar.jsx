@@ -47,6 +47,7 @@ export default class TopBar extends Component {
 			<div>
 				<FlatButton
 					label='Add event'
+					onTouchTap={this.props.openEventEditor}
 				/>
 				<FlatButton
 					label='Dashboard'
@@ -59,4 +60,12 @@ export default class TopBar extends Component {
 			</div>
 		)
 	}
+}
+
+TopBar.propTypes = {
+	loggedIn: PropTypes.bool,
+	openEventEditor: PropTypes.func.isRequired
+}
+TopBar.defaultProps = {
+	loggedIn: false
 }

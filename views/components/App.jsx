@@ -5,6 +5,7 @@ import SideBar from './SideBar.jsx';
 import moment from 'moment';
 import Immutable, { Map, List } from 'immutable';
 import TopBar from './TopBar.jsx';
+import AddEventDialog from './AddEventDialog.jsx';
 
 export default class App extends React.Component {
 
@@ -15,11 +16,22 @@ export default class App extends React.Component {
 				dow : 1 // Set monday as first day of week
 			}
 		});
+		this.state = { addEventWindowOpen : false }
+		this.closeEventEditor = this.closeEventEditor.bind(this);
+		this.openEventEditor = this.openEventEditor.bind(this);
 	}
 
 	componentDidMount() {
 		this.props.getAllGuilds();
 		this.props.getAllEvents();
+	}
+
+	openEventEditor() {
+		this.setState({ addEventWindowOpen: Immutable.fromJS(true) });
+	}
+
+	closeEventEditor() {
+		this.setState({ addEventWindowOpen: Immutable.fromJS(false) });
 	}
 
 	render() {
@@ -41,7 +53,10 @@ export default class App extends React.Component {
 		}
 		return(
 			<div style={styles.base}>
-				<TopBar loggedIn={this.props.user.has('username')}/>
+				<TopBar
+					loggedIn={this.props.user.has('username')}
+					openEventEditor={this.openEventEditor}
+				/>
 				<div style={styles.content}>
 					<div style={styles.sideBar}>
 						<SideBar
@@ -55,6 +70,14 @@ export default class App extends React.Component {
 						events={this.props.events}
 					/>
 				</div>
+
+				<AddEventDialog
+					open={this.state.addEventWindowOpen}
+					close={this.closeEventEditor}
+					guilds={this.props.guilds}
+					addNewEvent={this.props.addNewEvent}
+				/>
+
 			</div>
 		);
 	}

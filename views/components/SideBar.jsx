@@ -40,16 +40,6 @@ export default class SideBar extends Component {
 				display: 'flex',
 				// flexDirection: 'column',
 				// flexGrow: '1'
-			},
-			addEvent: {
-				display: 'flex',
-				justifyContent: 'center',
-				flexShrink: '0',
-				height: '4em',
-				borderTop: '1px solid black',
-				alignItems: 'center',
-				backgroundColor: '#eaeaea',
-				cursor: 'pointer',
 			}
 		}
 
@@ -62,17 +52,6 @@ export default class SideBar extends Component {
 						handleClick={this.props.handleGuildClick}
 					/>
 				</div>
-
-				<div style={styles.addEvent} onClick={this.openEventEditor}>
-					Add event
-				</div>
-
-				<AddEventDialog
-					open={this.state.addEventWindowOpen}
-					close={this.closeEventEditor}
-					guilds={this.props.guilds}
-					addNewEvent={this.props.addNewEvent}
-				/>
 			</div>
 		)
 	}
