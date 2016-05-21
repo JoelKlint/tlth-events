@@ -18,7 +18,7 @@ router.route('/')
 	});
 
 /**
- * @api {post} /api/user/admin/:user_id Make an user Admin
+ * @api {post} /api/user/admin/:user_id Make user admin
  * @apiName Make user admin
  * @apiGroup User
  * @apiParam {String} guildId The guild user should be admin of

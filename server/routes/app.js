@@ -26,8 +26,9 @@ router.get('/', function(req, res) {
 /**
  * @api {get} /login Login user
  * @apiName Login
- * @apiGroup Login/Logout
- *
+ * @apiGroup Authentication
+ * @apiDescription Authentication is handled via Lund University CAS system.
+ * This route redirects to base url upon successful authentication
  */
 router.get('/login', cas.bounce, function(req, res) {
 	res.redirect('/');
@@ -36,8 +37,9 @@ router.get('/login', cas.bounce, function(req, res) {
 /**
  * @api {get} /logout Logout user
  * @apiName Logout
- * @apiGroup Login/Logout
- *
+ * @apiGroup Authentication
+ * @apiDescription Authentication is handled via Lund University CAS system
+ * This route redirects to CAS logout screen
  */
 router.get('/logout', cas.logout );
 

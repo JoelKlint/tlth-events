@@ -3,8 +3,73 @@ import { Event, Guild } from '../../../models';
 import ParameterError from '../../config/ParameterError';
 import cas from '../../middleware/cas';
 
+	/**
+	 * @apiDefine EventSuccessResponse
+	 *
+	 * @apiSuccess {String} _id ID of the event
+	 * @apiSuccess {String} name  Name of the event
+	 * @apiSuccess {String} description Description of the Event
+	 * @apiSuccess {String} location Location of the event
+	 * @apiSuccess {Date} startDate Start time of the event. ISO formatted string
+	 * @apiSuccess {Date} endDate End time of the event. ISO formatted string
+	 * @apiSuccess {String} url URL of the event
+	 * @apiSuccess {Object[]} guilds Guilds whom the event are for
+	 *
+	 * @apiSuccessExample {json} Success-Response:
+	 * 	HTTP/1.1 200 OK
+	 * 	{
+	 * 		"_id": "abcdefghijklmnopqrstuvwx"
+	 * 		"name": "Lunch"
+	 * 		"description": "Come enjoy some lunch"
+	 * 		"location": "Dining room"
+	 * 		"startDate": "2016-05-11T13:00:00.000Z"
+	 * 		"endDate": "2016-05-11T15:00:00.000Z"
+	 * 		"url": "www.lunch.com"
+	 * 		"guilds": [
+	 * 			{
+	 * 				"_id": "abcdefghijklmnopqrstuvwx"
+	 * 				"name": "Great guild"
+	 * 			}
+	 * 		]
+	 * 	}
+	 */
+
+	/**
+	 * @apiDefine EventBodyParams
+	 *
+	 * @apiParam (Body) {String} name Name of the event
+	 * @apiParam (Body) {String} description Description of the event
+	 * @apiParam (Body) {String} location Location of the event
+	 * @apiParam (Body) {Date} startDate Start time of the event. ISO formatted string
+	 * @apiParam (Body) {Date} endDate End time of the event. ISO formatted string
+	 * @apiParam (Body) {String} url URL of the event
+	 * @apiParam (Body) {Object[]} guilds Guilds whom the event are for
+	 *
+	 * @apiParamExample {json} Request-Example:
+	 * 	HTTP/1.1 200 OK
+	 * 	{
+	 * 		"name": "Lunch"
+	 * 		"description": "Come enjoy some lunch"
+	 * 		"location": "Dining room"
+	 * 		"startDate": "2016-05-11T13:00:00.000Z"
+	 * 		"endDate": "2016-05-11T15:00:00.000Z"
+	 * 		"url": "www.lunch.com"
+	 * 		"guilds": [
+	 * 			{
+	 * 				"_id": "abcdefghijklmnopqrstuvwx"
+	 * 				"name": "Great guild"
+	 * 			}
+	 * 		]
+	 * 	}
+	 */
+
 router.route('/')
 
+	/**
+	 * @api {get} /events Get all events
+	 * @apiName Get all events
+	 * @apiGroup Event
+	 */
 	.get(function(req, res, next) {
 		Event.find()
 		.populate('guilds')
@@ -17,19 +82,12 @@ router.route('/')
 	})
 
 	/**
-	 * @api {post} /events Create an event
-	 * @apiName Create new event
+	 * @api {post} /events Create event
+	 * @apiName Create event
 	 * @apiGroup Event
 	 *
-	 * @apiParam {String} name
-	 * @apiParam {String} description
-	 * @apiParam {String} location
-	 * @apiParam {Date} startDate
-	 * @apiParam {Date} endDate
-	 * @apiParam {String} url
-	 * @apiParam {String[]} guilds
-	 *
-	 * @apiSuccess {Object} Populated event data
+	 * @apiUse EventBodyParams
+	 * @apiUse EventSuccessResponse
 	 */
 	.post(cas.block, function(req, res, next) {
 		Guild.find({ _id: { $in: req.body.guilds } }, '_id').then(function(guilds) {
@@ -52,6 +110,19 @@ router.route('/')
 
 router.route('/:event_id')
 
+	/**
+	 * @apiDefine UrlEncodedEventIdParam
+	 * @apiParam (URL) {String} event_id ID of the event
+	 */
+
+	/**
+	 * @api {get} /event/:event_id Get event
+	 * @apiName Get event
+	 * @apiGroup Event
+	 *
+	 * @apiUse UrlEncodedEventIdParam
+	 * @apiUse EventSuccessResponse
+	 */
 	.get(function(req, res, next) {
 		Event.findById(req.params.event_id).then(function(event) {
 			if(!event) {
@@ -65,6 +136,16 @@ router.route('/:event_id')
 		});
 	})
 
+	/**
+	 * @api {put} /event/:event_id Edit event
+	 * @apiName Edit event
+	 * @apiGroup Event
+	 *
+	 * @apiUse UrlEncodedEventIdParam
+	 * @apiUse EventBodyParams
+	 * @apiUse EventSuccessResponse
+	 *
+	 */
 	.put(function(req, res, next) {
 		Event.findByIdAndUpdate(req.params.event_id, req.body).then(function(event) {
 			if(!event) {
@@ -78,6 +159,14 @@ router.route('/:event_id')
 		})
 	})
 
+	/**
+	 * @api {delete} /event/:event_id Delete event
+	 * @apiName Delete event
+	 * @apiGroup Event
+	 *
+	 * @apiUse UrlEncodedEventIdParam
+	 * @apiUse EventSuccessResponse
+	 */
 	.delete(function(req, res, next) {
 		Event.findByIdAndRemove(req.params.event_id).then(function(event) {
 			if(!event) {

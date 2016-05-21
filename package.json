@@ -10,7 +10,8 @@
     "test": "mocha --timeout 10000",
     "start": "node index.js",
     "dev": "webpack-dev-server --config webpack.dev.config.js",
-    "build": "webpack --config webpack.build.config.js"
+    "build": "webpack --config webpack.build.config.js",
+    "doc": "apidoc -i server/ -o doc/"
   },
   "keywords": [],
   "author": "",
@@ -51,6 +52,7 @@
     "webpack-dev-server": "^1.14.1"
   },
   "devDependencies": {
+    "apidoc": "^0.16.1",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-preset-stage-1": "^6.5.0",
     "babel-preset-stage-2": "^6.5.0",
