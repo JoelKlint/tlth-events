@@ -30,7 +30,7 @@ const errorHandler = (err, req, res, next) => {
 			break;
 		}
 	}
-	res.status(500).json( { error: errorMessage } );
+	res.status(400).json( { error: errorMessage } );
 }
 
 export default errorHandler;

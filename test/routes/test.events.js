@@ -21,6 +21,7 @@ describe('/events', function() {
 			}
 			done();
 		})
+		.catch(err => done(err));
 	});
 
 	after(function(done) {
@@ -51,7 +52,7 @@ describe('/events', function() {
 			superagent.post(baseUrl + '/events')
 			.send(params)
 			.end((err, res) => {
-				expect(err.status).to.eql(500);
+				expect(err.status).to.eql(400);
 				done();
 			});
 		});
@@ -62,7 +63,7 @@ describe('/events', function() {
 			superagent.post(baseUrl + '/events')
 			.send(params)
 			.end((err, res) => {
-				expect(err.status).to.eql(500);
+				expect(err.status).to.eql(400);
 				done();
 			});
 		});
@@ -73,7 +74,7 @@ describe('/events', function() {
 			superagent.post(baseUrl + '/events')
 			.send(params)
 			.end((err, res) => {
-				expect(err.status).to.eql(500);
+				expect(err.status).to.eql(400);
 				done();
 			});
 		});
@@ -87,7 +88,7 @@ describe('/events', function() {
 			superagent.post(baseUrl + '/events')
 			.send(params)
 			.end((err, res) => {
-				expect(err.status).to.eql(500);
+				expect(err.status).to.eql(400);
 				done();
 			})
 		});
@@ -100,7 +101,7 @@ describe('/events', function() {
 			superagent.post(baseUrl + '/events')
 			.send(params)
 			.end((err, res) => {
-				expect(err.status).to.eql(500);
+				expect(err.status).to.eql(400);
 				done();
 			});
 		});
@@ -159,7 +160,7 @@ describe('/events/:event_id', function() {
 		it('should not accept nonexisting events', function(done) {
 			superagent.get(baseUrl + '/events/' + 'invalid' )
 			.end((err, res) => {
-				expect(err.status).to.eql(500);
+				expect(err.status).to.eql(400);
 				done();
 			})
 		});
@@ -181,7 +182,7 @@ describe('/events/:event_id', function() {
 			superagent.put(baseUrl + '/events/' + 'invalid')
 			.send({ name: 'Other name' })
 			.end((err, res) => {
-				expect(err.status).to.eql(500);
+				expect(err.status).to.eql(400);
 				done();
 			})
 		});
@@ -197,7 +198,7 @@ describe('/events/:event_id', function() {
 		it('should not accept nonexisting events', function(done) {
 			superagent.del(baseUrl + '/events/' + 'invalid' )
 			.end((err, res) => {
-				expect(err.status).to.eql(500);
+				expect(err.status).to.eql(400);
 				done();
 			})
 		});

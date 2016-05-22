@@ -75,7 +75,7 @@ describe('/ical-events', function() {
 		it('should reject incorrect guild parameters', function(done) {
 			superagent.get('http://localhost:3000/ical-events?guild=Q')
 			.end(function(err, res) {
-				expect(err.status).to.eql(500);
+				expect(err.status).to.eql(400);
 				done();
 			})
 		});

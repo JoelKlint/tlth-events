@@ -37,7 +37,7 @@ describe('/users', function() {
 			superagent.post(baseUrl + '/users/admin/' + userId)
 			.send(params)
 			.end((err, res) => {
-				expect(err.status).to.eql(500);
+				expect(err.status).to.eql(400);
 				done();
 			})
 		});

@@ -41,7 +41,7 @@ describe('/guilds', function() {
 			superagent.post(baseUrl + '/guilds')
 			.send(params)
 			.end(function(err, res) {
-				expect(err.status).to.eql(500);
+				expect(err.status).to.eql(400);
 				done();
 			})
 		});
@@ -87,7 +87,7 @@ describe('/guilds/:guild_id', function() {
 		it('should not accept nonexisting guilds', function(done) {
 			superagent.get(baseUrl + '/guilds/' + 'invalidID' )
 			.end(function(err, res) {
-				expect(err.status).to.eql(500);
+				expect(err.status).to.eql(400);
 				done();
 			})
 		});
@@ -115,7 +115,7 @@ describe('/guilds/:guild_id', function() {
 			superagent.put(baseUrl + '/guilds/' + 'invalidGuildId')
 			.send(guildParams)
 			.end(function(err, res) {
-				expect(err.status).to.eql(500);
+				expect(err.status).to.eql(400);
 				done();
 			})
 		});
@@ -138,7 +138,7 @@ describe('/guilds/:guild_id', function() {
 		it('should not accept nonexisting guilds', function(done) {
 			superagent.del(baseUrl + '/guilds/' + 'invalidGuildId' )
 			.end(function(err, res) {
-				expect(err.status).to.eql(500);
+				expect(err.status).to.eql(400);
 				done();
 			})
 		});
