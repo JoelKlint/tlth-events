@@ -1,3 +1,7 @@
+// Remove logging from console
+import winston from 'winston';
+winston.remove(winston.transports.Console);
+
 // Connect to test database
 import mongoose from 'mongoose';
 mongoose.connect('mongodb://firefox:firefox@ds025782.mlab.com:25782/tlth-events-test');

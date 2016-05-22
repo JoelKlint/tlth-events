@@ -1,5 +1,6 @@
+import winston from 'winston';
 const errorHandler = (err, req, res, next) => {
-	console.log(err);
+	winston.error(err);
 
 	const errorMessage = [];
 
@@ -29,7 +30,6 @@ const errorHandler = (err, req, res, next) => {
 			break;
 		}
 	}
-	console.log();
 	res.status(500).json( { error: errorMessage } );
 }
 

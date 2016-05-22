@@ -1,4 +1,5 @@
 import express from 'express';
+import winston from 'winston';
 
 const port = 3000;
 const app = express();
@@ -18,4 +19,4 @@ applyPostRouteMiddleware(app);
 
 // Start server
 app.listen(port);
-console.log('Server is listening on port ' + port );
+winston.info('Server is listening on port ' + port );

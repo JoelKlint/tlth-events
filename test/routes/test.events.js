@@ -106,7 +106,6 @@ describe('/events', function() {
 		});
 
 		it('should create an event given valid parameters', function(done) {
-			console.log(eventParams);
 			superagent.post(baseUrl + '/events')
 			.send(eventParams)
 			.end((err, res) => {
