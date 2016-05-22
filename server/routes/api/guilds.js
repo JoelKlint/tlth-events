@@ -44,7 +44,9 @@ router.route('/:guild_id')
 				const err = new ParameterError('Guild does not exist');
 				return next(err);
 			}
-			res.json(guild);
+			Guild.findById(req.params.guild_id)
+			.then(guild => res.json(guild))
+			.catch(err => next(err))
 		})
 		.catch(function(err) {
 			return next(err);
