@@ -1,15 +1,17 @@
 import superagent from 'superagent';
 import { expect } from 'chai';
-import { Guild, Event } from '../../models';
+import { User, Guild, Event } from '../../models';
 import baseUrl from './index';
 import moment from 'moment';
 
 describe('/events', function() {
 
 	let eventParams;
+	let createdGuild;
 	before(function(done) {
 		Guild.create({ name: "Test" })
 		.then(guild => {
+			createdGuild = guild;
 			eventParams = {
 				name: "test",
 				startDate: moment().toISOString(),
@@ -28,6 +30,9 @@ describe('/events', function() {
 		Event.remove({})
 		.then(() => {
 			return Guild.remove({})
+		})
+		.then(() => {
+			return User.remove({})
 		})
 		.then(() => done())
 		.catch(err => done(err))
@@ -49,81 +54,128 @@ describe('/events', function() {
 
 	describe('POST', function() {
 
-		it('should require a name', function(done) {
-			let params = Object.assign({}, eventParams);
-			delete params.name;
-			superagent.post(baseUrl + '/events')
-			.send(params)
-			.end((err, res) => {
-				expect(err.status).to.eql(400);
-				done();
-			});
-		});
+		before(function(done) {
+			User.create({ username: 'testuser' })
+			.then(user => done())
+			.catch(err => done(err));
+		})
 
-		it('should require a start date', function(done) {
-			let params = Object.assign({}, eventParams);
-			delete params.startDate;
-			superagent.post(baseUrl + '/events')
-			.send(params)
-			.end((err, res) => {
-				expect(err.status).to.eql(400);
-				done();
-			});
-		});
-
-		it('should require an end date', function(done) {
-			let params = Object.assign({}, eventParams);
-			delete params.endDate;
-			superagent.post(baseUrl + '/events')
-			.send(params)
-			.end((err, res) => {
-				expect(err.status).to.eql(400);
-				done();
-			});
-		});
-
-		it('should require the end date to be after the start date');
-
-		it('should require atleast one guild', function(done) {
-			let params = Object.assign({}, eventParams)
-			delete params.guilds;
-			params.guilds = [];
-			superagent.post(baseUrl + '/events')
-			.send(params)
-			.end((err, res) => {
-				expect(err.status).to.eql(400);
-				done();
-			})
-		});
-
-		it('should only accept existing guilds', function(done) {
-			// Create guild that does not exist in database
-			let params = Object.assign({}, eventParams)
-			delete params.guilds;
-			params.guilds = [ new Guild({ name: "test" }).id ];
-			superagent.post(baseUrl + '/events')
-			.send(params)
-			.end((err, res) => {
-				expect(err.status).to.eql(400);
-				done();
-			});
-		});
-
-		it('should create an event given valid parameters', function(done) {
+		it('should require an admin to be logged in', function(done) {
 			superagent.post(baseUrl + '/events')
 			.send(eventParams)
 			.end((err, res) => {
-				expect(err).to.not.exist;
-				const event = res.body;
-				expect(event.name).to.eql(eventParams.name);
-				expect(event.startDate).to.eql(eventParams.startDate);
-				expect(event.endDate).to.eql(eventParams.endDate);
-				expect(event.description).to.eql(eventParams.description);
-				expect(event.location).to.eql(eventParams.location);
-				expect(event.url).to.eql(eventParams.url);
+				expect(err).to.exist;
+				expect(err.status).to.eql(401);
 				done();
 			})
-		});
+		})
+
+		describe('authenticated', function() {
+
+			before(function(done) {
+				User.update(
+					{ username: 'testuser' },
+					{ admin: eventParams.guilds[0] }
+				)
+				.then(user => done())
+				.catch(err => done(err))
+			})
+
+			it('should require a name', function(done) {
+				let params = Object.assign({}, eventParams);
+				delete params.name;
+				superagent.post(baseUrl + '/events')
+				.send(params)
+				.end((err, res) => {
+					expect(err).to.exist;
+					expect(err.status).to.eql(400);
+					done();
+				});
+			});
+
+			it('should require a start date', function(done) {
+				let params = Object.assign({}, eventParams);
+				delete params.startDate;
+				superagent.post(baseUrl + '/events')
+				.send(params)
+				.end((err, res) => {
+					expect(err).to.exist;
+					expect(err.status).to.eql(400);
+					done();
+				});
+			});
+
+			it('should require an end date', function(done) {
+				let params = Object.assign({}, eventParams);
+				delete params.endDate;
+				superagent.post(baseUrl + '/events')
+				.send(params)
+				.end((err, res) => {
+					expect(err).to.exist;
+					expect(err.status).to.eql(400);
+					done();
+				});
+			});
+
+			it('should require the end date to be after the start date');
+
+			it('should require atleast one guild', function(done) {
+				let params = Object.assign({}, eventParams)
+				delete params.guilds;
+				params.guilds = [];
+				superagent.post(baseUrl + '/events')
+				.send(params)
+				.end((err, res) => {
+					expect(err).to.exist;
+					expect(err.status).to.eql(400);
+					done();
+				})
+			});
+
+			it('should only accept existing guilds', function(done) {
+				// Create guild that does not exist in database
+				let params = Object.assign({}, eventParams)
+				delete params.guilds;
+				params.guilds = [ new Guild({ name: "test" }).id ];
+				superagent.post(baseUrl + '/events')
+				.send(params)
+				.end((err, res) => {
+					expect(err).to.exist;
+					expect(err.status).to.eql(400);
+					done();
+				});
+			});
+
+			it('should be successful given valid parameters', function(done) {
+				superagent.post(baseUrl + '/events')
+				.send(eventParams)
+				.end((err, res) => {
+					expect(err).to.not.exist;
+					expect(res.status).to.eql(200);
+					done();
+				})
+			})
+
+			it('should return a populated event on success', function(done) {
+				superagent.post(baseUrl + '/events')
+				.send(eventParams)
+				.end((err, res) => {
+					expect(err).to.not.exist;
+					const event = res.body;
+					expect(event.name).to.eql(eventParams.name);
+					expect(event.startDate).to.eql(eventParams.startDate);
+					expect(event.endDate).to.eql(eventParams.endDate);
+					expect(event.description).to.eql(eventParams.description);
+					expect(event.location).to.eql(eventParams.location);
+					expect(event.url).to.eql(eventParams.url);
+					const guild = event.guilds[0];
+					expect(guild._id).to.eql(createdGuild.id);
+					expect(guild.name).to.eql(createdGuild.name);
+					done();
+				})
+			})
+
+		})
 
 	});
 

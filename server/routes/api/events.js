@@ -1,6 +1,7 @@
 var router = require('express').Router();
-import { Event, Guild } from '../../../models';
+import { User, Event, Guild } from '../../../models';
 import ParameterError from '../../config/ParameterError';
+import UnauthorizedError from '../../config/UnauthorizedError';
 import cas from '../../middleware/cas';
 
 	/**
@@ -90,22 +91,28 @@ router.route('/')
 	 * @apiUse EventSuccessResponse
 	 */
 	.post(cas.block, function(req, res, next) {
-		Guild.find({ _id: { $in: req.body.guilds } }, '_id').then(function(guilds) {
-			var eventParams = req.body;
-			eventParams.guilds = guilds;
-			var event = new Event(eventParams);
-			event.save().then(function(event) {
-				Event.populate(event, 'guilds').then(function(populatedEvent) {
-					res.json(populatedEvent);
-				})
-			})
-			.catch(function(err) {
-				return next(err);
-			})
+		User.findOne({ username: req.session.cas_user })
+		.then(user => {
+			// Exit if user does not exist or is not admin
+			if(!user || !user.admin) {
+				next(new UnauthorizedError());
+			}
+			return Guild.find({ _id: { $in: req.body.guilds } }, '_id');
 		})
-		.catch(function(err) {
-			return next(err);
-		});
+		.then(guilds => {
+			// Exit if no given guild exists
+			if(guilds.length < 1) {
+				next(new ParameterError('Guild does not exist'));
+			}
+			const eventParams = req.body;
+			eventParams.guilds = guilds;
+			return Event.create(eventParams)
+		})
+		.then(event => {
+			return Event.populate(event, 'guilds')
+		})
+		.then(populatedEvent => res.json(populatedEvent))
+		.catch(err => next(err))
 	});
 
 router.route('/:event_id')

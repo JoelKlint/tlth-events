@@ -24,7 +24,7 @@ router.route('/')
  * @apiParam {String} guildId The guild user should be admin of
  * @apiSuccess {Object} user The updated user object
  */
-router.post('/admin/:user_id', cas.block, (req, res, next) => {
+router.post('/admin/:user_id', (req, res, next) => {
 	const guildId = req.body.guildId;
 	// Validate guild
 	Guild.findById(guildId)
