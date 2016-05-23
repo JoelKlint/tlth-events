@@ -4,6 +4,7 @@ import { Guild } from '../../models';
 import baseUrl from './index';
 
 describe('/guilds', function() {
+
 	let existingGuild;
 	let existingGuildParams;
 	before(function(done) {
@@ -13,17 +14,20 @@ describe('/guilds', function() {
 			existingGuild = guild;
 			done();
 		})
+		.catch(err => done(err));
 	})
 
 	after(function(done) {
-		Guild.remove({}).then(() => done());
+		Guild.remove({})
+		.then(() => done())
+		.catch(err => done(err))
 	})
 
 	describe('GET', function() {
 
 		it('should return an json array of guilds', function(done) {
 			superagent.get(baseUrl + '/guilds')
-			.end(function(err, res) {
+			.end((err, res) => {
 				expect(res.status).to.eql(200);
 				expect(res.type).to.eql('application/json');
 				expect(res.body).to.be.an('Array');
@@ -40,7 +44,7 @@ describe('/guilds', function() {
 			delete params.name;
 			superagent.post(baseUrl + '/guilds')
 			.send(params)
-			.end(function(err, res) {
+			.end((err, res) => {
 				expect(err.status).to.eql(400);
 				done();
 			})
@@ -49,7 +53,7 @@ describe('/guilds', function() {
 		it('should return the created guild given valid parameters', function(done) {
 			superagent.post(baseUrl + '/guilds')
 			.send({ name: 'uniqueName' })
-			.end(function(err, res) {
+			.end((err, res) => {
 				expect(res.status).to.eql(200);
 				// TEST IF THE GUILD WAS RETURNED HERE!!
 				done();
@@ -59,7 +63,7 @@ describe('/guilds', function() {
 		it('should not allow an already existing name', function(done) {
 			superagent.post(baseUrl + '/guilds')
 			.send(existingGuildParams)
-			.end(function(err, res) {
+			.end((err, res) => {
 				expect(err).to.exist;
 				done();
 			});
@@ -72,21 +76,25 @@ describe('/guilds', function() {
 describe('/guilds/:guild_id', function() {
 	let guildId;
 	before(function(done) {
-		Guild.create({ name: 'test' }).then(guild => {
+		Guild.create({ name: 'test' })
+		.then(guild => {
 			guildId = guild.id;
 			done()
 		})
+		.catch(err => done(err))
 	});
 
 	after(function(done) {
-		Guild.remove({}).then(() => done());
+		Guild.remove({})
+		.then(() => done())
+		.catch(err => done(err))
 	})
 
 	describe('GET', function() {
 
 		it('should not accept nonexisting guilds', function(done) {
 			superagent.get(baseUrl + '/guilds/' + 'invalidID' )
-			.end(function(err, res) {
+			.end((err, res) => {
 				expect(err.status).to.eql(400);
 				done();
 			})
@@ -94,7 +102,7 @@ describe('/guilds/:guild_id', function() {
 
 		it('should return the specified guild', function(done) {
 			superagent.get(baseUrl + '/guilds/' + guildId)
-			.end(function(err, res) {
+			.end((err, res) => {
 				expect(err).not.to.exist;
 				expect(res.body._id).to.eql(guildId);
 				done();
@@ -114,7 +122,7 @@ describe('/guilds/:guild_id', function() {
 		it('should reject an invalid id', function(done) {
 			superagent.put(baseUrl + '/guilds/' + 'invalidGuildId')
 			.send(guildParams)
-			.end(function(err, res) {
+			.end((err, res) => {
 				expect(err.status).to.eql(400);
 				done();
 			})
@@ -123,7 +131,7 @@ describe('/guilds/:guild_id', function() {
 		it('should change the specified guild', function(done) {
 			superagent.put(baseUrl + '/guilds/' + guildId)
 			.send(guildParams)
-			.end(function(err, res) {
+			.end((err, res) => {
 				expect(err).to.not.exist;
 				expect(res.body._id).to.eql(guildId);
 				expect(res.body.name).to.eql(guildParams.name);
@@ -137,7 +145,7 @@ describe('/guilds/:guild_id', function() {
 
 		it('should not accept nonexisting guilds', function(done) {
 			superagent.del(baseUrl + '/guilds/' + 'invalidGuildId' )
-			.end(function(err, res) {
+			.end((err, res) => {
 				expect(err.status).to.eql(400);
 				done();
 			})
@@ -145,7 +153,7 @@ describe('/guilds/:guild_id', function() {
 
 		it('should remove the specified guild', function(done) {
 			superagent.del(baseUrl + '/guilds/' + guildId)
-			.end(function(err, res) {
+			.end((err, res) => {
 				expect(err).not.to.exist;
 				expect(res.body._id).to.eql(guildId);
 				done();

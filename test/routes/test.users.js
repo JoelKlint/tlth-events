@@ -16,20 +16,22 @@ describe('/users', function() {
 			User.create({ username: 'test' })
 			.then(user => {
 				userId = user.id;
-				Guild.create({ name: 'test' })
-				.then(guild => {
-					guildId = guild.id;
-					done()
-				})
-				.catch(err => done('Guild could not be created in database'));
+				return Guild.create({ name: 'test' })
 			})
-			.catch(err => done('User could not be created in database'))
+			.then(guild => {
+				guildId = guild.id;
+				done();
+			})
+			.catch(err => done(err))
 		});
 
 		after(function(done) {
-			User.remove({}).then(() => {
-				Guild.remove({}).then(() => done())
+			User.remove({})
+			.then(() => {
+				return Guild.remove({})
 			})
+			.then(() => done())
+			.catch(err => done(err))
 		})
 
 		it('should deny an invalid guildId', function(done) {

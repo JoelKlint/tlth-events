@@ -25,9 +25,12 @@ describe('/events', function() {
 	});
 
 	after(function(done) {
-		Event.remove({}).then(() => {
-			Guild.remove({}).then(() => done())
+		Event.remove({})
+		.then(() => {
+			return Guild.remove({})
 		})
+		.then(() => done())
+		.catch(err => done(err))
 	});
 
 	describe('GET', function() {
@@ -141,18 +144,22 @@ describe('/events/:event_id', function() {
 				url: 'www.test.com',
 				guilds: [ guild.id ]
 			}
-			Event.create(eventParams)
-			.then(event => {
-				eventId = event._id.toString();
-				done();
-			})
+			return Event.create(eventParams)
 		})
+		.then(event => {
+			eventId = event._id.toString();
+			done();
+		})
+		.catch(err => done(err))
 	});
 
 	after(function(done) {
-		Guild.remove({}).then(() => {
-			Event.remove({}).then(() => done())
-		});
+		Guild.remove({})
+		.then(() => {
+			return Event.remove({})
+		})
+		.then(() => done())
+		.catch(err => done(err))
 	})
 
 	describe('GET', function() {
