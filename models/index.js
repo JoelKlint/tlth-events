@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import modelNames from './ModelNames';
+import * as modelNames from './ModelNames';
 
 import eventSchema from './event';
 export const Event = mongoose.model(modelNames.Event, eventSchema);

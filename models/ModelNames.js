@@ -1,7 +1,3 @@
-const modelNames = {
-	Event: 'Event',
-	Guild: 'Guild',
-	User: 'User'
-}
-
-export default modelNames;
+export const Event = 'Event';
+export const Guild = 'Guild';
+export const User = 'User';

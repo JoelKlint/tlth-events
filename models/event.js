@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
-import modelNames from './ModelNames';
+import * as modelNames from './ModelNames';
 
 const eventSchema = new Schema({
 	name: { type: String, required: [true, 'Must have a name'] },
