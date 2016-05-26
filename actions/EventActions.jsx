@@ -8,6 +8,10 @@ export const ADD_NEW_REQUEST = 'ADD_NEW_EVENT_REQUEST';
 export const ADD_NEW_SUCCESS = 'ADD_NEW_EVENT_SUCCESS';
 export const ADD_NEW_FAILURE = 'ADD_NEW_EVENT_FAILURE';
 
+export const DELETE_REQUEST = 'DELETE_EVENT_REQUEST';
+export const DELETE_SUCCESS = 'DELETE_EVENT_SUCCESS';
+export const DELETE_FAILURE = 'DELETE_EVENT_FAILURE';
+
 export const getAllEvents = () => {
 	return {
 		[CALL_API]: {
@@ -32,6 +36,16 @@ export const addNewEvent = (ImmutableEventData) => {
 				},
 				ADD_NEW_SUCCESS,
 				ADD_NEW_FAILURE]
+		}
+	}
+}
+
+export const deleteEvent = (ImmutableEventData) => {
+	return {
+		[CALL_API]: {
+			endpoint: '/api/events/' + ImmutableEventData.get('_id'),
+			method: 'DELETE',
+			types: [DELETE_REQUEST, DELETE_SUCCESS, DELETE_FAILURE]
 		}
 	}
 }

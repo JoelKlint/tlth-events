@@ -5,7 +5,7 @@ import moment from 'moment';
 import Immutable from 'immutable';
 import BigCalendar from 'react-big-calendar';
 import css from './calendar.css'
-import EventDetailView from './EventDetailView.jsx';
+import VisibleEventDetailView from './VisibleEventDetailView';
 
 export default class Calendar extends Component {
 
@@ -123,7 +123,7 @@ export default class Calendar extends Component {
 	renderCurrentEventDetails() {
 		if(!Immutable.Map.isMap(this.state.currentEvent)) return;
 		return (
-			<EventDetailView
+			<VisibleEventDetailView
 				open={this.state.showEventDetails}
 				close={this.hideEventDetails}
 				event={this.state.currentEvent}

@@ -4,6 +4,8 @@ import Dialog from 'material-ui/Dialog';
 import moment from 'moment';
 import { eventStyles, linkStyles } from '../ConstantStyles.js';
 import FontAwesome from 'react-fontawesome';
+import FlatButton from 'material-ui/FlatButton';
+import Immutable from 'immutable';
 
 const iconSize = '2x';
 const styles = {
@@ -51,7 +53,15 @@ export default class EventDetailView extends Component {
 		this.renderLocation = this.renderLocation.bind(this);
 		this.renderUrl = this.renderUrl.bind(this);
 		this.renderDescription = this.renderDescription.bind(this);
+		this.renderButtons = this.renderButtons.bind(this);
+		this.deleteAndClose = this.deleteAndClose.bind(this);
 	}
+
+	deleteAndClose() {
+		this.props.deleteEvent(this.props.event);
+		this.props.close();
+	}
+
 	render() {
 
 		return (
@@ -59,6 +69,7 @@ export default class EventDetailView extends Component {
 				open={this.props.open}
 				onRequestClose={this.props.close}
 				title={this.renderTitle()}
+				actions={this.renderButtons()}
 			>
 				<div style={styles.base}>
 					<div style={styles.content}>
@@ -83,6 +94,23 @@ export default class EventDetailView extends Component {
 				</div>
 			</Dialog>
 		)
+	}
+
+	renderButtons() {
+		const buttons = [];
+		const eventOwner = this.props.event.get('owner');
+		if(this.props.user.has('admin')) {
+			const userAdmin = this.props.user.get('admin');
+			if(Immutable.is(userAdmin, eventOwner)) {
+				buttons.push(
+					<FlatButton
+						label='Delete'
+						onTouchTap={this.deleteAndClose}
+					/>
+				);
+			}
+		}
+		return buttons;
 	}
 
 	renderTitle() {
@@ -201,8 +229,10 @@ EventDetailView.propTypes = {
 		startDate: PropTypes.string.isRequired,
 		endDate: PropTypes.string.isRequired,
 		url: PropTypes.string,
+		owner: ImmutablePropTypes.map.isRequired,
 		guilds: ImmutablePropTypes.list.isRequired
 	}).isRequired,
 	open: PropTypes.bool.isRequired,
 	close: PropTypes.func.isRequired,
+	user: ImmutablePropTypes.isRequired
 }
