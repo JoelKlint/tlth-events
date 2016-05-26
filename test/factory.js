@@ -24,6 +24,7 @@ monky.factory(modelNames.Event, {
 	description: 'test event',
 	location: 'test event',
 	url: 'www.test.event',
+	owner: monky.ref(modelNames.Guild),
 	guilds: monky.ref(modelNames.Guild)
 })
 

@@ -13,7 +13,8 @@ import cas from '../../middleware/cas';
 	 * @apiSuccess {String} location Location of the event
 	 * @apiSuccess {Date} startDate Start time of the event. ISO formatted string
 	 * @apiSuccess {Date} endDate End time of the event. ISO formatted string
-	 * @apiSuccess {String} url URL of the event
+	 * @apiSuccess {String} url URL of the event,
+	 * @apiSuccess {Object} owner The creator of the event
 	 * @apiSuccess {Object[]} guilds Guilds whom the event are for
 	 *
 	 * @apiSuccessExample {json} Success-Response:
@@ -25,10 +26,14 @@ import cas from '../../middleware/cas';
 	 * 		"location": "Dining room"
 	 * 		"startDate": "2016-05-11T13:00:00.000Z"
 	 * 		"endDate": "2016-05-11T15:00:00.000Z"
-	 * 		"url": "www.lunch.com"
+	 * 		"url": "www.lunch.com",
+	 * 		"owner": {
+	 *			"_id": "abcdefghijklmnopqrstuvwx",
+   *			"name": "Great guild"
+	 *		},
 	 * 		"guilds": [
 	 * 			{
-	 * 				"_id": "abcdefghijklmnopqrstuvwx"
+	 * 				"_id": "abcdefghijklmnopqrstuvwx",
 	 * 				"name": "Great guild"
 	 * 			}
 	 * 		]
@@ -73,7 +78,7 @@ router.route('/')
 	 */
 	.get(function(req, res, next) {
 		Event.find()
-		.populate('guilds')
+		.populate('guilds owner')
 		.then(function(events) {
 			res.json(events);
 		})
@@ -86,17 +91,26 @@ router.route('/')
 	 * @api {post} /events Create event
 	 * @apiName Create event
 	 * @apiGroup Event
+	 * @apiDescription
+	 * Create a new Event. The owner of the event will be the guild that the
+	 * user sending the request is admin of.
 	 *
 	 * @apiUse EventBodyParams
 	 * @apiUse EventSuccessResponse
 	 */
 	.post(cas.block, function(req, res, next) {
+		// Clear values which should not be retrieved from outside
+		delete req.body.owner;
+
+		const eventParams = req.body;
 		User.findOne({ username: req.session.cas_user })
 		.then(user => {
 			// Exit if user does not exist or is not admin
 			if(!user || !user.admin) {
 				next(new UnauthorizedError());
 			}
+			// Set owner of event = the guild the user is admin of
+			eventParams.owner = user.admin;
 			return Guild.find({ _id: { $in: req.body.guilds } }, '_id');
 		})
 		.then(guilds => {
@@ -104,12 +118,12 @@ router.route('/')
 			if(guilds.length < 1) {
 				next(new ParameterError('Guild does not exist'));
 			}
-			const eventParams = req.body;
+			// Set existing guilds of request
 			eventParams.guilds = guilds;
 			return Event.create(eventParams)
 		})
 		.then(event => {
-			return Event.populate(event, 'guilds')
+			return Event.populate(event, 'guilds owner')
 		})
 		.then(populatedEvent => res.json(populatedEvent))
 		.catch(err => next(err))

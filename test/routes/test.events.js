@@ -62,9 +62,11 @@ describe('/events', function() {
 		describe('authenticated', function() {
 
 			let eventParams;
+			let adminUser;
 			before(function(done) {
 				factory.create('Admin')
-				.then(adminUser => {
+				.then(admin => {
+					adminUser = admin;
 					return factory.build(modelNames.Event, { guilds: adminUser.admin })
 				})
 				.then(eventData => {
@@ -162,7 +164,17 @@ describe('/events', function() {
 						expect(res.status).to.eql(200);
 						done();
 					})
-				})
+				});
+
+				it('should automatically assign the logged in admin\'s guild as owner', function(done) {
+					superagent.post(baseUrl + '/events')
+					.send(eventParams)
+					.end((err, res) => {
+						expect(err).to.not.exist;
+						expect(res.body.owner._id).to.eql(adminUser.admin.id);
+						done();
+					})
+				});
 
 				it('should return a populated event on success', function(done) {
 					superagent.post(baseUrl + '/events')
@@ -176,6 +188,9 @@ describe('/events', function() {
 						expect(event.description).to.eql(eventParams.description);
 						expect(event.location).to.eql(eventParams.location);
 						expect(event.url).to.eql(eventParams.url);
+
+						expect(event.owner._id).to.eql(adminUser.admin.id);
+
 						expect(event.guilds.length).to.eql(eventParams.guilds.length);
 						expect(event.guilds[0]._id).to.eql(eventParams.guilds[0].id)
 						done();
