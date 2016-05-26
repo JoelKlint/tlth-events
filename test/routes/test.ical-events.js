@@ -2,47 +2,33 @@ import superagent from 'superagent';
 import { expect } from 'chai';
 import { Guild, Event } from '../../models';
 import baseUrl from './index';
+import factory from '../factory';
+import * as modelNames from '../../models/modelNames';
+import { clearDb } from '../testHelper';
 
 describe('/ical-events', function() {
 
 	describe('GET', function() {
 
-		let createdGuild;
-		let createdEvent
-
+		let guildName;
+		let existingEvent;
 		before(function(done) {
-			Guild.create({ name: 'test' })
-			.then(guild => {
-				createdGuild = guild;
-				const eventParams = {
-					name: 'test',
-					location: 'test',
-					startDate: new Date(),
-					endDate: new Date(),
-					description: 'test',
-					url: 'www.test.com',
-					guilds: [ guild._id ]
-				}
-				return Event.create(eventParams);
-			})
+			factory.create(modelNames.Event)
 			.then(event => {
-				createdEvent = event;
-				done();
+				guildName = event.guilds[0].name
+				existingEvent = event;
+				done()
 			})
-			.catch(err => done(err))
-		})
+			.catch(err => done(err));
+		});
 
 		after(function(done) {
-			Event.remove({})
-			.then(() => {
-				return Guild.remove({})
-			})
-			.then(() => done())
-			.catch(err => done(err))
+			clearDb(done);
 		})
 
+
 		it('should return an ical feed', function(done) {
-			superagent.get(baseUrl + '/ical-events?guild=' + createdGuild.name)
+			superagent.get(baseUrl + '/ical-events?guild=' + guildName)
 			.end((err, res) => {
 				expect(err).to.not.exist;
 				expect(res.type).to.eql('text/calendar');
@@ -52,7 +38,7 @@ describe('/ical-events', function() {
 		});
 
 		it('should allow quering for one guild', function(done) {
-			superagent.get(baseUrl + '/ical-events?guild=' + createdGuild.name)
+			superagent.get(baseUrl + '/ical-events?guild=' + guildName)
 			.end((err, res) => {
 				expect(err).to.not.exist;
 				done();
@@ -60,7 +46,7 @@ describe('/ical-events', function() {
 		});
 
 		it('should allow quering for multiple guilds', function(done) {
-			superagent.get(baseUrl + '/ical-events?guild=R&guild=' + createdGuild.name)
+			superagent.get(baseUrl + '/ical-events?guild=R&guild=' + guildName)
 			.end((err, res) => {
 				expect(err).to.not.exist;
 				done();
@@ -78,10 +64,10 @@ describe('/ical-events', function() {
 		it('should return all events if no guild is specified');
 
 		it('should put url in description', function(done) {
-			superagent.get(baseUrl + '/ical-events?guild=' + createdGuild.name)
+			superagent.get(baseUrl + '/ical-events?guild=' + guildName)
 			.end((err, res) => {
 				expect(err).to.not.exist;
-				expect(res.text).to.contain('DESCRIPTION:' + createdEvent.url);
+				expect(res.text).to.contain('DESCRIPTION:' + existingEvent.url);
 				done();
 			})
 		});

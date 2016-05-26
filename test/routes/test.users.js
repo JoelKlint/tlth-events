@@ -2,6 +2,9 @@ import superagent from 'superagent';
 import { expect } from 'chai';
 import { User, Guild } from '../../models';
 import baseUrl from './index';
+import factory from '../factory';
+import * as modelNames from '../../models/modelNames';
+import { clearDb } from '../testHelper';
 
 describe('/users', function() {
 
@@ -9,29 +12,21 @@ describe('/users', function() {
 
 		let userId;
 		let guildId;
-		/**
-		 * Store a user in database before tests
-		 */
 		before(function(done) {
-			User.create({ username: 'test' })
+			factory.create(modelNames.User)
 			.then(user => {
 				userId = user.id;
-				return Guild.create({ name: 'test' })
+				return factory.create(modelNames.Guild);
 			})
 			.then(guild => {
 				guildId = guild.id;
 				done();
 			})
-			.catch(err => done(err))
-		});
+			.catch(err => done(err));
+		})
 
 		after(function(done) {
-			User.remove({})
-			.then(() => {
-				return Guild.remove({})
-			})
-			.then(() => done())
-			.catch(err => done(err))
+			clearDb(done);
 		})
 
 		it('should deny an invalid guildId', function(done) {
