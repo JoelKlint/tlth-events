@@ -1,10 +1,9 @@
-var router = require('express').Router();
+import { Router } from 'express';
+const router = Router();
 import { Event, Guild } from '../../../models';
-var VCalendar = require('cozy-ical').VCalendar;
-var VEvent = require('cozy-ical').VEvent;
-var conf = require('../../config/config.json');
+import { VCalendar, VEvent } from 'cozy-ical';
 import ParameterError from '../../config/ParameterError';
-var moment = require('moment');
+import moment from 'moment';
 
 // Gets all events for any of the specified guilds
 // Guilds are specified via URL parameters
@@ -36,7 +35,7 @@ router.get('/', function(req, res, next) {
 		}
 
 		Event.find({ guilds: { $in: guilds } }).then(function(events) {
-			var org = conf.organization;
+			var org = 'Cal';
 			var cal = new VCalendar( {
 				organization: org,
 				title: org + 'Calendar'
@@ -71,4 +70,4 @@ router.get('/', function(req, res, next) {
 	})
 });
 
-module.exports = router;
+export default router;

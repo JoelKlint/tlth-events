@@ -1,28 +1,42 @@
-var router = require('express').Router();
+import { Router } from 'express';
+const router = Router();
 import { Guild, User } from '../../../models';
 import cas from '../../middleware/cas';
 import ParameterError from '../../config/ParameterError';
 
-router.route('/')
-	.get((req, res, next) => {
-		User.find()
-		.populate('admin')
-		.then((users) => res.json(users) )
-		.catch((error) => {	return next(err) });
-	})
-
-	.post((req, res, next) => {
-		User.create(req.body)
-		.then((user) => res.json(user))
-		.catch((err) => { return next(err) });
-	});
+/**
+ * @api {get} /api/users Get all users
+ * @apiName Get all users
+ * @apiGroup User
+ * @apiDescription
+ * Get a list of all users
+ */
+router.get('/', (req, res, next) => {
+	User.find()
+	.populate('admin')
+	.then((users) => res.json(users) )
+	.catch((error) => {	return next(err) });
+});
 
 /**
- * @api {post} /api/user/admin/:user_id Make user admin
+ * @api {post} /api/users Create user
+ * @apiName Create user
+ * @apiGroup User
+ * @apiDescription
+ * Create a new user
+ */
+router.post('/', (req, res, next) => {
+	User.create(req.body)
+	.then((user) => res.json(user))
+	.catch((err) => { return next(err) });
+});
+
+/**
+ * @api {post} /api/users/admin/:user_id Make user admin
  * @apiName Make user admin
  * @apiGroup User
- * @apiParam {String} guildId The guild user should be admin of
- * @apiSuccess {Object} user The updated user object
+ * @apiDescription
+ * Make an existing user admin
  */
 router.post('/admin/:user_id', (req, res, next) => {
 	const guildId = req.body.guildId;
