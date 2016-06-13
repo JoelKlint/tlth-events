@@ -1,23 +1,20 @@
 import superagent from 'superagent';
 import { expect } from 'chai';
-import { Guild } from '../../models';
 import baseUrl from './index';
-import factory from '../factory';
-import * as modelNames from '../../models/modelNames';
-import { clearDb } from '../testHelper';
+import * as testHelper from '../testHelper';
 
 describe('/guilds', function() {
 
 	describe('GET', function() {
 
 		before(function(done) {
-			factory.create(modelNames.Guild)
-			.then(guild => done())
-			.catch(err => done(err));
+			testHelper.createSavedGuild()
+			.then( done() )
+			.catch(err => done(err))
 		})
 
 		after(function(done) {
-			clearDb(done);
+			testHelper.clearDb(done);
 		})
 
 		it('should return an json array of guilds', function(done) {
@@ -37,25 +34,19 @@ describe('/guilds', function() {
 	describe('POST', function() {
 
 		let guildParams;
-		before(function(done) {
-			factory.build(modelNames.Guild)
-			.then(guildParams => {
-				delete guildParams._id
-				guildParams = guildParams;
-				done();
-			})
-			.catch(err => done(err))
+		beforeEach(function(done) {
+			guildParams = testHelper.generateGuildData();
+			done();
 		})
 
 		after(function(done) {
-			clearDb(done);
+			testHelper.clearDb(done);
 		})
 
 		it('should require a name', function(done) {
-			const params = Object.assign({}, guildParams);
-			delete params.name;
+			delete guildParams.name;
 			superagent.post(baseUrl + '/guilds')
-			.send(params)
+			.send(guildParams)
 			.end((err, res) => {
 				expect(err.status).to.eql(400);
 				done();
@@ -64,10 +55,10 @@ describe('/guilds', function() {
 
 		it('should return the created guild given valid parameters', function(done) {
 			superagent.post(baseUrl + '/guilds')
-			.send({ name: 'uniqueName' })
+			.send(guildParams)
 			.end((err, res) => {
 				expect(res.status).to.eql(200);
-				// TEST IF THE GUILD WAS RETURNED HERE!!
+				expect(res.body.name).to.eql(guildParams.name)
 				done();
 			})
 		});
@@ -76,21 +67,21 @@ describe('/guilds', function() {
 
 			let existingGuild;
 			before(function(done) {
-				factory.create(modelNames.Guild)
+				testHelper.createSavedGuild()
 				.then(guild => {
 					existingGuild = guild;
 					done();
 				})
-				.catch(err => done(err));
+				.catch(err => done(err))
 			})
 
 			after(function(done) {
-				clearDb(done);
+				testHelper.clearDb(done);
 			})
 
 			it('should not allow an already existing name', function(done) {
 				superagent.post(baseUrl + '/guilds')
-				.send(guildParams)
+				.send(existingGuild)
 				.end((err, res) => {
 					expect(err).to.exist;
 					done();
@@ -107,22 +98,23 @@ describe('/guilds/:guild_id', function() {
 
 	describe('GET', function() {
 
-		let guildId;
+		let existingGuild;
 		before(function(done) {
-			factory.create(modelNames.Guild)
-			.then(guild => {
-				guildId = guild.id;
+			testHelper.createSavedGuild()
+			.then(createdGuild => {
+				existingGuild = createdGuild;
 				done();
 			})
-			.catch(err => done(err));
+			.catch(err => done(err))
 		})
 
 		after(function(done) {
-			clearDb(done);
+			testHelper.clearDb(done);
 		})
 
 		it('should not accept nonexisting guilds', function(done) {
-			superagent.get(baseUrl + '/guilds/' + 'invalidID' )
+			const invalidId = testHelper.generateFakeDbId();
+			superagent.get(baseUrl + '/guilds/' + invalidId )
 			.end((err, res) => {
 				expect(err.status).to.eql(400);
 				done();
@@ -130,10 +122,10 @@ describe('/guilds/:guild_id', function() {
 		});
 
 		it('should return the specified guild', function(done) {
-			superagent.get(baseUrl + '/guilds/' + guildId)
+			superagent.get(baseUrl + '/guilds/' + existingGuild.id)
 			.end((err, res) => {
 				expect(err).not.to.exist;
-				expect(res.body._id).to.eql(guildId);
+				expect(res.body._id).to.eql(existingGuild.id);
 				done();
 			})
 		});
@@ -142,37 +134,39 @@ describe('/guilds/:guild_id', function() {
 
 	describe('PUT', function() {
 
-		let guildId;
+		let guild;
 		let newParams;
 		before(function(done) {
-			newParams = { name: 'new' }
-			factory.create(modelNames.Guild)
-			.then(guild => {
-				guildId = guild.id;
+			testHelper.createSavedGuild()
+			.then(createdGuild => {
+				guild = createdGuild;
+				newParams = testHelper.generateGuildData();
 				done();
 			})
-			.catch(err => done(err));
+			.catch(err => done(err))
 		})
 
 		after(function(done) {
-			clearDb(done);
+			testHelper.clearDb(done);
 		})
 
 		it('should reject an invalid id', function(done) {
-			superagent.put(baseUrl + '/guilds/' + 'invalidGuildId')
-			// .send(guildParams)
+			const invalidId = testHelper.generateFakeDbId();
+			superagent.put(baseUrl + '/guilds/' + invalidId)
+			.send(newParams)
 			.end((err, res) => {
+				expect(err).to.exist;
 				expect(err.status).to.eql(400);
 				done();
 			})
 		});
 
 		it('should change the specified guild', function(done) {
-			superagent.put(baseUrl + '/guilds/' + guildId)
+			superagent.put(baseUrl + '/guilds/' + guild.id)
 			.send(newParams)
 			.end((err, res) => {
 				expect(err).to.not.exist;
-				expect(res.body._id).to.eql(guildId);
+				expect(res.body._id).to.eql(guild.id);
 				expect(res.body.name).to.eql(newParams.name);
 				done();
 			})
@@ -184,21 +178,23 @@ describe('/guilds/:guild_id', function() {
 
 		let existingGuild;
 		beforeEach(function(done) {
-			factory.create(modelNames.Guild)
+			testHelper.createSavedGuild()
 			.then(guild => {
 				existingGuild = guild;
 				done();
 			})
-			.catch(err => done(err));
+			.catch(err => done(err))
 		})
 
 		after(function(done) {
-			clearDb(done);
+			testHelper.clearDb(done);
 		})
 
 		it('should not accept nonexisting guilds', function(done) {
-			superagent.del(baseUrl + '/guilds/' + 'invalidGuildId' )
+			const invalidId = testHelper.generateFakeDbId();
+			superagent.del(baseUrl + '/guilds/' + invalidId )
 			.end((err, res) => {
+				expect(err).to.exist;
 				expect(err.status).to.eql(400);
 				done();
 			})

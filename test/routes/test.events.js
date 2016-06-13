@@ -1,24 +1,22 @@
 import superagent from 'superagent';
-import { expect } from 'chai';
-import { User, Guild, Event } from '../../models';
+import { expect, assert } from 'chai';
 import baseUrl from './index';
 import moment from 'moment';
-import factory from '../factory';
-import * as modelNames from '../../models/modelNames';
-import { clearDb } from '../testHelper';
+import * as testHelper from '../testHelper';
+import _ from 'underscore';
 
 describe('/events', function() {
 
 	describe('GET', function() {
 
 		before(function(done) {
-			factory.create(modelNames.Event)
+			testHelper.createSavedEvent()
 			.then(event => done())
-			.catch(err => done(err));
+			.catch(err => done(err))
 		})
 
 		after(function(done) {
-			clearDb(done);
+			testHelper.clearDb(done);
 		})
 
 		it('should return an json array', function(done) {
@@ -38,18 +36,18 @@ describe('/events', function() {
 		describe('unauthenticated', function() {
 
 			before(function(done) {
-				factory.create(modelNames.User)
+				testHelper.createSavedUser()
 				.then(user => done())
-				.catch(err => done(err));
+				.catch(err => done(err))
 			})
 
 			after(function(done) {
-				clearDb(done);
+				testHelper.clearDb(done);
 			})
 
 			it('should require an admin to be logged in', function(done) {
 				superagent.post(baseUrl + '/events')
-				.send({ test: 'test' })
+				.send()
 				.end((err, res) => {
 					expect(err).to.exist;
 					expect(err.status).to.eql(401);
@@ -61,29 +59,34 @@ describe('/events', function() {
 
 		describe('authenticated', function() {
 
-			let eventParams;
-			let adminUser;
+			let admin;
+			let guild;
 			before(function(done) {
-				factory.create('Admin')
-				.then(admin => {
-					adminUser = admin;
-					return factory.build(modelNames.Event, { guilds: adminUser.admin })
+				testHelper.createSavedAdmin()
+				.then(savedAdmin => {
+					admin = savedAdmin;
+					return testHelper.createSavedGuild()
 				})
-				.then(eventData => {
-					delete eventData._id
-					eventParams = eventData;
-					done();
+				.then(savedGuild => {
+					guild = savedGuild
+					done()
 				})
 				.catch(err => done(err))
 			})
 
+			let eventData;
+			beforeEach(function(done) {
+				let event = testHelper.generateEventData(admin.admin, [ guild.id ]);
+				eventData = event;
+				done()
+			})
+
 			after(function(done) {
-				clearDb(done);
+				testHelper.clearDb(done);
 			})
 
 			it('should require a name', function(done) {
-				let params = Object.assign({}, eventParams);
-				delete params.name;
+				let params = _.omit(eventData, 'name');
 				superagent.post(baseUrl + '/events')
 				.send(params)
 				.end((err, res) => {
@@ -94,8 +97,7 @@ describe('/events', function() {
 			});
 
 			it('should require a start date', function(done) {
-				let params = Object.assign({}, eventParams);
-				delete params.startDate;
+				let params = _.omit(eventData, 'startDate');
 				superagent.post(baseUrl + '/events')
 				.send(params)
 				.end((err, res) => {
@@ -106,8 +108,7 @@ describe('/events', function() {
 			});
 
 			it('should require an end date', function(done) {
-				let params = Object.assign({}, eventParams);
-				delete params.endDate;
+				let params = _.omit(eventData, 'endDate');
 				superagent.post(baseUrl + '/events')
 				.send(params)
 				.end((err, res) => {
@@ -120,8 +121,7 @@ describe('/events', function() {
 			it('should require the end date to be after the start date');
 
 			it('should require atleast one guild', function(done) {
-				let params = Object.assign({}, eventParams)
-				delete params.guilds;
+				let params = _.omit(eventData, 'guilds');
 				params.guilds = [];
 				superagent.post(baseUrl + '/events')
 				.send(params)
@@ -133,12 +133,9 @@ describe('/events', function() {
 			});
 
 			it('should only accept existing guilds', function(done) {
-				let params = Object.assign({}, eventParams)
-				delete params.guilds;
-				factory.build(modelNames.Guild)
-				.then(guild => {
-					params.guilds = [ factory.build(modelNames.Guild) ]
-				})
+				let params = _.omit(eventData, 'guilds');
+				const fakeId = testHelper.generateFakeDbId();
+				params.guilds = [ fakeId ]
 				superagent.post(baseUrl + '/events')
 				.send(params)
 				.end((err, res) => {
@@ -148,17 +145,35 @@ describe('/events', function() {
 				});
 			});
 
+			it.skip('should require the admin\'s guild in the request', function(done) {
+				let params = _.omit(eventData, 'guilds');
+				testHelper.createSavedGuild()
+				.then(guild => {
+					params.guilds = [ guild.id ]
+					superagent.post(baseUrl + '/events')
+					.send(params)
+					.end((err, res) => {
+						expect(err).to.exist;
+						expect(err.status).to.eql(400)
+						done()
+					})
+				})
+				.catch(err => done(err))
+			})
+
 			describe('on success', function(done) {
 
+				beforeEach(function(done) {
+					testHelper.removeAllEventsFromDb(done)
+				})
+
 				afterEach(function(done) {
-					Event.remove()
-					.then(() => done())
-					.catch(err => done(err))
+					testHelper.removeAllEventsFromDb(done)
 				})
 
 				it('should be successful given valid parameters', function(done) {
 					superagent.post(baseUrl + '/events')
-					.send(eventParams)
+					.send(eventData)
 					.end((err, res) => {
 						expect(err).to.not.exist;
 						expect(res.status).to.eql(200);
@@ -168,31 +183,29 @@ describe('/events', function() {
 
 				it('should automatically assign the logged in admin\'s guild as owner', function(done) {
 					superagent.post(baseUrl + '/events')
-					.send(eventParams)
+					.send(eventData)
 					.end((err, res) => {
 						expect(err).to.not.exist;
-						expect(res.body.owner._id).to.eql(adminUser.admin.id);
+						assert.equal(res.body.owner._id, eventData.owner)
 						done();
 					})
 				});
 
 				it('should return a populated event on success', function(done) {
 					superagent.post(baseUrl + '/events')
-					.send(eventParams)
+					.send(eventData)
 					.end((err, res) => {
 						expect(err).to.not.exist;
 						const event = res.body;
-						expect(event.name).to.eql(eventParams.name);
-						expect(event.startDate).to.eql(eventParams.startDate.toISOString());
-						expect(event.endDate).to.eql(eventParams.endDate.toISOString());
-						expect(event.description).to.eql(eventParams.description);
-						expect(event.location).to.eql(eventParams.location);
-						expect(event.url).to.eql(eventParams.url);
-
-						expect(event.owner._id).to.eql(adminUser.admin.id);
-
-						expect(event.guilds.length).to.eql(eventParams.guilds.length);
-						expect(event.guilds[0]._id).to.eql(eventParams.guilds[0].id)
+						assert.equal(event.name, eventData.name);
+						assert.equal(event.startDate, eventData.startDate);
+						assert.equal(event.endDate, eventData.endDate);
+						assert.equal(event.description, eventData.description);
+						assert.equal(event.location, eventData.location);
+						assert.equal(event.url, eventData.url);
+						assert.equal(res.body.owner._id, eventData.owner	);
+						assert.equal(event.guilds.length, eventData.guilds.length);
+						assert.equal(event.guilds[0]._id, eventData.guilds[0])
 						done();
 					})
 				})
@@ -221,16 +234,16 @@ describe('/events/:event_id', function() {
 
 			let eventId;
 			before(function(done) {
-				factory.create(modelNames.Event)
+				testHelper.createSavedEvent()
 				.then(event => {
 					eventId = event.id
-					done();
+					done()
 				})
 				.catch(err => done(err))
 			})
 
 			after(function(done) {
-				clearDb(done);
+				testHelper.clearDb(done);
 			})
 
 			it('should return the specified event', function(done) {
@@ -279,16 +292,16 @@ describe('/events/:event_id', function() {
 
 			let eventId;
 			beforeEach(function(done) {
-				factory.create(modelNames.Event)
+				testHelper.createSavedEvent()
 				.then(event => {
-					eventId = event.id;
-					done()
+					eventId = event.id
+					done();
 				})
 				.catch(err => done(err))
 			})
 
 			after(function(done) {
-				clearDb(done);
+				testHelper.clearDb(done);
 			})
 
 			it('should remove the specified event', function(done) {
@@ -300,8 +313,6 @@ describe('/events/:event_id', function() {
 				})
 			});
 		})
-
-
 
 	});
 
