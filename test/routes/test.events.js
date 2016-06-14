@@ -59,23 +59,22 @@ describe('/events', function() {
 		describe('authenticated', function() {
 
 			let admin;
-			let guild;
 			before(function(done) {
 				testHelper.createSavedAdmin()
 				.then(savedAdmin => {
-					admin = savedAdmin;
-					return testHelper.createSavedGuild()
+					return savedAdmin.populate('admin').execPopulate()
 				})
-				.then(savedGuild => {
-					guild = savedGuild
-					done()
+				.then(populatedAdmin => {
+					admin = populatedAdmin;
+					done();
 				})
 				.catch(err => done(err))
 			})
 
 			let eventData;
 			beforeEach(function(done) {
-				let event = testHelper.generateEventData(admin.admin, [ guild.id ]);
+				const existingGuildId = admin.admin.id
+				let event = testHelper.generateEventData(existingGuildId, [ existingGuildId ]);
 				eventData = event;
 				done()
 			})
@@ -144,7 +143,7 @@ describe('/events', function() {
 				});
 			});
 
-			it.skip('should require the admin\'s guild in the request', function(done) {
+			it('should require the admin\'s guild in the request', function(done) {
 				delete eventData.guilds
 				testHelper.createSavedGuild()
 				.then(guild => {

@@ -38,20 +38,25 @@ router.post('/', cas.block, function(req, res, next) {
 	const eventParams = req.body;
 	User.findOne({ username: req.session.cas_user })
 	.then(user => {
-		// Exit if user does not exist or is not admin
+		// Validate event is created by admin
 		if(!user || !user.admin) {
 			next(new UnauthorizedError());
 		}
-		// Set owner of event = the guild the user is admin of
 		eventParams.owner = user.admin;
 		return Guild.find({ _id: { $in: req.body.guilds } }, '_id');
 	})
 	.then(guilds => {
-		// Exit if no given guild exists
+		// Validate event is created for existing guilds
 		if(guilds.length < 1) {
 			next(new ParameterError('Guild does not exist'));
 		}
-		// Set existing guilds of request
+		// Validate event is created for the admin's guild
+		const areAdminedByUser = (guild) => {
+			return eventParams.owner == guild.id ? true : false
+		}
+		if(!guilds.some(areAdminedByUser)) {
+			next(new ParameterError('You must create an event for your own guild'))
+		}
 		eventParams.guilds = guilds;
 		return Event.create(eventParams)
 	})
