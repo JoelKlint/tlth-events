@@ -3,7 +3,6 @@ import { expect, assert } from 'chai';
 import baseUrl from './index';
 import moment from 'moment';
 import * as testHelper from '../testHelper';
-import _ from 'underscore';
 
 describe('/events', function() {
 
@@ -86,9 +85,9 @@ describe('/events', function() {
 			})
 
 			it('should require a name', function(done) {
-				let params = _.omit(eventData, 'name');
+				delete eventData.name;
 				superagent.post(baseUrl + '/events')
-				.send(params)
+				.send(eventData)
 				.end((err, res) => {
 					expect(err).to.exist;
 					expect(err.status).to.eql(400);
@@ -97,9 +96,9 @@ describe('/events', function() {
 			});
 
 			it('should require a start date', function(done) {
-				let params = _.omit(eventData, 'startDate');
+				delete eventData.startDate
 				superagent.post(baseUrl + '/events')
-				.send(params)
+				.send(eventData)
 				.end((err, res) => {
 					expect(err).to.exist;
 					expect(err.status).to.eql(400);
@@ -108,9 +107,9 @@ describe('/events', function() {
 			});
 
 			it('should require an end date', function(done) {
-				let params = _.omit(eventData, 'endDate');
+				delete eventData.endDate
 				superagent.post(baseUrl + '/events')
-				.send(params)
+				.send(eventData)
 				.end((err, res) => {
 					expect(err).to.exist;
 					expect(err.status).to.eql(400);
@@ -121,10 +120,10 @@ describe('/events', function() {
 			it('should require the end date to be after the start date');
 
 			it('should require atleast one guild', function(done) {
-				let params = _.omit(eventData, 'guilds');
-				params.guilds = [];
+				delete eventData.guilds
+				eventData.guilds = [];
 				superagent.post(baseUrl + '/events')
-				.send(params)
+				.send(eventData)
 				.end((err, res) => {
 					expect(err).to.exist;
 					expect(err.status).to.eql(400);
@@ -133,11 +132,11 @@ describe('/events', function() {
 			});
 
 			it('should only accept existing guilds', function(done) {
-				let params = _.omit(eventData, 'guilds');
+				delete eventData.guilds
 				const fakeId = testHelper.generateFakeDbId();
-				params.guilds = [ fakeId ]
+				eventData.guilds = [ fakeId ]
 				superagent.post(baseUrl + '/events')
-				.send(params)
+				.send(eventData)
 				.end((err, res) => {
 					expect(err).to.exist;
 					expect(err.status).to.eql(400);
@@ -146,12 +145,12 @@ describe('/events', function() {
 			});
 
 			it.skip('should require the admin\'s guild in the request', function(done) {
-				let params = _.omit(eventData, 'guilds');
+				delete eventData.guilds
 				testHelper.createSavedGuild()
 				.then(guild => {
-					params.guilds = [ guild.id ]
+					eventData.guilds = [ guild.id ]
 					superagent.post(baseUrl + '/events')
-					.send(params)
+					.send(eventData)
 					.end((err, res) => {
 						expect(err).to.exist;
 						expect(err.status).to.eql(400)
