@@ -1,5 +1,3 @@
-import winston from 'winston'
-
 import { GET_ALL_REQUEST, GET_ALL_SUCCESS, GET_ALL_FAILURE } from '../../actions/EventActions.jsx';
 import { ADD_NEW_REQUEST, ADD_NEW_SUCCESS, ADD_NEW_FAILURE } from '../../actions/EventActions.jsx';
 import { DELETE_REQUEST, DELETE_SUCCESS, DELETE_FAILURE } from '../../actions/EventActions.jsx';
@@ -43,7 +41,7 @@ export const events = (state = initialState, action) => {
 		}
 
 		case DELETE_FAILURE: {
-			winston.log('Delete failure, this must be handled');
+			// This must be handled
 			return state;
 		}
 

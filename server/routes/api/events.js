@@ -36,11 +36,12 @@ router.post('/', cas.block, function(req, res, next) {
 	delete req.body.owner;
 
 	const eventParams = req.body;
+
 	User.findOne({ username: req.session.cas_user })
 	.then(user => {
 		// Validate event is created by admin
 		if(!user || !user.admin) {
-			next(new UnauthorizedError());
+			return next(new UnauthorizedError());
 		}
 		eventParams.owner = user.admin;
 		return Guild.find({ _id: { $in: req.body.guilds } }, '_id');
@@ -48,15 +49,17 @@ router.post('/', cas.block, function(req, res, next) {
 	.then(guilds => {
 		// Validate event is created for existing guilds
 		if(guilds.length < 1) {
-			next(new ParameterError('Guild does not exist'));
+			return next(new ParameterError('Guild does not exist'));
 		}
+
 		// Validate event is created for the admin's guild
 		const areAdminedByUser = (guild) => {
 			return eventParams.owner == guild.id ? true : false
 		}
 		if(!guilds.some(areAdminedByUser)) {
-			next(new ParameterError('You must create an event for your own guild'))
+			return next(new ParameterError('You must create an event for your own guild'));
 		}
+
 		eventParams.guilds = guilds;
 		return Event.create(eventParams)
 	})
@@ -64,7 +67,9 @@ router.post('/', cas.block, function(req, res, next) {
 		return Event.populate(event, 'guilds owner')
 	})
 	.then(populatedEvent => res.json(populatedEvent))
-	.catch(err => next(err))
+	.catch(err => {
+		return next(err)
+	})
 });
 
 /**
