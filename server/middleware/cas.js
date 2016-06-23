@@ -6,7 +6,7 @@ import { admin } from '../../test/mockData'
 const devUser = admin().username;
 
 // Configure authentication depending on environment
-const devMode = NODE_ENV === 'test' || 'development' ? true : false;
+const devMode = NODE_ENV === ('test' || 'development') ? true : false;
 
 const cas = new CASAuthentication({
     cas_url     : 'https://cas.lu.se/cas',

@@ -127,7 +127,7 @@ export default class AddEventDialog extends Component {
 		const startDate = data.has('startDate') && data.has('startTime');
 		const endDate = data.has('endDate') && data.has('endTime');
 		const guilds = data.get('guilds').some((guild) => {
-			return guild.get('_id') == this.props.user.get('admin')._id
+			return guild.get('_id') == this.props.user.get('admin').get('_id')
 		})
 		return name && startDate && endDate && guilds;
 	}

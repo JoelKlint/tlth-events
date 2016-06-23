@@ -11,7 +11,7 @@
     "start": "export NODE_ENV=production && node index.js",
     "dev-client": "export NODE_ENV=development && webpack-dev-server --config webpack.dev.config.js",
     "dev-server": "export NODE_ENV=development && node index.js",
-    "build": "webpack --config webpack.build.config.js",
+    "build": "export NODE_ENV=production && webpack --config webpack.build.config.js",
     "doc": "apidoc -i server/ -o doc/"
   },
   "keywords": [],
