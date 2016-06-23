@@ -5,7 +5,7 @@ import SideBar from './SideBar.jsx';
 import moment from 'moment';
 import Immutable, { Map, List } from 'immutable';
 import TopBar from './TopBar.jsx';
-import AddEventDialog from './AddEventDialog.jsx';
+import AddEventDialogContainer from './AddEventDialogContainer.jsx'
 
 export default class App extends React.Component {
 
@@ -72,11 +72,9 @@ export default class App extends React.Component {
 					/>
 				</div>
 
-				<AddEventDialog
+				<AddEventDialogContainer
 					open={this.state.addEventWindowOpen}
 					close={this.closeEventEditor}
-					guilds={this.props.guilds}
-					addNewEvent={this.props.addNewEvent}
 				/>
 
 			</div>

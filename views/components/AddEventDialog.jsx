@@ -126,7 +126,9 @@ export default class AddEventDialog extends Component {
 		const name = data.has('name');
 		const startDate = data.has('startDate') && data.has('startTime');
 		const endDate = data.has('endDate') && data.has('endTime');
-		const guilds = data.get('guilds').size > 0;
+		const guilds = data.get('guilds').some((guild) => {
+			return guild.get('_id') == this.props.user.get('admin')._id
+		})
 		return name && startDate && endDate && guilds;
 	}
 
@@ -275,5 +277,6 @@ AddEventDialog.propTypes = {
 	guilds: ImmutablePropTypes.set.isRequired,
 	open: PropTypes.bool.isRequired,
 	close: PropTypes.func.isRequired,
-	addNewEvent: PropTypes.func.isRequired
+	addNewEvent: PropTypes.func.isRequired,
+	user: ImmutablePropTypes.map.isRequired
 }
