@@ -234,5 +234,5 @@ EventDetailView.propTypes = {
 	}).isRequired,
 	open: PropTypes.bool.isRequired,
 	close: PropTypes.func.isRequired,
-	user: ImmutablePropTypes.isRequired
+	user: ImmutablePropTypes.map.isRequired
 }
