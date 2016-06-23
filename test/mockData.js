@@ -19,7 +19,7 @@ export const fakeDbId = () => {
 /**
  * Defines mockdata for an admin user
  */
-export const admin = (guildId) => {
+export const admin = (guildId = fakeDbId()) => {
 	return {
 		username: 'testuser',
 		admin: guildId
