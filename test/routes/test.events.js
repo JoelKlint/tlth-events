@@ -116,7 +116,17 @@ describe('/events', function() {
 				});
 			});
 
-			it('should require the end date to be after the start date');
+			it('should require the end date to be after the start date', () => {
+        const startDate = eventData.startDate
+        eventData.startDate = eventData.endDate
+        eventData.endDate = startDate
+        superagent.post(baseUrl + '/events')
+        .send(eventData)
+        .end((err, res) => {
+          expect(err).to.exist
+          expect(err.status).to.eql(400)
+        })
+      });
 
 			it('should require atleast one guild', function(done) {
 				delete eventData.guilds

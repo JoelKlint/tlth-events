@@ -31,22 +31,26 @@ router.get('/', function(req, res, next) {
  * Create a new Event. The owner of the event will be the guild that the
  * user sending the request is admin of. Required admin login
  */
-router.post('/', cas.block, function(req, res, next) {
-	// Clear values which should not be retrieved from outside
-	delete req.body.owner;
+router.post('/', cas.block, cas.attachUser, function(req, res, next) {
+  // Clear values which should not be set from outside
+  delete req.body.owner;
 
-	const eventParams = req.body;
+  // Create object for building parameters for the new event
+  const eventParams = req.body;
 
-	User.findOne({ username: req.session.cas_user })
-	.then(user => {
-		// Validate event is created by admin
-		if(!user || !user.admin) {
-			return next(new UnauthorizedError());
-		}
-		eventParams.owner = user.admin;
-		return Guild.find({ _id: { $in: req.body.guilds } }, '_id');
-	})
+  // Validate user is admin
+  if(!req.user || !req.user.admin) { return next(new UnauthorizedError()) }
+  else { eventParams.owner = req.user.admin }
+
+  // Validate endDate is later than startDate
+  if(eventParams.endDate <= eventParams.startDate) {
+    return next(new ParameterError('End date must be after startDate'))
+  }
+
+  // Validate guilds
+  Guild.find({ _id: { $in: req.body.guilds } }, '_id')
 	.then(guilds => {
+
 		// Validate event is created for existing guilds
 		if(guilds.length < 1) {
 			return next(new ParameterError('Guild does not exist'));
@@ -59,8 +63,9 @@ router.post('/', cas.block, function(req, res, next) {
 		if(!guilds.some(areAdminedByUser)) {
 			return next(new ParameterError('You must create an event for your own guild'));
 		}
-
 		eventParams.guilds = guilds;
+
+    // Create the new event
 		return Event.create(eventParams)
 	})
 	.then(event => {
