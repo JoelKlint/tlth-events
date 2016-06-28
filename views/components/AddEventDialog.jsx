@@ -121,16 +121,34 @@ export default class AddEventDialog extends Component {
 		this.props.addNewEvent(event);
 	}
 
-	areRequiredFieldsFilled() {
-		const data = this.state.event;
-		const name = data.has('name');
-		const startDate = data.has('startDate') && data.has('startTime');
-		const endDate = data.has('endDate') && data.has('endTime');
-		const guilds = data.get('guilds').some((guild) => {
-			return guild.get('_id') == this.props.user.get('admin').get('_id')
-		})
-		return name && startDate && endDate && guilds;
-	}
+  areRequiredFieldsFilled() {
+    const data = this.state.event;
+
+    // Validate title
+    const name = data.has('name');
+
+    // Validate times
+    let dates = false
+    if(data.has('startDate') && data.has('startTime') && data.has('endDate') && data.has('endTime')) {
+      const startTime = moment(data.get('startTime'))
+      const startDate = moment(data.get('startDate'))
+      startDate.add(startTime.hours(), 'hours')
+      startDate.add(startTime.minutes(), 'minutes')
+
+      const endTime = moment(data.get('endTime'))
+      const endDate = moment(data.get('endDate'))
+      endDate.add(endTime.hours(), 'hours')
+      endDate.add(endTime.minutes(), 'minutes')
+
+      if(startDate < endDate) { dates = true }
+    }
+
+    // Validate guilds
+    const guilds = data.get('guilds').some((guild) => {
+      return guild.get('_id') == this.props.user.get('admin').get('_id')
+    })
+    return name && dates && guilds;
+  }
 
 	clearAllFields() {
 		this.setState({ event: Map({ guilds: Set() }) });
