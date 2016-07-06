@@ -55,6 +55,7 @@ export default class EventDetailView extends Component {
 		this.renderDescription = this.renderDescription.bind(this);
 		this.renderButtons = this.renderButtons.bind(this);
 		this.deleteAndClose = this.deleteAndClose.bind(this);
+    this.handleEditEventClick = this.handleEditEventClick.bind(this);
 	}
 
 	deleteAndClose() {
@@ -62,8 +63,12 @@ export default class EventDetailView extends Component {
 		this.props.close();
 	}
 
-	render() {
+  handleEditEventClick() {
+    this.props.editEvent(this.props.event)
+    this.props.close()
+  }
 
+	render() {
 		return (
 			<Dialog
 				open={this.props.open}
@@ -102,6 +107,12 @@ export default class EventDetailView extends Component {
 		if(this.props.user.has('admin')) {
 			const userAdmin = this.props.user.get('admin');
 			if(Immutable.is(userAdmin, eventOwner)) {
+        buttons.push(
+        <FlatButton
+          label='Edit'
+          onTouchTap={this.handleEditEventClick}
+        />
+        );
 				buttons.push(
 					<FlatButton
 						label='Delete'
@@ -223,14 +234,14 @@ export default class EventDetailView extends Component {
 
 EventDetailView.propTypes = {
 	event: ImmutablePropTypes.mapContains({
-		name: PropTypes.string.isRequired,
+		name: PropTypes.string,
 		description: PropTypes.string,
 		location: PropTypes.string,
-		startDate: PropTypes.string.isRequired,
-		endDate: PropTypes.string.isRequired,
+		startDate: PropTypes.string,
+		endDate: PropTypes.string,
 		url: PropTypes.string,
-		owner: ImmutablePropTypes.map.isRequired,
-		guilds: ImmutablePropTypes.list.isRequired
+		owner: ImmutablePropTypes.map,
+		guilds: ImmutablePropTypes.set
 	}).isRequired,
 	open: PropTypes.bool.isRequired,
 	close: PropTypes.func.isRequired,

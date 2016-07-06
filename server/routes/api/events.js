@@ -98,16 +98,21 @@ router.get('/:event_id', async(req, res, next) => {
  * Edit an event.
  */
 router.put('/:event_id', function(req, res, next) {
-	Event.findByIdAndUpdate(req.params.event_id, req.body).then(function(event) {
-		if(!event) {
-			const err = new ParameterError('Event does not exist');
-			return next(err);
-		}
-		res.json(event);
-	})
-	.catch(function(err) {
-		return next(err);
-	})
+  const id = req.params.event_id
+  Event.update({ _id: id }, req.body)
+  .then(() => {
+    return Event.findById(id).populate('guilds')
+  })
+  .then((event) => {
+    if(!event) {
+      const err = new ParameterError('Event does not exist');
+      return next(err);
+    }
+    res.json(event)
+  })
+  .catch((err) => {
+    return next(err)
+  })
 });
 
 /**

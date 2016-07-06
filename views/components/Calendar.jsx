@@ -2,10 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import CalendarHeader from './CalendarHeader.jsx';
 import moment from 'moment';
-import Immutable from 'immutable';
 import BigCalendar from 'react-big-calendar';
 import css from './calendar.css'
-import VisibleEventDetailView from './VisibleEventDetailView';
 
 export default class Calendar extends Component {
 
@@ -15,13 +13,9 @@ export default class Calendar extends Component {
 		this.nextWeek = this.nextWeek.bind(this);
 		this.previousWeek = this.previousWeek.bind(this);
 		this.goToToday = this.goToToday.bind(this);
-		this.showEventDetails = this.showEventDetails.bind(this);
-		this.hideEventDetails = this.hideEventDetails.bind(this);
-		this.renderCurrentEventDetails = this.renderCurrentEventDetails.bind(this);
 		this.state = {
 			time: moment(),
 			calendarView: 'week',
-			showEventDetails: false
 	 };
 	}
 
@@ -37,19 +31,6 @@ export default class Calendar extends Component {
 	previousWeek() {
 		const previousWeek = this.state.time.subtract(1, this.state.calendarView);
 		this.setState({ time: previousWeek });
-	}
-
-	showEventDetails(NonImmutableEventData) {
-		NonImmutableEventData.startDate = NonImmutableEventData.startDate.toISOString();
-		NonImmutableEventData.endDate = NonImmutableEventData.endDate.toISOString();
-		this.setState({
-			currentEvent: Immutable.fromJS(NonImmutableEventData),
-			showEventDetails: true
-		});
-	}
-
-	hideEventDetails() {
-		this.setState({ showEventDetails: false });
 	}
 
 	render() {
@@ -88,10 +69,21 @@ export default class Calendar extends Component {
 		  // agendaTimeFormat: "HH:mm",
 		  // agendaTimeRangeFormat: "HH:mm",
 			timeGutterFormat: 'HH'
+
+
 		}
+
+    // Use this function to customize the style of individual events
+    const eventCustomizer = (event, start, end, isSelected) => {
+      return {
+        style: {
+          // backgroundColor: '#FF6666',
+        }
+      }
+    }
+
 		return (
 			<div style={styles.base}>
-				{this.renderCurrentEventDetails()}
 				<div style={styles.headerHolder}>
 					<CalendarHeader
 						currentTime={this.state.time}
@@ -104,7 +96,7 @@ export default class Calendar extends Component {
 					<BigCalendar
 						date={this.state.time.toDate()}
 						events={events}
-						onSelectEvent={this.showEventDetails}
+						onSelectEvent={this.props.onEventClick}
 						titleAccessor='name'
 						startAccessor='startDate'
 						endAccessor='endDate'
@@ -114,20 +106,10 @@ export default class Calendar extends Component {
 						popup={true}
 						onView='garbage'
 						onNavigate='garbage'
+            eventPropGetter={eventCustomizer}
 					/>
 				</div>
 			</div>
-		)
-	}
-
-	renderCurrentEventDetails() {
-		if(!Immutable.Map.isMap(this.state.currentEvent)) return;
-		return (
-			<VisibleEventDetailView
-				open={this.state.showEventDetails}
-				close={this.hideEventDetails}
-				event={this.state.currentEvent}
-			/>
 		)
 	}
 }

@@ -1,19 +1,21 @@
 import { GET_ALL_REQUEST, GET_ALL_SUCCESS, GET_ALL_FAILURE } from '../../actions/EventActions.jsx';
 import { ADD_NEW_REQUEST, ADD_NEW_SUCCESS, ADD_NEW_FAILURE } from '../../actions/EventActions.jsx';
 import { DELETE_REQUEST, DELETE_SUCCESS, DELETE_FAILURE } from '../../actions/EventActions.jsx';
+import { EDIT_REQUEST, EDIT_SUCCESS, EDIT_FAILURE } from '../../actions/EventActions.jsx';
 
 import { Map, Set, fromJS } from 'immutable';
 
-const event = (state, action) => {
-	switch (action.type) {
-		case 'ADD_EVENT':
-			return {
-				name: action.name
-			}
-		default:
-			return state
-	}
-}
+// const event = (state, action) => {
+// 	switch (action.type) {
+// 		case 'ADD_EVENT':
+// 			return {
+// 				name: action.name
+// 			}
+// 		default:
+// 			return state
+// 	}
+// }
+
 const initialState = Map({ serverSide: Set(), local: Set() });
 
 export const events = (state = initialState, action) => {
@@ -40,6 +42,11 @@ export const events = (state = initialState, action) => {
 			return newState;
 		}
 
+    case DELETE_REQUEST: {
+      // This must be handled
+      return state;
+    }
+
 		case DELETE_FAILURE: {
 			// This must be handled
 			return state;
@@ -59,7 +66,28 @@ export const events = (state = initialState, action) => {
 			return newState;
 		}
 
-		default:
-			return state
-	}
+    case EDIT_REQUEST: {
+      // This must be handled
+      return state;
+    }
+
+    case EDIT_SUCCESS: {
+      const ImmutableEventData = fromJS(action.payload);
+      const newState = state.get('serverSide').map((event) => {
+        if(event.get('_id') == action.payload._id) {
+          return ImmutableEventData
+        }
+        return event
+      })
+      return state.set('serverSide', newState)
+    }
+
+    case EDIT_FAILURE: {
+      // This must be handled
+      return state;
+    }
+
+    default:
+      return state
+    }
 }

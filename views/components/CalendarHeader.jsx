@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import WeekDayHeader from './WeekDayHeader.jsx';
 import FontAwesome from 'react-fontawesome';
 import Paper from 'material-ui/Paper';
 import moment from 'moment';

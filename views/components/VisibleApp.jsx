@@ -1,8 +1,11 @@
 import { connect } from 'react-redux';
 import App from './App.jsx';
-import { getAllEvents, addNewEvent } from '../../actions/EventActions.jsx';
+import { getAllEvents } from '../../actions/EventActions.jsx';
+import { viewEventDetails } from '../../actions/EventDetailViewActions'
 import { getAllGuilds } from '../../actions/GuildActions.jsx';
 import { handleGuildClick } from '../../actions/CatalogFilterActions.jsx';
+import { openAddEventForm } from '../../actions/AddEventViewActions'
+
 import Immutable from 'immutable';
 
 const getVisibleEvents = (events, activeGuilds) => {
@@ -29,6 +32,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
+    openAddEventForm: () => {
+      dispatch(openAddEventForm())
+    },
 		getAllEvents: () => {
 			dispatch(getAllEvents());
 		},
@@ -38,9 +44,15 @@ const mapDispatchToProps = (dispatch) => {
 		handleGuildClick: (guild) => {
 			dispatch(handleGuildClick(guild));
 		},
-		addNewEvent: (ImmutableEventData) => {
-			dispatch(addNewEvent(ImmutableEventData));
-		}
+    viewEventDetails: (NonImmutableEventData) => {
+      NonImmutableEventData.startDate = NonImmutableEventData.startDate.toISOString();
+  		NonImmutableEventData.endDate = NonImmutableEventData.endDate.toISOString();
+      let newState = Immutable.fromJS(NonImmutableEventData)
+      let guildList = newState.get('guilds')
+      guildList = guildList.toSet()
+      newState = newState.set('guilds', guildList)
+      dispatch(viewEventDetails(newState));
+    }
 	}
 }
 

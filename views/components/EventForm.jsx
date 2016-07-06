@@ -11,11 +11,10 @@ import moment from 'moment';
 
 // There should be string constants for all keys in state.event but it lead to errors
 
-export default class AddEventDialog extends Component {
+export default class EventForm extends Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { event: Map({ guilds: Set() }) };
 		this.setName = this.setName.bind(this);
 		this.setDescription = this.setDescription.bind(this);
 		this.setLocation = this.setLocation.bind(this);
@@ -26,66 +25,61 @@ export default class AddEventDialog extends Component {
 		this.handleGuildClick = this.handleGuildClick.bind(this);
 		this.setUrl = this.setUrl.bind(this);
 		this.addEvent = this.addEvent.bind(this);
-		this.clearAllFields = this.clearAllFields.bind(this);
 		this.areRequiredFieldsFilled = this.areRequiredFieldsFilled.bind(this);
 	}
 
-	componentDidMount() {
-		this.clearAllFields();
-	}
-
 	setName(event, value) {
-		const newState = this.state.event.set('name', value);
-		this.setState({ event: newState });
+    const newState = this.props.event.set('name', value);
+		this.props.updateEventData(newState);
 	}
 
 	setDescription(event, value) {
-		const newState = this.state.event.set('description', value);
-		this.setState({ event: newState });
+		const newState = this.props.event.set('description', value);
+		this.props.updateEventData(newState);
 	}
 
 	setLocation(event, value) {
-		const newState = this.state.event.set('location', value);
-		this.setState({ event: newState });
+		const newState = this.props.event.set('location', value);
+		this.props.updateEventData(newState);
 	}
 
 	setStartDate(event, date) {
-		let newState = this.state.event.set('startDate', date);
-		if(!this.state.event.has('endDate')) {
+		let newState = this.props.event.set('startDate', date);
+		if(!this.props.event.has('endDate')) {
 			newState = newState.set('endDate', date);
 		}
-		this.setState({ event: newState });
+		this.props.updateEventData(newState);
 	}
 
 	setStartTime(event, time) {
-		let newState = this.state.event.set('startTime', time);
-		if(!this.state.event.has('endTime')) {
+		let newState = this.props.event.set('startTime', time);
+		if(!this.props.event.has('endTime')) {
 			newState = newState.set('endTime', moment(time).add(1, 'hours').toDate());
 		}
-		this.setState({ event: newState });
+		this.props.updateEventData(newState);
 	}
 
 	setEndDate(event, date) {
-		const newState = this.state.event.set('endDate', date);
-		this.setState({ event: newState });
+		const newState = this.props.event.set('endDate', date);
+		this.props.updateEventData(newState);
 	}
 
 	setEndTime(event, time) {
-		const newState = this.state.event.set('endTime', time);
-		this.setState({ event: newState });
+		const newState = this.props.event.set('endTime', time);
+		this.props.updateEventData(newState);
 	}
 
 	handleGuildClick(event) {
 		const guild = Map(JSON.parse(event.target.getAttribute('data-guild')));
-		const oldGuilds = this.state.event.get('guilds');
+		const oldGuilds = this.props.event.get('guilds');
 		const newGuilds = oldGuilds.includes(guild) ? oldGuilds.delete(guild) : oldGuilds.add(guild);
-		const newState = this.state.event.set('guilds', newGuilds);
-		this.setState({ event: newState });
+		const newState = this.props.event.set('guilds', newGuilds);
+		this.props.updateEventData(newState);
 	}
 
 	setUrl(event, value) {
-		const newState = this.state.event.set('url', value);
-		this.setState({ event: newState });
+		const newState = this.props.event.set('url', value);
+		this.props.updateEventData(newState);
 	}
 
 	addEvent() {
@@ -93,7 +87,7 @@ export default class AddEventDialog extends Component {
 			return;
 		}
 		this.props.close();
-		const eventData = this.state.event;
+		const eventData = this.props.event;
 		// Format start date
 		let startDate = moment(eventData.get('startDate'));
 		const startTime = moment(eventData.get('startTime'));
@@ -109,6 +103,7 @@ export default class AddEventDialog extends Component {
 		endDate = endDate.toISOString();
 
 		const event = Map({
+      _id: eventData.get('_id'),
 			name: eventData.get('name'),
 			description: eventData.get('description'),
 			location: eventData.get('location'),
@@ -117,12 +112,12 @@ export default class AddEventDialog extends Component {
 			guilds: eventData.get('guilds').toList(),
 			url: eventData.get('url')
 		});
-		this.clearAllFields();
-		this.props.addNewEvent(event);
+		this.props.submit(event);
+    this.props.clearForm()
 	}
 
   areRequiredFieldsFilled() {
-    const data = this.state.event;
+    const data = this.props.event;
 
     // Validate title
     const name = data.has('name');
@@ -149,10 +144,6 @@ export default class AddEventDialog extends Component {
     })
     return name && dates && guilds;
   }
-
-	clearAllFields() {
-		this.setState({ event: Map({ guilds: Set() }) });
-	}
 
 	render() {
 		const styles = {
@@ -193,7 +184,7 @@ export default class AddEventDialog extends Component {
 				<div>
 					<FlatButton
 						label='Clear'
-						onTouchTap={this.clearAllFields}
+						onTouchTap={this.props.clearForm}
 					/>
 				</div>
 				<div>
@@ -221,23 +212,23 @@ export default class AddEventDialog extends Component {
 					<TextField
 						floatingLabelText='Name'
 						onChange={this.setName}
-						value={this.state.event.has('name') ? this.state.event.get('name') : ''}
+						value={this.props.event.has('name') ? this.props.event.get('name') : ''}
 					/>
 					<TextField
 						floatingLabelText='Description'
 						multiLine={true}
 						onChange={this.setDescription}
-						value={this.state.event.has('description') ? this.state.event.get('description') : ''}
+						value={this.props.event.has('description') ? this.props.event.get('description') : ''}
 					/>
 					<TextField
 						floatingLabelText='Location'
 						onChange={this.setLocation}
-						value={this.state.event.has('location') ? this.state.event.get('location') : ''}
+						value={this.props.event.has('location') ? this.props.event.get('location') : ''}
 					/>
 					<TextField
 						floatingLabelText='URL'
 						onChange={this.setUrl}
-						value={this.state.event.has('url') ? this.state.event.get('url') : ''}
+						value={this.props.event.has('url') ? this.props.event.get('url') : ''}
 					/>
 					<div style={styles.window.time}>
 						<DatePicker
@@ -245,7 +236,7 @@ export default class AddEventDialog extends Component {
 							autoOk={true}
 							textFieldStyle={styles.window.time.textField}
 							onChange={this.setStartDate}
-							value={this.state.event.get('startDate')}
+							value={this.props.event.get('startDate')}
 						/>
 						<TimePicker
 							hintText='Start time'
@@ -253,7 +244,7 @@ export default class AddEventDialog extends Component {
 							autoOk={true}
 							textFieldStyle={styles.window.time.textField}
 							onChange={this.setStartTime}
-							value={this.state.event.get('startTime')}
+							value={this.props.event.get('startTime')}
 						/>
 					</div>
 					<div style={styles.window.time}>
@@ -262,7 +253,7 @@ export default class AddEventDialog extends Component {
 							autoOk={true}
 							textFieldStyle={styles.window.time.textField}
 							onChange={this.setEndDate}
-							value={this.state.event.get('endDate')}
+							value={this.props.event.get('endDate')}
 						/>
 						<TimePicker
 							hintText='End time'
@@ -270,7 +261,7 @@ export default class AddEventDialog extends Component {
 							autoOk={true}
 							textFieldStyle={styles.window.time.textField}
 							onChange={this.setEndTime}
-							value={this.state.event.get('endTime')}
+							value={this.props.event.get('endTime')}
 						/>
 					</div>
 					<div style={styles.window.guildSelection}>
@@ -281,7 +272,7 @@ export default class AddEventDialog extends Component {
 								style={styles.window.guildSelection.checkbox}
 								data-guild={JSON.stringify(guild)}
 								onCheck={this.handleGuildClick}
-								checked={this.state.event.get('guilds').includes(guild)}
+								checked={this.props.event.get('guilds').includes(guild)}
 							/>
 						)}
 					</div>
@@ -291,10 +282,12 @@ export default class AddEventDialog extends Component {
 	}
 }
 
-AddEventDialog.propTypes = {
+EventForm.propTypes = {
 	guilds: ImmutablePropTypes.set.isRequired,
 	open: PropTypes.bool.isRequired,
 	close: PropTypes.func.isRequired,
-	addNewEvent: PropTypes.func.isRequired,
-	user: ImmutablePropTypes.map.isRequired
+	submit: PropTypes.func.isRequired,
+	user: ImmutablePropTypes.map.isRequired,
+  event: ImmutablePropTypes.map.isRequired,
+  clearForm: PropTypes.func.isRequired
 }

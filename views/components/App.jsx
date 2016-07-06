@@ -1,11 +1,11 @@
 import React from 'react';
 import Calendar from './Calendar.jsx';
-import GuildList from './GuildList.jsx';
 import SideBar from './SideBar.jsx';
 import moment from 'moment';
-import Immutable, { Map, List } from 'immutable';
 import TopBar from './TopBar.jsx';
-import AddEventDialogContainer from './AddEventDialogContainer.jsx'
+import EventDetailViewContainer from './EventDetailViewContainer';
+import AddEventForm from './AddEventForm'
+import EditEventForm from './EditEventForm'
 
 export default class App extends React.Component {
 
@@ -16,22 +16,11 @@ export default class App extends React.Component {
 				dow : 1 // Set monday as first day of week
 			}
 		});
-		this.state = { addEventWindowOpen : false }
-		this.closeEventEditor = this.closeEventEditor.bind(this);
-		this.openEventEditor = this.openEventEditor.bind(this);
 	}
 
 	componentDidMount() {
 		this.props.getAllGuilds();
 		this.props.getAllEvents();
-	}
-
-	openEventEditor() {
-		this.setState({ addEventWindowOpen: Immutable.fromJS(true) });
-	}
-
-	closeEventEditor() {
-		this.setState({ addEventWindowOpen: Immutable.fromJS(false) });
 	}
 
 	render() {
@@ -56,7 +45,7 @@ export default class App extends React.Component {
 				<TopBar
 					loggedIn={this.props.user.has('username')}
 					admin={this.props.user.has('admin')}
-					openEventEditor={this.openEventEditor}
+					openEventEditor={this.props.openAddEventForm}
 				/>
 				<div style={styles.content}>
 					<div style={styles.sideBar}>
@@ -64,18 +53,19 @@ export default class App extends React.Component {
 							guilds={this.props.guilds}
 							activeGuilds={this.props.activeGuilds}
 							handleGuildClick={this.props.handleGuildClick}
-							addNewEvent={this.props.addNewEvent}
 						/>
 					</div>
 					<Calendar
 						events={this.props.events}
+            onEventClick={this.props.viewEventDetails}
 					/>
 				</div>
 
-				<AddEventDialogContainer
-					open={this.state.addEventWindowOpen}
-					close={this.closeEventEditor}
-				/>
+        <AddEventForm/>
+
+        <EditEventForm/>
+
+        <EventDetailViewContainer/>
 
 			</div>
 		);

@@ -3,12 +3,18 @@ import { events } from './EventsReducer.jsx';
 import { guilds } from './GuildsReducer.jsx';
 import { activeGuilds } from './CatalogFilterReducer.jsx';
 import { user } from './UserReducer';
+import { eventViewer } from './EventViewerReducer'
+import { addEventForm } from './AddEventViewReducer'
+import { editEventForm } from './EditEventViewReducer'
 
 const reducer = combineReducers({
 	events,
 	guilds,
 	activeGuilds,
-	user
+	user,
+  eventViewer,
+  addEventForm,
+  editEventForm
 })
 
 export default reducer;
