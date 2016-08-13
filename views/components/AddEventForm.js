@@ -8,7 +8,10 @@ const mapStateToProps = (state) => {
 		guilds: state.guilds,
 		user: state.user,
     open: state.addEventForm.open,
-    event: state.addEventForm.event
+    event: state.addEventForm.event,
+    clearButtonEnabled: true,
+    submitLabel: 'Add event',
+    title: 'Add event'
 	}
 }
 

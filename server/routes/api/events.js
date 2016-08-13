@@ -64,7 +64,7 @@ router.post('/', cas.block, cas.attachUser, async (req, res, next) => {
 
     // Create the event
     let event = await Event.create(eventParams)
-    event = await Event.populate(event, 'guilds, owner')
+    event = await Event.populate(event, 'guilds owner')
     res.json(event);
   }
   catch(err) {

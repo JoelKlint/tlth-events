@@ -11,6 +11,7 @@ const initialState = { serverSide: [], local: [] }
 
 export const events = (state = initialState, action) => {
 	switch (action.type) {
+    
 		case GET_ALL_SUCCESS: {
       let newState = _.union( state.serverSide, action.payload )
       newState = _.assign({}, state, { serverSide: newState })
