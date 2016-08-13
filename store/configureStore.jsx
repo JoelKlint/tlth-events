@@ -4,17 +4,20 @@ import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 import reducer from './reducers/index.js';
 
-const stateTransformer = (state) => {
-  return state
-};
+// Define what middleware to use in all environments
+const middlewares = [thunk, apiMiddleware]
 
-const logger = createLogger({ stateTransformer });
+if( process.env.NODE_ENV === 'development' ) {
+  const logger = createLogger()
+  middlewares.push(logger)
+}
 
-const createStoreWithMiddleware = applyMiddleware(thunk, apiMiddleware, logger)(createStore);
+const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 
 export default function configureStore(initialState) {
   const store = createStoreWithMiddleware(reducer, initialState);
 
+  // If react-hot-loader is active
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
     module.hot.accept('./reducers', () => {
