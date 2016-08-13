@@ -8,21 +8,21 @@ import { openEditEventForm } from '../../actions/EditEventViewActions'
 const mapStateToProps = (state) => {
 	return {
 		user: state.user,
-    open: state.eventViewer.get('open'),
-    event: state.eventViewer.get('event')
+    open: state.eventViewer.open,
+    event: state.eventViewer.event
 	}
 }
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		deleteEvent: (ImmutableEventData) => {
-			dispatch(deleteEvent(ImmutableEventData));
+		deleteEvent: (event) => {
+			dispatch(deleteEvent(event));
 		},
     close: () => {
       dispatch(hideEventDetails());
     },
-    editEvent: (ImmutableEventData) => {
-      dispatch(openEditEventForm(ImmutableEventData));
+    editEvent: (event) => {
+      dispatch(openEditEventForm(event));
     }
 	}
 }

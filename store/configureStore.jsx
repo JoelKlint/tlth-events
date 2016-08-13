@@ -4,10 +4,8 @@ import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 import reducer from './reducers/index.js';
 
-import Immutable from 'immutable';
-
 const stateTransformer = (state) => {
-	return Immutable.fromJS(state).toJS();
+  return state
 };
 
 const logger = createLogger({ stateTransformer });

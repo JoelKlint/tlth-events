@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import Guild from './Guild.jsx';
 import Divider from 'material-ui/Divider';
+
+import _ from 'lodash'
 
 export default class GuildList extends Component {
 
@@ -42,7 +43,7 @@ export default class GuildList extends Component {
 							<Guild
 								guild={guild}
 								handleClick={this.props.handleClick}
-								active={this.props.active.includes(guild.get('_id'))}
+								active={ _.includes(this.props.active, guild._id) }
 							/>
 						</div>
 					)}
@@ -53,7 +54,7 @@ export default class GuildList extends Component {
 }
 
 GuildList.propTypes = {
-	guilds: ImmutablePropTypes.set.isRequired,
-	active: ImmutablePropTypes.set.isRequired,
+	guilds: PropTypes.array.isRequired,
+	active: PropTypes.array.isRequired,
 	handleClick: PropTypes.func.isRequired
 }

@@ -1,9 +1,9 @@
 export const VIEW_DETAILS = 'VIEW_EVENT_DETAILS';
 
-export const viewEventDetails = (ImmutableEventData) => {
+export const viewEventDetails = (event) => {
   return {
     type: VIEW_DETAILS,
-    ImmutableEventData
+    event
   }
 }
 

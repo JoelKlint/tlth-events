@@ -3,27 +3,25 @@ import EventForm from './EventForm.jsx';
 import { addNewEvent } from '../../actions/EventActions.jsx';
 import { hideAddEventForm, updateAddEventData, clearAddEventData } from '../../actions/AddEventViewActions'
 
-import Immutable from 'immutable';
-
 const mapStateToProps = (state) => {
 	return {
 		guilds: state.guilds,
 		user: state.user,
-    open: state.addEventForm.get('open'),
-    event: state.addEventForm.get('event')
+    open: state.addEventForm.open,
+    event: state.addEventForm.event
 	}
 }
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		submit: (ImmutableEventData) => {
-			dispatch(addNewEvent(ImmutableEventData));
+		submit: (event) => {
+			dispatch(addNewEvent(event));
 		},
     close: () => {
       dispatch(hideAddEventForm())
     },
-    updateEventData: (ImmutableEventData) => {
-      dispatch(updateAddEventData(ImmutableEventData));
+    updateEventData: (event) => {
+      dispatch(updateAddEventData(event));
     },
     clearForm: () => {
       dispatch(clearAddEventData());

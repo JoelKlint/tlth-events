@@ -1,14 +1,17 @@
-import { HANDLE_GUILD_CLICK, SET_FILTER } from '../../actions/CatalogFilterActions.jsx';
-import Immutable, { Set } from 'immutable';
+import _ from 'lodash'
 
-export const activeGuilds = (state = new Set(), action) => {
+import { HANDLE_GUILD_CLICK, SET_FILTER } from '../../actions/CatalogFilterActions.jsx';
+
+const initialState = []
+
+export const activeGuilds = (state = initialState, action) => {
 	switch (action.type) {
 		case HANDLE_GUILD_CLICK: {
-			const guild = Immutable.fromJS(action.guildId);
-			return state.includes(guild) ? state.delete(guild): state.add(guild);
+      const guild = action.guildId
+      return _.includes(state, guild) ? _.without(state, guild) : _.concat(state, guild)
 		}
 		case SET_FILTER: {
-			return Immutable.fromJS(action.guilds).toSet();
+      return _.assign([], [ action.guilds ])
 		}
 		default:
 			return state;

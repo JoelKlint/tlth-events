@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import GuildList from './GuildList.jsx';
 
 export default class SideBar extends Component {
@@ -38,7 +37,7 @@ export default class SideBar extends Component {
 }
 
 SideBar.propTypes = {
-	guilds: ImmutablePropTypes.set.isRequired,
-	activeGuilds: ImmutablePropTypes.set.isRequired,
+	guilds: PropTypes.array.isRequired,
+	activeGuilds: PropTypes.array.isRequired,
 	handleGuildClick: PropTypes.func.isRequired,
 }

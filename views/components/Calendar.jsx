@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import CalendarHeader from './CalendarHeader.jsx';
 import moment from 'moment';
 import BigCalendar from 'react-big-calendar';
@@ -50,7 +49,8 @@ export default class Calendar extends Component {
 				display: 'flex',
 			}
 		}
-		const events = this.props.events.toJS()
+    // Convert all dates to date objects since they are stored as string in state
+		const events = this.props.events
 		.map((event) => {
 			event.startDate = moment(event.startDate).toDate();
 			event.endDate = moment(event.endDate).toDate();
@@ -115,5 +115,5 @@ export default class Calendar extends Component {
 }
 
 Calendar.propTypes = {
-	events: ImmutablePropTypes.set.isRequired
+	events: PropTypes.array.isRequired
 }

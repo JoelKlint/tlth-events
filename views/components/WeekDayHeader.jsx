@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import FontAwesome from 'react-fontawesome';
 import moment from 'moment';
 

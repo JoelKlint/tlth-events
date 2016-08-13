@@ -1,12 +1,10 @@
 import React, { Component, PropTypes } from 'react';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 import Checkbox from 'material-ui/Checkbox';
-import Immutable, { Map, Set } from 'immutable';
 import moment from 'moment';
 
 // There should be string constants for all keys in state.event but it lead to errors
@@ -29,58 +27,67 @@ export default class EventForm extends Component {
 	}
 
 	setName(event, value) {
-    const newState = this.props.event.set('name', value);
-		this.props.updateEventData(newState);
+    const newEventData = _.defaults({ name: value }, this.props.event)
+    this.props.updateEventData(newEventData)
 	}
 
 	setDescription(event, value) {
-		const newState = this.props.event.set('description', value);
-		this.props.updateEventData(newState);
+		const newEventData = _.defaults({ description: value }, this.props.event)
+    this.props.updateEventData(newEventData)
 	}
 
 	setLocation(event, value) {
-		const newState = this.props.event.set('location', value);
-		this.props.updateEventData(newState);
+		const newEventData = _.defaults({ location: value }, this.props.event)
+    this.props.updateEventData(newEventData)
 	}
 
 	setStartDate(event, date) {
-		let newState = this.props.event.set('startDate', date);
-		if(!this.props.event.has('endDate')) {
-			newState = newState.set('endDate', date);
+    let newEventData = _.defaults({ startDate: date }, this.props.event)
+		if( !_.has(this.props.event, 'endDate') ) {
+      newEventData = _.defaults({ endDate: date }, newEventData)
 		}
-		this.props.updateEventData(newState);
+		this.props.updateEventData(newEventData);
 	}
 
 	setStartTime(event, time) {
-		let newState = this.props.event.set('startTime', time);
-		if(!this.props.event.has('endTime')) {
-			newState = newState.set('endTime', moment(time).add(1, 'hours').toDate());
+    let newEventData = _.defaults({ startTime: time }, this.props.event)
+		if( !_.has(this.props.event, 'endTime') ) {
+      newEventData = _.defaults(
+        { endTime: moment(time).add(1, 'hours').toDate() }, newEventData)
 		}
-		this.props.updateEventData(newState);
+		this.props.updateEventData(newEventData);
 	}
 
 	setEndDate(event, date) {
-		const newState = this.props.event.set('endDate', date);
-		this.props.updateEventData(newState);
+    let newEventData = _.defaults({ endDate: date }, this.props.event)
+		this.props.updateEventData(newEventData);
 	}
 
 	setEndTime(event, time) {
-		const newState = this.props.event.set('endTime', time);
-		this.props.updateEventData(newState);
+    let newEventData = _.defaults({ endTime: time }, this.props.event)
+		this.props.updateEventData(newEventData);
 	}
 
 	handleGuildClick(event) {
-		const guild = Map(JSON.parse(event.target.getAttribute('data-guild')));
-		const oldGuilds = this.props.event.get('guilds');
-		const newGuilds = oldGuilds.includes(guild) ? oldGuilds.delete(guild) : oldGuilds.add(guild);
-		const newState = this.props.event.set('guilds', newGuilds);
-		this.props.updateEventData(newState);
+    const guild = JSON.parse(event.target.getAttribute('data-guild'))
+    let guilds = this.props.event.guilds
+    guilds = _.some(guilds, guild) ? _.reject(guilds, guild) : _.concat(guilds, guild)
+    const newEventData = _.defaults({ guilds: guilds }, this.props.event)
+    this.props.updateEventData(newEventData)
 	}
 
 	setUrl(event, value) {
-		const newState = this.props.event.set('url', value);
-		this.props.updateEventData(newState);
+		const newEventData = _.defaults({ url: value }, this.props.event)
+    this.props.updateEventData(newEventData)
 	}
+
+  // mergeDateAndTime(date, time) {
+  //   const date = moment(date);
+	// 	const time = moment(time);
+	// 	let dateTime = date.add(time.hours(), 'hours');
+	// 	dateTime = date.add(time.minutes(), 'minutes');
+	// 	return endDate.toISOString();
+  // }
 
 	addEvent() {
 		if(!this.areRequiredFieldsFilled()) {
@@ -89,29 +96,29 @@ export default class EventForm extends Component {
 		this.props.close();
 		const eventData = this.props.event;
 		// Format start date
-		let startDate = moment(eventData.get('startDate'));
-		const startTime = moment(eventData.get('startTime'));
+		let startDate = moment(eventData.startDate);
+		const startTime = moment(eventData.startTime);
 		startDate = startDate.add(startTime.hours(), 'hours');
 		startDate = startDate.add(startTime.minutes(), 'minutes');
 		startDate = startDate.toISOString()
 
 		// Format end date
-		let endDate = moment(eventData.get('endDate'));
-		const endTime = moment(eventData.get('endTime'));
+		let endDate = moment(eventData.endDate);
+		const endTime = moment(eventData.endTime);
 		endDate = endDate.add(endTime.hours(), 'hours');
 		endDate = endDate.add(endTime.minutes(), 'minutes');
 		endDate = endDate.toISOString();
 
-		const event = Map({
-      _id: eventData.get('_id'),
-			name: eventData.get('name'),
-			description: eventData.get('description'),
-			location: eventData.get('location'),
+		const event = {
+      _id: eventData._id,
+			name: eventData.name,
+			description: eventData.description,
+			location: eventData.location,
 			startDate: startDate.toString(),
 			endDate: endDate.toString(),
-			guilds: eventData.get('guilds').toList(),
-			url: eventData.get('url')
-		});
+			guilds: eventData.guilds,
+			url: eventData.url
+		};
 		this.props.submit(event);
     this.props.clearForm()
 	}
@@ -120,18 +127,18 @@ export default class EventForm extends Component {
     const data = this.props.event;
 
     // Validate title
-    const name = data.has('name');
+    const name = _.has(data, 'name');
 
     // Validate times
     let dates = false
-    if(data.has('startDate') && data.has('startTime') && data.has('endDate') && data.has('endTime')) {
-      const startTime = moment(data.get('startTime'))
-      const startDate = moment(data.get('startDate'))
+    if(_.has(data, 'startDate') && _.has(data, 'startTime') && _.has(data, 'endDate') && _.has(data, 'endTime')) {
+      const startTime = moment(data.startTime)
+      const startDate = moment(data.startDate)
       startDate.add(startTime.hours(), 'hours')
       startDate.add(startTime.minutes(), 'minutes')
 
-      const endTime = moment(data.get('endTime'))
-      const endDate = moment(data.get('endDate'))
+      const endTime = moment(data.endTime)
+      const endDate = moment(data.endDate)
       endDate.add(endTime.hours(), 'hours')
       endDate.add(endTime.minutes(), 'minutes')
 
@@ -139,8 +146,8 @@ export default class EventForm extends Component {
     }
 
     // Validate guilds
-    const guilds = data.get('guilds').some((guild) => {
-      return guild.get('_id') == this.props.user.get('admin').get('_id')
+    const guilds = data.guilds.some((guild) => {
+      return guild._id == this.props.user.admin._id
     })
     return name && dates && guilds;
   }
@@ -212,23 +219,23 @@ export default class EventForm extends Component {
 					<TextField
 						floatingLabelText='Name'
 						onChange={this.setName}
-						value={this.props.event.has('name') ? this.props.event.get('name') : ''}
+						value={_.has(this.props.event, 'name') ? this.props.event.name : ''}
 					/>
 					<TextField
 						floatingLabelText='Description'
 						multiLine={true}
 						onChange={this.setDescription}
-						value={this.props.event.has('description') ? this.props.event.get('description') : ''}
+						value={_.has(this.props.event, 'description') ? this.props.event.description : ''}
 					/>
 					<TextField
 						floatingLabelText='Location'
 						onChange={this.setLocation}
-						value={this.props.event.has('location') ? this.props.event.get('location') : ''}
+						value={_.has(this.props.event, 'location') ? this.props.event.location : ''}
 					/>
 					<TextField
 						floatingLabelText='URL'
 						onChange={this.setUrl}
-						value={this.props.event.has('url') ? this.props.event.get('url') : ''}
+						value={_.has(this.props.event, 'url') ? this.props.event.url : ''}
 					/>
 					<div style={styles.window.time}>
 						<DatePicker
@@ -236,7 +243,7 @@ export default class EventForm extends Component {
 							autoOk={true}
 							textFieldStyle={styles.window.time.textField}
 							onChange={this.setStartDate}
-							value={this.props.event.get('startDate')}
+							value={this.props.event.startDate}
 						/>
 						<TimePicker
 							hintText='Start time'
@@ -244,7 +251,7 @@ export default class EventForm extends Component {
 							autoOk={true}
 							textFieldStyle={styles.window.time.textField}
 							onChange={this.setStartTime}
-							value={this.props.event.get('startTime')}
+							value={this.props.event.startTime}
 						/>
 					</div>
 					<div style={styles.window.time}>
@@ -253,7 +260,7 @@ export default class EventForm extends Component {
 							autoOk={true}
 							textFieldStyle={styles.window.time.textField}
 							onChange={this.setEndDate}
-							value={this.props.event.get('endDate')}
+							value={this.props.event.endDate}
 						/>
 						<TimePicker
 							hintText='End time'
@@ -261,18 +268,19 @@ export default class EventForm extends Component {
 							autoOk={true}
 							textFieldStyle={styles.window.time.textField}
 							onChange={this.setEndTime}
-							value={this.props.event.get('endTime')}
+							value={this.props.event.endTime}
 						/>
 					</div>
 					<div style={styles.window.guildSelection}>
 						{this.props.guilds.map((guild, index) =>
 							<Checkbox
 								key={index}
-								label={guild.get('name')}
+								label={guild.name}
 								style={styles.window.guildSelection.checkbox}
 								data-guild={JSON.stringify(guild)}
 								onCheck={this.handleGuildClick}
-								checked={this.props.event.get('guilds').includes(guild)}
+								// checked={this.props.event.get('guilds').includes(guild)}
+                checked={_.some(this.props.event.guilds, guild)}
 							/>
 						)}
 					</div>
@@ -283,11 +291,11 @@ export default class EventForm extends Component {
 }
 
 EventForm.propTypes = {
-	guilds: ImmutablePropTypes.set.isRequired,
+	guilds: PropTypes.array.isRequired,
 	open: PropTypes.bool.isRequired,
 	close: PropTypes.func.isRequired,
 	submit: PropTypes.func.isRequired,
-	user: ImmutablePropTypes.map.isRequired,
-  event: ImmutablePropTypes.map.isRequired,
+	user: PropTypes.object.isRequired,
+  event: PropTypes.object.isRequired,
   clearForm: PropTypes.func.isRequired
 }

@@ -1,9 +1,9 @@
 export const OPEN_FORM = 'OPEN_EDIT_EVENT_FORM';
 
-export const openEditEventForm = (ImmutableEventData) => {
+export const openEditEventForm = (event) => {
   return {
     type: OPEN_FORM,
-    ImmutableEventData
+    event
   }
 }
 
@@ -17,9 +17,9 @@ export const hideEditEventForm = () => {
 
 export const UPDATE_EVENT_DATA = 'UPDATE_DATA_IN_EDIT_EVENT_FORM'
 
-export const updateEditEventData = (ImmutableEventData) => {
+export const updateEditEventData = (event) => {
   return {
     type: UPDATE_EVENT_DATA,
-    ImmutableEventData
+    event
   }
 }

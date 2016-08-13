@@ -3,27 +3,25 @@ import EventForm from './EventForm.jsx';
 import { hideEditEventForm, updateEditEventData } from '../../actions/EditEventViewActions'
 import { editEvent } from '../../actions/EventActions.jsx'
 
-import Immutable from 'immutable';
-
 const mapStateToProps = (state) => {
 	return {
 		guilds: state.guilds,
 		user: state.user,
-    open: state.editEventForm.get('open'),
-    event: state.editEventForm.get('event')
+    open: state.editEventForm.open,
+    event: state.editEventForm.event
 	}
 }
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		submit: (ImmutableEventData) => {
-			dispatch(editEvent(ImmutableEventData));
+		submit: (event) => {
+			dispatch(editEvent(event));
 		},
     close: () => {
       dispatch(hideEditEventForm())
     },
-    updateEventData: (ImmutableEventData) => {
-      dispatch(updateEditEventData(ImmutableEventData));
+    updateEventData: (event) => {
+      dispatch(updateEditEventData(event));
     }
 	}
 }

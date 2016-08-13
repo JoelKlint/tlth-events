@@ -16,10 +16,10 @@ export const hideAddEventForm = () => {
 
 export const UPDATE_EVENT_DATA = 'UPDATE_DATA_IN_ADD_EVENT_FORM'
 
-export const updateAddEventData = (ImmutableEventData) => {
+export const updateAddEventData = (event) => {
   return {
     type: UPDATE_EVENT_DATA,
-    ImmutableEventData
+    event
   }
 }
 

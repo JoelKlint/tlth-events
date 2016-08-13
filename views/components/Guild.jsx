@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import CheckBox from 'material-ui/Checkbox';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 
 export default class Guild extends Component {
 
@@ -10,7 +9,7 @@ export default class Guild extends Component {
 	}
 
 	handleClick() {
-		this.props.handleClick(this.props.guild.get('_id'));
+		this.props.handleClick(this.props.guild._id);
 	}
 
 	render() {
@@ -30,17 +29,17 @@ export default class Guild extends Component {
 				<div style={styles.checkbox}>
 					<CheckBox checked={this.props.active}/>
 				</div>
-				{this.props.guild.get('name')}
+				{this.props.guild.name}
 			</div>
 		)
 	}
 }
 
 Guild.propTypes = {
-	guild: ImmutablePropTypes.mapContains({
-		_id: PropTypes.string.isRequired,
-		name: PropTypes.string.isRequired
-	}).isRequired,
+  guild: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
+  }).isRequired,
 	handleClick: PropTypes.func.isRequired,
 	active: PropTypes.bool.isRequired
 }

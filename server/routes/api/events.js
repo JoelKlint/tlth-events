@@ -101,7 +101,7 @@ router.put('/:event_id', function(req, res, next) {
   const id = req.params.event_id
   Event.update({ _id: id }, req.body)
   .then(() => {
-    return Event.findById(id).populate('guilds')
+    return Event.findById(id).populate('guilds owner')
   })
   .then((event) => {
     if(!event) {

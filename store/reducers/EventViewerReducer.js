@@ -1,23 +1,21 @@
+import _ from 'lodash'
+
 import { VIEW_DETAILS, HIDE_DETAILS } from '../../actions/EventDetailViewActions';
 
-import { Map } from 'immutable';
-
-const initialState = Map(
-  {
-    open: false,
-    event: Map()
-  });
+const initialState = {
+  open: false,
+  event: {}
+}
 
 export const eventViewer = (state = initialState, action) => {
 	switch (action.type) {
 
 		case VIEW_DETAILS: {
-      let newState = state.set('event', action.ImmutableEventData)
-      return newState.set('open', true)
+      return _.assign({}, state, { open: true, event: action.event })
 		}
 
     case HIDE_DETAILS: {
-      return state.set('open', false)
+      return _.assign({}, initialState, { open: false })
     }
 
 		default:

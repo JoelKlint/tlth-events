@@ -1,45 +1,30 @@
+import _ from 'lodash'
+
 import { GET_ALL_REQUEST, GET_ALL_SUCCESS, GET_ALL_FAILURE } from '../../actions/EventActions.jsx';
 import { ADD_NEW_REQUEST, ADD_NEW_SUCCESS, ADD_NEW_FAILURE } from '../../actions/EventActions.jsx';
 import { DELETE_REQUEST, DELETE_SUCCESS, DELETE_FAILURE } from '../../actions/EventActions.jsx';
 import { EDIT_REQUEST, EDIT_SUCCESS, EDIT_FAILURE } from '../../actions/EventActions.jsx';
 
-import { Map, Set, fromJS } from 'immutable';
-
-// const event = (state, action) => {
-// 	switch (action.type) {
-// 		case 'ADD_EVENT':
-// 			return {
-// 				name: action.name
-// 			}
-// 		default:
-// 			return state
-// 	}
-// }
-
-const initialState = Map({ serverSide: Set(), local: Set() });
+const initialState = { serverSide: [], local: [] }
 
 export const events = (state = initialState, action) => {
 	switch (action.type) {
 		case GET_ALL_SUCCESS: {
-			const oldState = state.get('serverSide');
-			const ImmutableResponse = fromJS(action.payload).toSet();
-			const newState = oldState.union(ImmutableResponse);
-			return state.set('serverSide', newState);
+      let newState = _.union( state.serverSide, action.payload )
+      newState = _.assign({}, state, { serverSide: newState })
+      return newState
 		}
 
 		case ADD_NEW_REQUEST: {
-			const oldState = state.get('local');
-			const newState = oldState.add(action.payload.immutableEventData);
-			return state.set('local', newState);
+      return _.assign({}, state, { local: [ action.payload.event ] })
 		}
 
 		case ADD_NEW_SUCCESS: {
-			const oldState = state.get('serverSide');
-			const ImmutableResponse = fromJS(action.payload);
-			let newState = oldState.add(ImmutableResponse);
-			newState = state.set('serverSide', newState);
-			newState = newState.set('local', Set() );
-			return newState;
+      const newEvent = action.payload
+      const serverSide = _.concat(state.serverSide, newEvent)
+      const localEntry = event => _.isEqual(event.name, newEvent.name)
+      const local = _.reject(state.local, localEntry)
+      return _.assign({}, { serverSide: serverSide, local: local })
 		}
 
     case DELETE_REQUEST: {
@@ -53,17 +38,9 @@ export const events = (state = initialState, action) => {
 		}
 
 		case DELETE_SUCCESS: {
-			const oldState = state.get('serverSide');
-			let newState = oldState.filterNot((event) => {
-				if(event.get('_id') == action.payload._id) {
-					return true;
-				}
-				else {
-					return false
-				}
-			});
-			newState = state.set('serverSide', newState);
-			return newState;
+      const deletedEvent = event => _.isEqual(event._id, action.payload._id)
+      const serverSide =  _.reject(state.serverSide, deletedEvent)
+      return _.assign({}, state, { serverSide: serverSide })
 		}
 
     case EDIT_REQUEST: {
@@ -72,14 +49,13 @@ export const events = (state = initialState, action) => {
     }
 
     case EDIT_SUCCESS: {
-      const ImmutableEventData = fromJS(action.payload);
-      const newState = state.get('serverSide').map((event) => {
-        if(event.get('_id') == action.payload._id) {
-          return ImmutableEventData
-        }
-        return event
-      })
-      return state.set('serverSide', newState)
+      // Länst ut har företräde
+
+      const eventReplacer = (event) => {
+        return _.isEqual(action.payload._id, event._id) ? action.payload : event
+      }
+      const serverSide = _.map(state.serverSide, eventReplacer)
+      return _.assign({}, state, { serverSide: serverSide })
     }
 
     case EDIT_FAILURE: {

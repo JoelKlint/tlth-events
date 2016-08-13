@@ -1,11 +1,11 @@
 import React, { PropTypes, Component } from 'react';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import Dialog from 'material-ui/Dialog';
 import moment from 'moment';
 import { eventStyles, linkStyles } from '../ConstantStyles.js';
 import FontAwesome from 'react-fontawesome';
 import FlatButton from 'material-ui/FlatButton';
-import Immutable from 'immutable';
+
+import _ from 'lodash'
 
 const iconSize = '2x';
 const styles = {
@@ -103,10 +103,10 @@ export default class EventDetailView extends Component {
 
 	renderButtons() {
 		const buttons = [];
-		const eventOwner = this.props.event.get('owner');
-		if(this.props.user.has('admin')) {
-			const userAdmin = this.props.user.get('admin');
-			if(Immutable.is(userAdmin, eventOwner)) {
+		const eventOwner = this.props.event.owner;
+		if( _.has(this.props.user, 'admin') ) {
+			const userAdmin = this.props.user.admin;
+			if( _.isEqual(userAdmin, eventOwner) ) {
         buttons.push(
         <FlatButton
           label='Edit'
@@ -125,7 +125,7 @@ export default class EventDetailView extends Component {
 	}
 
 	renderTitle() {
-		if(!this.props.event.has('guilds')) return;
+		if( !_.has(this.props.event, 'guilds') ) return;
 		const styles = {
 			base: {
 				display: 'flex',
@@ -135,21 +135,19 @@ export default class EventDetailView extends Component {
 		const title =
 			<div style={styles.base}>
 				<div>
-					{this.props.event.get('name')}
+					{ this.props.event.name }
 				</div>
 				<div>
-					{this.props.event.get('guilds').map(
-						(guild) => guild = guild.get('name')
-					).join(' ')}
+          { _(this.props.event.guilds).map(guild => guild.name).join(' ') }
 				</div>
-			</div>;
+			</div>
 			return title;
 	}
 
 	renderDate() {
 		const dateFormat = 'D MMM';
-		const startDate = moment(this.props.event.get('startDate'));
-		const endDate = moment(this.props.event.get('endDate'));
+		const startDate = moment(this.props.event.startDate);
+		const endDate = moment(this.props.event.endDate);
 		let dateString = startDate.format(dateFormat);
 		if(endDate.isAfter(startDate, 'day')) {
 			dateString += ' - ' + endDate.format(dateFormat);
@@ -169,8 +167,8 @@ export default class EventDetailView extends Component {
 
 	renderTime() {
 		const timeFormat = 'HH:mm'
-		const startTime = moment(this.props.event.get('startDate')).format(timeFormat);
-		const endTime = moment(this.props.event.get('endDate')).format(timeFormat);
+		const startTime = moment(this.props.event.startDate).format(timeFormat);
+		const endTime = moment(this.props.event.endDate).format(timeFormat);
 		const timeString =  startTime + ' - ' + endTime;
 		return (
 			<span>
@@ -187,7 +185,7 @@ export default class EventDetailView extends Component {
 
 
 	renderLocation() {
-		if(!this.props.event.has('location')) return;
+		if( !_.has(this.props.event, 'location') ) return;
 		return (
 			<span>
 				<FontAwesome
@@ -196,16 +194,16 @@ export default class EventDetailView extends Component {
 					fixedWidth={true}
 					style={eventStyles.locationIcon}
 				/>
-				{this.props.event.get('location')}
+				{this.props.event.location}
 			</span>
 		)
 	}
 
 	renderUrl() {
-		if(!this.props.event.has('url')) return;
+		if( !_.has(this.props.event, 'url') ) return;
 		return (
 			<a
-				href={this.props.event.get('url')}
+				href={this.props.event.url}
 				target='_blank'
 				style={linkStyles}
 			>
@@ -221,8 +219,8 @@ export default class EventDetailView extends Component {
 	}
 
 	renderDescription() {
-		if(!this.props.event.has('description')) return;
-		return this.props.event.get('description')
+		if( !_.has(this.props.event, 'description') ) return;
+		return this.props.event.description
 		.split('\n')
 		.map((line, key) => {
 			return (
@@ -233,17 +231,17 @@ export default class EventDetailView extends Component {
 }
 
 EventDetailView.propTypes = {
-	event: ImmutablePropTypes.mapContains({
-		name: PropTypes.string,
-		description: PropTypes.string,
-		location: PropTypes.string,
-		startDate: PropTypes.string,
-		endDate: PropTypes.string,
-		url: PropTypes.string,
-		owner: ImmutablePropTypes.map,
-		guilds: ImmutablePropTypes.set
-	}).isRequired,
+  event: PropTypes.shape({
+    name: PropTypes.string,
+    description: PropTypes.string,
+    location: PropTypes.string,
+    startDate: PropTypes.instanceOf(Date),
+    endDate: PropTypes.instanceOf(Date),
+    url: PropTypes.string,
+    owner: PropTypes.object,
+    guilds: PropTypes.array
+  }).isRequired,
 	open: PropTypes.bool.isRequired,
 	close: PropTypes.func.isRequired,
-	user: ImmutablePropTypes.map.isRequired
+	user: PropTypes.object.isRequired
 }

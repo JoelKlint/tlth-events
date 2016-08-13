@@ -43,8 +43,8 @@ export default class App extends React.Component {
 		return(
 			<div style={styles.base}>
 				<TopBar
-					loggedIn={this.props.user.has('username')}
-					admin={this.props.user.has('admin')}
+					loggedIn={ _.has(this.props.user, 'username') }
+					admin={ _.has(this.props.user, 'admin') }
 					openEventEditor={this.props.openAddEventForm}
 				/>
 				<div style={styles.content}>
