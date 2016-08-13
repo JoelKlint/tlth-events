@@ -2,7 +2,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { apiMiddleware } from 'redux-api-middleware';
 import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
-import reducer from './reducers/index.js';
+import reducer from './reducers/index';
 
 // Define what middleware to use in all environments
 const middlewares = [thunk, apiMiddleware]

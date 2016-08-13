@@ -1,9 +1,11 @@
 import _ from 'lodash'
 
-import { GET_ALL_REQUEST, GET_ALL_SUCCESS, GET_ALL_FAILURE } from '../../actions/EventActions.jsx';
-import { ADD_NEW_REQUEST, ADD_NEW_SUCCESS, ADD_NEW_FAILURE } from '../../actions/EventActions.jsx';
-import { DELETE_REQUEST, DELETE_SUCCESS, DELETE_FAILURE } from '../../actions/EventActions.jsx';
-import { EDIT_REQUEST, EDIT_SUCCESS, EDIT_FAILURE } from '../../actions/EventActions.jsx';
+import {
+  GET_ALL_REQUEST, GET_ALL_SUCCESS, GET_ALL_FAILURE,
+  ADD_NEW_REQUEST, ADD_NEW_SUCCESS, ADD_NEW_FAILURE,
+  DELETE_REQUEST, DELETE_SUCCESS, DELETE_FAILURE,
+  EDIT_REQUEST, EDIT_SUCCESS, EDIT_FAILURE
+} from '../../actions/EventActions';
 
 const initialState = { serverSide: [], local: [] }
 

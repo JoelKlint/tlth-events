@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import EventDetailView from './EventDetailView.jsx';
-import { deleteEvent } from '../../actions/EventActions.jsx';
+import { deleteEvent } from '../../actions/EventActions';
 import { hideEventDetails } from '../../actions/EventDetailViewActions';
 import { openEditEventForm } from '../../actions/EditEventViewActions'
 

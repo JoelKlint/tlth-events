@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-import { HANDLE_GUILD_CLICK, SET_FILTER } from '../../actions/CatalogFilterActions.jsx';
+import { HANDLE_GUILD_CLICK, SET_FILTER } from '../../actions/ActiveGuildsActions';
 
 const initialState = []
 

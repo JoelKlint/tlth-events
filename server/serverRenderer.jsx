@@ -1,7 +1,7 @@
 import React from 'react';
 import Root from '../views/Root.jsx';
 import { renderToString } from 'react-dom/server'
-import configureStore from '../store/configureStore.jsx';
+import configureStore from '../store/configureStore.js';
 
 const renderFromServer = (res, initialState) => {
 	const store = configureStore(initialState);

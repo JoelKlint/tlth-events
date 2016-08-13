@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import EventForm from './EventForm.jsx';
-import { addNewEvent } from '../../actions/EventActions.jsx';
+import { addNewEvent } from '../../actions/EventActions';
 import { hideAddEventForm, updateAddEventData, clearAddEventData } from '../../actions/AddEventViewActions'
 
 const mapStateToProps = (state) => {

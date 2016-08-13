@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
-import { events } from './EventsReducer.jsx';
-import { guilds } from './GuildsReducer.jsx';
-import { activeGuilds } from './CatalogFilterReducer.jsx';
+import { events } from './EventsReducer';
+import { guilds } from './GuildsReducer';
+import { activeGuilds } from './ActiveGuildsReducer';
 import { user } from './UserReducer';
 import { eventViewer } from './EventViewerReducer'
 import { addEventForm } from './AddEventViewReducer'

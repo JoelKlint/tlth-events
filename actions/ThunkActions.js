@@ -1,5 +1,5 @@
-import { getAllGuilds } from './GuildActions.jsx';
-import { setFilter } from './CatalogFilterActions.jsx';
+import { getAllGuilds } from './GuildActions';
+import { setFilter } from './ActiveGuildsActions';
 
 export const getAllGuildsAndSetAsFilter = () => {
 	return (dispatch, getState) => {

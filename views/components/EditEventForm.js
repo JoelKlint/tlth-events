@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import EventForm from './EventForm.jsx';
 import { hideEditEventForm, updateEditEventData } from '../../actions/EditEventViewActions'
-import { editEvent } from '../../actions/EventActions.jsx'
+import { editEvent } from '../../actions/EventActions'
 
 const mapStateToProps = (state) => {
 	return {

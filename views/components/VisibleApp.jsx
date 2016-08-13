@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
 import App from './App.jsx';
-import { getAllEvents } from '../../actions/EventActions.jsx';
+import { getAllEvents } from '../../actions/EventActions';
 import { viewEventDetails } from '../../actions/EventDetailViewActions'
-import { getAllGuilds } from '../../actions/GuildActions.jsx';
-import { handleGuildClick } from '../../actions/CatalogFilterActions.jsx';
+import { getAllGuilds } from '../../actions/GuildActions';
+import { handleGuildClick } from '../../actions/ActiveGuildsActions';
 import { openAddEventForm } from '../../actions/AddEventViewActions'
 import _ from 'lodash';
 
