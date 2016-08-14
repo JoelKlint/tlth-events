@@ -1,5 +1,5 @@
 import moment from 'moment'
-import _ from 'lodash'
+import fp from 'lodash/fp'
 
 import { OPEN_FORM, HIDE_FORM, UPDATE_EVENT_DATA } from '../../actions/EditEventViewActions';
 
@@ -16,20 +16,20 @@ export const editEventForm = (state = initialState, action) => {
 		case OPEN_FORM: {
       const start = splitDateAndTime(action.event.startDate)
       const end = splitDateAndTime(action.event.endDate)
-      let event = _.assign({}, action.event)
+      let event = fp.assignAll([ action.event ])
       event.startDate = start[0];
       event.startTime = start[1];
       event.endDate = end[0];
       event.endTime = end[1];
-      return _.assign({}, state, { event: event, open: true })
+      return fp.assignAll([ state, { event: event, open: true } ])
 		}
 
     case HIDE_FORM: {
-      return _.assign({}, state, { open: false })
+      return fp.assignAll( [state, { open: false } ])
     }
 
     case UPDATE_EVENT_DATA: {
-      return _.assign({}, state, { event: action.event })
+      return fp.assignAll([ {}, state, { event: action.event } ])
     }
 
 		default:

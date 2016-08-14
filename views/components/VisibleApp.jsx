@@ -5,21 +5,13 @@ import { viewEventDetails } from '../../actions/EventDetailViewActions'
 import { getAllGuilds } from '../../actions/GuildActions';
 import { handleGuildClick } from '../../actions/ActiveGuildsActions';
 import { openAddEventForm } from '../../actions/AddEventViewActions'
-import _ from 'lodash';
-
-const getVisibleEvents = (events, activeGuilds) => {
-  return _.filter(events, (event) => {
-    return _.some(event.guilds, (guild) => {
-      return _.includes(activeGuilds, guild._id)
-    })
-  })
-}
+import values from 'lodash/values';
+import { getVisibleEvents, getCurrentEvent } from '../../store/selectors/EventsSelector'
 
 const mapStateToProps = (state) => {
-	const visibleSavedEvents = getVisibleEvents(state.events.serverSide, state.activeGuilds);
 	return {
-		events: _.concat(visibleSavedEvents, state.events.local),
-		guilds: state.guilds,
+    events: getVisibleEvents(state),
+		guilds: values(state.data.guilds),
 		activeGuilds: state.activeGuilds,
 		user: state.user
 	}
@@ -40,9 +32,7 @@ const mapDispatchToProps = (dispatch) => {
 			dispatch(handleGuildClick(guild));
 		},
     viewEventDetails: (event) => {
-      event.startDate = event.startDate.toISOString();
-  		event.endDate = event.endDate.toISOString();
-      dispatch(viewEventDetails(event));
+      dispatch(viewEventDetails(event._id));
     }
 	}
 }

@@ -5,7 +5,9 @@ import { eventStyles, linkStyles } from '../ConstantStyles.js';
 import FontAwesome from 'react-fontawesome';
 import FlatButton from 'material-ui/FlatButton';
 
-import _ from 'lodash'
+import has from 'lodash/has'
+import isEqual from 'lodash/isEqual'
+import fp from 'lodash/fp'
 
 const iconSize = '2x';
 const styles = {
@@ -104,9 +106,9 @@ export default class EventDetailView extends Component {
 	renderButtons() {
 		const buttons = [];
 		const eventOwner = this.props.event.owner;
-		if( _.has(this.props.user, 'admin') ) {
+		if( has(this.props.user, 'admin') ) {
 			const userAdmin = this.props.user.admin;
-			if( _.isEqual(userAdmin, eventOwner) ) {
+			if( isEqual(userAdmin, eventOwner) ) {
         buttons.push(
         <FlatButton
           label='Edit'
@@ -125,20 +127,26 @@ export default class EventDetailView extends Component {
 	}
 
 	renderTitle() {
-		if( !_.has(this.props.event, 'guilds') ) return;
+		if( !has(this.props.event, 'guilds') ) return;
 		const styles = {
 			base: {
 				display: 'flex',
 				justifyContent: 'space-between'
 			}
 		}
+
+    const renderGuilds = fp.flow(
+      fp.map(guild => guild.name),
+      fp.join(' ')
+    )
+
 		const title =
 			<div style={styles.base}>
 				<div>
 					{ this.props.event.name }
 				</div>
 				<div>
-          { _(this.props.event.guilds).map(guild => guild.name).join(' ') }
+          { renderGuilds(this.props.event.guilds) }
 				</div>
 			</div>
 			return title;
@@ -185,7 +193,7 @@ export default class EventDetailView extends Component {
 
 
 	renderLocation() {
-		if( !_.has(this.props.event, 'location') ) return;
+		if( !has(this.props.event, 'location') ) return;
 		return (
 			<span>
 				<FontAwesome
@@ -200,7 +208,7 @@ export default class EventDetailView extends Component {
 	}
 
 	renderUrl() {
-		if( !_.has(this.props.event, 'url') ) return;
+		if( !has(this.props.event, 'url') ) return;
 		return (
 			<a
 				href={this.props.event.url}
@@ -219,7 +227,7 @@ export default class EventDetailView extends Component {
 	}
 
 	renderDescription() {
-		if( !_.has(this.props.event, 'description') ) return;
+		if( !has(this.props.event, 'description') ) return;
 		return this.props.event.description
 		.split('\n')
 		.map((line, key) => {
@@ -228,6 +236,13 @@ export default class EventDetailView extends Component {
 			)
 		})
 	}
+}
+
+EventDetailView.defaultProps = {
+  event: {
+    guilds: [],
+    owner: {}
+  }
 }
 
 EventDetailView.propTypes = {
@@ -240,7 +255,7 @@ EventDetailView.propTypes = {
     url: PropTypes.string,
     owner: PropTypes.object,
     guilds: PropTypes.array
-  }).isRequired,
+  }),
 	open: PropTypes.bool.isRequired,
 	close: PropTypes.func.isRequired,
 	user: PropTypes.object.isRequired

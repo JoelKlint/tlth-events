@@ -3,13 +3,15 @@ import EventDetailView from './EventDetailView.jsx';
 import { deleteEvent } from '../../actions/EventActions';
 import { hideEventDetails } from '../../actions/EventDetailViewActions';
 import { openEditEventForm } from '../../actions/EditEventViewActions'
+import { getCurrentEvent } from '../../store/selectors/EventsSelector'
+import { unpopulateEventObject } from '../../util/EventFormUtil'
 
 
 const mapStateToProps = (state) => {
 	return {
 		user: state.user,
     open: state.eventViewer.open,
-    event: state.eventViewer.event
+    event: getCurrentEvent(state)
 	}
 }
 
@@ -22,7 +24,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(hideEventDetails());
     },
     editEvent: (event) => {
-      dispatch(openEditEventForm(event));
+      const unpopulatedEvent = unpopulateEventObject(event)
+      dispatch(openEditEventForm(unpopulatedEvent));
     }
 	}
 }

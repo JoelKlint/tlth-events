@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Guild from './Guild.jsx';
 import Divider from 'material-ui/Divider';
 
-import _ from 'lodash'
+import includes from 'lodash/includes'
 
 export default class GuildList extends Component {
 
@@ -43,7 +43,7 @@ export default class GuildList extends Component {
 							<Guild
 								guild={guild}
 								handleClick={this.props.handleClick}
-								active={ _.includes(this.props.active, guild._id) }
+								active={ includes(this.props.active, guild._id) }
 							/>
 						</div>
 					)}

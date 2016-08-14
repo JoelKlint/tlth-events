@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import fp from 'lodash/fp'
 
 import { HANDLE_GUILD_CLICK, SET_FILTER } from '../../actions/ActiveGuildsActions';
 
@@ -8,10 +8,10 @@ export const activeGuilds = (state = initialState, action) => {
 	switch (action.type) {
 		case HANDLE_GUILD_CLICK: {
       const guild = action.guildId
-      return _.includes(state, guild) ? _.without(state, guild) : _.concat(state, guild)
+      return fp.includes(guild, state) ? fp.without([ guild ], state) : fp.concat(state, guild)
 		}
 		case SET_FILTER: {
-      return _.assign([], [ action.guilds ])
+      return fp.assign([], [ action.guilds ] )
 		}
 		default:
 			return state;

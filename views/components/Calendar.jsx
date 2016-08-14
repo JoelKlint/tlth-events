@@ -49,13 +49,6 @@ export default class Calendar extends Component {
 				display: 'flex',
 			}
 		}
-    // Convert all dates to date objects since they are stored as string in state
-		const events = this.props.events
-		.map((event) => {
-			event.startDate = moment(event.startDate).toDate();
-			event.endDate = moment(event.endDate).toDate();
-			return event;
-		});
 		const calendarFormats = {
 			// dateFormat: "HH:mm",
 		  dayFormat: "ddd D MMM",
@@ -95,11 +88,11 @@ export default class Calendar extends Component {
 				<div style={styles.eventsHolder}>
 					<BigCalendar
 						date={this.state.time.toDate()}
-						events={events}
+						events={this.props.events}
 						onSelectEvent={this.props.onEventClick}
 						titleAccessor='name'
-						startAccessor='startDate'
-						endAccessor='endDate'
+						startAccessor={(event) => moment(event.startDate).toDate()}
+						endAccessor={(event) => moment(event.endDate).toDate()}
 						view={this.state.calendarView}
 						toolbar={false}
 						formats={calendarFormats}

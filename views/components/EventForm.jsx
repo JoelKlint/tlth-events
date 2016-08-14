@@ -6,8 +6,10 @@ import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 import Checkbox from 'material-ui/Checkbox';
 import moment from 'moment';
-import _ from 'lodash'
 import * as util from '../../util/EventFormUtil'
+import fp from 'lodash/fp'
+import has from 'lodash/has'
+import includes from 'lodash/includes'
 
 export default class EventForm extends Component {
 
@@ -25,59 +27,59 @@ export default class EventForm extends Component {
 		this.submitEvent = this.submitEvent.bind(this);
 	}
 
+  updateFormData(newData) {
+    const newFormData = fp.assign(this.props.event)(newData)
+    this.props.updateEventData(newFormData)
+  }
+
 	setName(event, value) {
-    const newEventData = _.defaults({ name: value }, this.props.event)
-    this.props.updateEventData(newEventData)
+    this.updateFormData({ name: value })
 	}
 
 	setDescription(event, value) {
-		const newEventData = _.defaults({ description: value }, this.props.event)
-    this.props.updateEventData(newEventData)
+    this.updateFormData({ description: value })
 	}
 
 	setLocation(event, value) {
-		const newEventData = _.defaults({ location: value }, this.props.event)
-    this.props.updateEventData(newEventData)
+    this.updateFormData({ location: value })
 	}
 
 	setStartDate(event, date) {
-    let newEventData = _.defaults({ startDate: date }, this.props.event)
-		if( !_.has(this.props.event, 'endDate') ) {
-      newEventData = _.defaults({ endDate: date }, newEventData)
-		}
-		this.props.updateEventData(newEventData);
+    if( has(this.props.event, 'endDate') ) {
+      this.updateFormData({ startDate: date })
+    }
+    else {
+      this.updateFormData({ startDate: date, endDate: date })
+    }
 	}
 
 	setStartTime(event, time) {
-    let newEventData = _.defaults({ startTime: time }, this.props.event)
-		if( !_.has(this.props.event, 'endTime') ) {
-      newEventData = _.defaults(
-        { endTime: moment(time).add(1, 'hours').toDate() }, newEventData)
-		}
-		this.props.updateEventData(newEventData);
+    if( has(this.props.event, 'endTime') ) {
+      this.updateFormData({ startTime: time })
+    }
+    else {
+      const endTime = moment(time.toISOString()).add(1, 'hours').toDate()
+      this.updateFormData({ startTime: time, endTime: endTime })
+    }
 	}
 
 	setEndDate(event, date) {
-    let newEventData = _.defaults({ endDate: date }, this.props.event)
-		this.props.updateEventData(newEventData);
+    this.updateFormData({ endDate: date })
 	}
 
 	setEndTime(event, time) {
-    let newEventData = _.defaults({ endTime: time }, this.props.event)
-		this.props.updateEventData(newEventData);
+    this.updateFormData({ endTime: time })
 	}
 
 	handleGuildClick(event) {
-    const guild = JSON.parse(event.target.getAttribute('data-guild'))
+    const guildID = event.target.getAttribute('data-guildID')
     let guilds = this.props.event.guilds
-    guilds = _.some(guilds, guild) ? _.reject(guilds, guild) : _.concat(guilds, guild)
-    const newEventData = _.defaults({ guilds: guilds }, this.props.event)
-    this.props.updateEventData(newEventData)
+    guilds = _.includes(guilds, guildID) ?   _.without(guilds, guildID) : _.concat(guilds, guildID)
+    this.updateFormData({ guilds: guilds })
 	}
 
 	setUrl(event, value) {
-		const newEventData = _.defaults({ url: value }, this.props.event)
-    this.props.updateEventData(newEventData)
+    this.updateFormData({ url: value })
 	}
 
 	submitEvent() {
@@ -232,9 +234,9 @@ export default class EventForm extends Component {
 								key={index}
 								label={guild.name}
 								style={styles.window.guildSelection.checkbox}
-								data-guild={JSON.stringify(guild)}
+								data-guildID={guild._id}
 								onCheck={this.handleGuildClick}
-                checked={_.some(this.props.event.guilds, guild)}
+                checked={includes(this.props.event.guilds, guild._id)}
 							/>
 						)}
 					</div>

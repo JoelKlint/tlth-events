@@ -1,9 +1,9 @@
 export const VIEW_DETAILS = 'VIEW_EVENT_DETAILS';
 
-export const viewEventDetails = (event) => {
+export const viewEventDetails = (eventID) => {
   return {
     type: VIEW_DETAILS,
-    event
+    eventID
   }
 }
 

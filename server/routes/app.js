@@ -4,7 +4,6 @@ import cas from '../middleware/cas';
 import { User } from '../../models';
 import renderFromServer from '../../public/serverRenderer';
 import winston from 'winston';
-import _ from 'lodash'
 
 router.get('/', function(req, res) {
 	if(req.session.cas_user) {
