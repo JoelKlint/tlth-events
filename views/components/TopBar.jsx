@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import FlatButton from 'material-ui/FlatButton';
+import isNil from 'lodash/isNil'
 
 export default class TopBar extends Component {
 	constructor(props) {
@@ -18,10 +19,20 @@ export default class TopBar extends Component {
 				justifyContent: 'flex-end'
 			}
 		}
+
+    const subscribeClick = () => {
+      if( isNil(this.props.subscribeLink) ) {
+        alert('Choose a guild')
+      }
+    }
+
 		return (
 			<div style={styles.base}>
 				<FlatButton
 					label='Subscribe'
+          href={ this.props.subscribeLink}
+          linkButton={ isNil(this.props.subscribeLink) ? false : true}
+          onTouchTap={subscribeClick}
 				/>
 			{this.props.loggedIn ?
 				this.renderLoggedInButtons() : this.renderLoggedOutButtons()}

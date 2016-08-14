@@ -2,7 +2,7 @@ import React from 'react';
 import Calendar from './Calendar.jsx';
 import SideBar from './SideBar.jsx';
 import moment from 'moment';
-import TopBar from './TopBar.jsx';
+import TopBar_smart from './TopBar_smart';
 import EventDetailViewContainer from './EventDetailViewContainer';
 import AddEventForm from './AddEventForm'
 import EditEventForm from './EditEventForm'
@@ -40,13 +40,12 @@ export default class App extends React.Component {
 				borderRight: '1px solid black',
 			}
 		}
+
 		return(
 			<div style={styles.base}>
-				<TopBar
-					loggedIn={ _.has(this.props.user, 'username') }
-					admin={ _.has(this.props.user, 'admin') }
-					openEventEditor={this.props.openAddEventForm}
-				/>
+
+        <TopBar_smart/>
+
 				<div style={styles.content}>
 					<div style={styles.sideBar}>
 						<SideBar

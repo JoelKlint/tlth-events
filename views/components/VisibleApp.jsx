@@ -4,7 +4,6 @@ import { getAllEvents } from '../../actions/EventActions';
 import { viewEventDetails } from '../../actions/EventDetailViewActions'
 import { getAllGuilds } from '../../actions/GuildActions';
 import { handleGuildClick } from '../../actions/ActiveGuildsActions';
-import { openAddEventForm } from '../../actions/AddEventViewActions'
 import values from 'lodash/values';
 import { getVisibleEvents, getCurrentEvent } from '../../store/selectors/EventsSelector'
 
@@ -12,16 +11,12 @@ const mapStateToProps = (state) => {
 	return {
     events: getVisibleEvents(state),
 		guilds: values(state.data.guilds),
-		activeGuilds: state.activeGuilds,
-		user: state.user
+		activeGuilds: state.activeGuilds
 	}
 }
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-    openAddEventForm: () => {
-      dispatch(openAddEventForm())
-    },
 		getAllEvents: () => {
 			dispatch(getAllEvents());
 		},
