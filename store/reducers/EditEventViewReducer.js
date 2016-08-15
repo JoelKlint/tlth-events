@@ -1,40 +1,39 @@
 import moment from 'moment'
-import fp from 'lodash/fp'
+import assign from 'lodash/fp/assign'
 
 import { OPEN_FORM, HIDE_FORM, UPDATE_EVENT_DATA } from '../../actions/EditEventViewActions';
 
 const initialState = {
   open: false,
-  event: {
-    guilds: []
-  }
+  event: {}
 }
 
 export const editEventForm = (state = initialState, action) => {
-	switch (action.type) {
+  switch (action.type) {
 
-		case OPEN_FORM: {
+    case OPEN_FORM: {
       const start = splitDateAndTime(action.event.startDate)
       const end = splitDateAndTime(action.event.endDate)
-      let event = fp.assignAll([ action.event ])
-      event.startDate = start[0];
-      event.startTime = start[1];
-      event.endDate = end[0];
-      event.endTime = end[1];
-      return fp.assignAll([ state, { event: event, open: true } ])
-		}
+      let event = assign(action.event, {
+        startDate: start[0],
+        startTime: start[1],
+        endDate: end[0],
+        endTime: end[1]
+      })
+      return assign(state, { event: event, open: true })
+    }
 
     case HIDE_FORM: {
-      return fp.assignAll( [state, { open: false } ])
+      return assign(state, { open: false })
     }
 
     case UPDATE_EVENT_DATA: {
-      return fp.assignAll([ {}, state, { event: action.event } ])
+      return assign(state, { event: action.event })
     }
 
-		default:
-			return state
-	}
+    default:
+      return state
+  }
 }
 
 const splitDateAndTime = (dateTime) => {

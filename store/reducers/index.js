@@ -9,9 +9,9 @@ import { addEventForm } from './AddEventViewReducer'
 import { editEventForm } from './EditEventViewReducer'
 
 const reducer = combineReducers({
-  data, 
-	activeGuilds,
-	user,
+  data,
+  activeGuilds,
+  user,
   eventViewer,
   addEventForm,
   editEventForm

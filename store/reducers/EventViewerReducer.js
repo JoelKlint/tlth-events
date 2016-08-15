@@ -1,4 +1,4 @@
-import fp from 'lodash/fp'
+import assign from 'lodash/fp/assign'
 
 import { VIEW_DETAILS, HIDE_DETAILS } from '../../actions/EventDetailViewActions';
 
@@ -7,17 +7,17 @@ const initialState = {
 }
 
 export const eventViewer = (state = initialState, action) => {
-	switch (action.type) {
+  switch (action.type) {
 
-		case VIEW_DETAILS: {
-      return fp.assignAll([ state, { open: true, eventID: action.eventID } ])
-		}
-
-    case HIDE_DETAILS: {
-      return fp.assignAll([ initialState, { open: false } ])
+    case VIEW_DETAILS: {
+      return assign(state, { open: true, eventID: action.eventID })
     }
 
-		default:
-			return state
-	}
+    case HIDE_DETAILS: {
+      return assign(state, { open: false })
+    }
+
+    default:
+      return state
+  }
 }

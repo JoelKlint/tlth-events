@@ -1,5 +1,6 @@
-import values from 'lodash/values'
-import fp from 'lodash/fp'
+import merge from 'lodash/fp/merge'
+import set from 'lodash/fp/set'
+import unset from 'lodash/fp/unset'
 
 import {
   GET_ALL_EVENTS_REQUEST, GET_ALL_EVENTS_SUCCESS, GET_ALL_EVENTS_FAILURE,
@@ -25,31 +26,32 @@ eventSchema.define({
 const initialState = {}
 
 export const data = (state = initialState, action) => {
-	switch (action.type) {
+  switch (action.type) {
 
     case GET_ALL_GUILDS_SUCCESS: {
       const response = normalize(action.payload, arrayOf(guildSchema))
-      return fp.mergeAll([ {}, state, response.entities ])
+      return merge(state, response.entities)
     }
 
-		case GET_ALL_EVENTS_SUCCESS: {
+    case GET_ALL_EVENTS_SUCCESS: {
       const response = normalize(action.payload, arrayOf(eventSchema))
-      return fp.mergeAll([ {}, state, response.entities ])
-		}
+      return merge(state, response.entities)
+    }
 
-		case ADD_NEW_EVENT_REQUEST: {
+    case ADD_NEW_EVENT_REQUEST: {
       const event = action.payload
       const key = event.name + event.startDate
-      return fp.set(['local', key], event, state)
-		}
+      return set(['local', key], event, state)
+    }
 
-		case ADD_NEW_EVENT_SUCCESS: {
+    case ADD_NEW_EVENT_SUCCESS: {
       const event = action.payload
       const key = event.name + event.startDate
-      let newState = fp.unset([ 'local', key ], state)
+      let newState = unset([ 'local', key ], state)
+
       const response = normalize(action.payload, eventSchema)
-      return fp.mergeAll([ {}, newState, response.entities ])
-		}
+      return merge(newState, response.entities)
+    }
 
     case DELETE_EVENT_REQUEST: {
       // This must be handled
@@ -57,13 +59,13 @@ export const data = (state = initialState, action) => {
     }
 
     case DELETE_EVENT_SUCCESS: {
-      return fp.unset([ 'events', action.payload._id ], state)
-		}
+      return unset([ 'events', action.payload._id ], state)
+    }
 
-		case DELETE_EVENT_FAILURE: {
-			// This must be handled
-			return state;
-		}
+    case DELETE_EVENT_FAILURE: {
+      // This must be handled
+      return state;
+    }
 
     case EDIT_EVENT_REQUEST: {
       // This must be handled
@@ -72,9 +74,7 @@ export const data = (state = initialState, action) => {
 
     case EDIT_EVENT_SUCCESS: {
       let response = normalize(action.payload, eventSchema)
-      response = values(response.entities.events)
-      response = response[0]
-      return fp.set(['events', response._id], response, state)
+      return merge(state, response.entities)
     }
 
     case EDIT_EVENT_FAILURE: {

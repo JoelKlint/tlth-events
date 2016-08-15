@@ -10,12 +10,12 @@ if(NODE_ENV === 'development') {
       updatedAt: "2016-05-23T09:29:07.409Z",
       name: "D"
     }
-	}
+  }
 }
 
 export const user = (state = initialState, action) => {
-	switch(action.type) {
-		default:
-			return state
-	}
+  switch(action.type) {
+    default:
+      return state
+  }
 }
