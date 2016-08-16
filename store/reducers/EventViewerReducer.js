@@ -1,4 +1,5 @@
 import assign from 'lodash/fp/assign'
+import unset from 'lodash/fp/unset'
 
 import { VIEW_DETAILS, HIDE_DETAILS } from '../../actions/EventDetailViewActions';
 
@@ -14,7 +15,8 @@ export const eventViewer = (state = initialState, action) => {
     }
 
     case HIDE_DETAILS: {
-      return assign(state, { open: false })
+      let newState = unset('eventID', state)
+      return assign(newState, { open: false })
     }
 
     default:

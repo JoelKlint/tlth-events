@@ -7,7 +7,9 @@ import FlatButton from 'material-ui/FlatButton';
 
 import has from 'lodash/has'
 import isEqual from 'lodash/isEqual'
-import fp from 'lodash/fp'
+import flow from 'lodash/fp/flow'
+import join from 'lodash/fp/join'
+import map from 'lodash/fp/map'
 
 const iconSize = '2x';
 const styles = {
@@ -135,9 +137,9 @@ export default class EventDetailView extends Component {
 			}
 		}
 
-    const renderGuilds = fp.flow(
-      fp.map(guild => guild.name),
-      fp.join(' ')
+    const renderGuilds = flow(
+      map(guild => guild.name),
+      join(' ')
     )
 
 		const title =

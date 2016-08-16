@@ -7,10 +7,12 @@ import TimePicker from 'material-ui/TimePicker';
 import Checkbox from 'material-ui/Checkbox';
 import moment from 'moment';
 import * as util from '../../util/EventFormUtil'
-import fp from 'lodash/fp'
 import has from 'lodash/has'
 import includes from 'lodash/includes'
 import compact from 'lodash/fp/compact'
+import assign from 'lodash/fp/assign'
+import without from 'lodash/fp/without'
+import concat from 'lodash/fp/concat'
 
 export default class EventForm extends Component {
 
@@ -29,7 +31,7 @@ export default class EventForm extends Component {
 	}
 
   updateFormData(newData) {
-    const newFormData = fp.assign(this.props.event)(newData)
+    const newFormData = assign(this.props.event)(newData)
     this.props.updateEventData(newFormData)
   }
 
@@ -75,7 +77,7 @@ export default class EventForm extends Component {
 	handleGuildClick(event) {
     const guildID = event.target.getAttribute('data-guildID')
     let guilds = this.props.event.guilds
-    guilds = fp.includes(guildID, guilds) ? fp.without([ guildID ], guilds) : fp.concat(guilds, guildID)
+    guilds = includes(guildID, guilds) ? without([ guildID ], guilds) : concat(guilds, guildID)
     guilds = compact(guilds)
     this.updateFormData({ guilds: guilds })
 	}

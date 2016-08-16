@@ -1,5 +1,5 @@
 import { getAllActiveGuildNames } from '../store/selectors/GuildSelector'
-import fp from 'lodash/fp'
+import join from 'lodash/fp/join'
 import isEmpty from 'lodash/isEmpty'
 
 const baseUrl = 'webcal://localhost:3000/api/ical-events?guild='
@@ -9,7 +9,7 @@ export const getSubscribeLink = (state) => {
   if( isEmpty(activeGuildNames) ) {
     return
   }
-  const buildUrlParams = fp.join('&guild=')
+  const buildUrlParams = join('&guild=')
 
   return baseUrl + buildUrlParams(activeGuildNames)
 }

@@ -1,7 +1,10 @@
 import toString from 'lodash/toString'
 import isDate from 'lodash/isDate'
 import includes from 'lodash/includes'
-import fp from 'lodash/fp'
+import omit from 'lodash/fp/omit'
+import set from 'lodash/fp/set'
+import flow from 'lodash/fp/flow'
+import map from 'lodash/fp/map'
 import moment from 'moment'
 
 // Merge date and time object into one unified date object
@@ -57,17 +60,17 @@ export const validateFormData = (event, adminGuild) => {
 
 // Converts the Event form data to an Event Object
 export const convertToEventObject = (event) => {
-  const convertObject = fp.flow(
-    fp.omit([ 'startTime', 'endTime' ]),
-    fp.set('startDate', mergeDateAndTime(event.startDate, event.startTime)),
-    fp.set('endDate', mergeDateAndTime(event.endDate, event.endTime))
+  const convertObject = flow(
+    omit([ 'startTime', 'endTime' ]),
+    set('startDate', mergeDateAndTime(event.startDate, event.startTime)),
+    set('endDate', mergeDateAndTime(event.endDate, event.endTime))
   )
   return convertObject(event)
 }
 
 // Unpopulates an event object. Use this prior to loading the EventForm with data
 export const unpopulateEventObject = (event) => {
-  const replaceWithIds = fp.map(guild => guild._id)
+  const replaceWithIds = map(guild => guild._id)
   event.guilds = replaceWithIds(event.guilds)
   event.owner = event.owner._id
   return event

@@ -6,13 +6,13 @@ import some from 'lodash/fp/some'
 import includes from 'lodash/fp/includes'
 import clone from 'lodash/fp/clone'
 import map from 'lodash/fp/map'
+import isNil from 'lodash/fp/isNil'
 import moment from 'moment'
 import * as EventUtil from '../../util/EventUtil'
 
-import fp from 'lodash/fp'
-
 // Other selectors
 import { getAllGuilds, getActiveGuilds } from './GuildSelector'
+
 
 export const getAllEvents = (state) => state.data.events
 
@@ -40,8 +40,8 @@ const getVisibleEventID = (state) => state.eventViewer.eventID
 export const getCurrentEvent = createSelector(
   [ getAllEvents, getAllGuilds, getVisibleEventID ],
   (events, guilds, currentEventID) => {
-    if(!currentEventID) {
-      return undefined
+    if(isNil(currentEventID)) {
+      return
     }
     let eventObject = clone(events[currentEventID])
     const populateGuildObject = map(guildID => guilds[guildID])
