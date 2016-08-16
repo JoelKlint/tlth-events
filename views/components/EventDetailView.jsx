@@ -4,9 +4,9 @@ import moment from 'moment';
 import { eventStyles, linkStyles } from '../ConstantStyles.js';
 import FontAwesome from 'react-fontawesome';
 import FlatButton from 'material-ui/FlatButton';
+import * as EventUtil from '../../util/EventUtil'
 
 import has from 'lodash/has'
-import isEqual from 'lodash/isEqual'
 import flow from 'lodash/fp/flow'
 import join from 'lodash/fp/join'
 import map from 'lodash/fp/map'
@@ -108,22 +108,19 @@ export default class EventDetailView extends Component {
 	renderButtons() {
 		const buttons = [];
 		const eventOwner = this.props.event.owner;
-		if( has(this.props.user, 'admin') ) {
-			const userAdmin = this.props.user.admin;
-			if( isEqual(userAdmin, eventOwner) ) {
-        buttons.push(
-        <FlatButton
-          label='Edit'
-          onTouchTap={this.handleEditEventClick}
-        />
-        );
-				buttons.push(
-					<FlatButton
-						label='Delete'
-						onTouchTap={this.deleteAndClose}
-					/>
-				);
-			}
+    if( this.props.userIsOwner ) {
+      buttons.push(
+      <FlatButton
+        label='Edit'
+        onTouchTap={this.handleEditEventClick}
+      />
+      );
+			buttons.push(
+				<FlatButton
+					label='Delete'
+					onTouchTap={this.deleteAndClose}
+				/>
+			);
 		}
 		return buttons;
 	}
@@ -241,10 +238,8 @@ export default class EventDetailView extends Component {
 }
 
 EventDetailView.defaultProps = {
-  event: {
-    guilds: [],
-    owner: {}
-  }
+  event: {},
+  userIsOwner: false
 }
 
 EventDetailView.propTypes = {
@@ -260,5 +255,5 @@ EventDetailView.propTypes = {
   }),
 	open: PropTypes.bool.isRequired,
 	close: PropTypes.func.isRequired,
-	user: PropTypes.object.isRequired
+  userIsOwner: PropTypes.bool
 }

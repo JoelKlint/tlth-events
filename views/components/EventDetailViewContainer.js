@@ -6,10 +6,12 @@ import { openEditEventForm } from '../../actions/EditEventViewActions'
 import { getCurrentEvent } from '../../store/selectors/EventsSelector'
 import { unpopulateEventObject } from '../../util/EventFormUtil'
 
+import * as EventUtil from '../../util/EventUtil'
+
 
 const mapStateToProps = (state) => {
 	return {
-		user: state.user,
+    userIsOwner: EventUtil.userIsOwner(getCurrentEvent(state), state.user),
     open: state.eventViewer.open,
     event: getCurrentEvent(state)
 	}
