@@ -3,9 +3,10 @@ import { apiMiddleware } from 'redux-api-middleware';
 import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 import reducer from './reducers/index';
+import alertSpy from './middleware/alerts'
 
 // Define what middleware to use in all environments
-const middlewares = [thunk, apiMiddleware]
+const middlewares = [thunk, apiMiddleware, alertSpy]
 
 if( process.env.NODE_ENV === 'development' ) {
   const logger = createLogger()

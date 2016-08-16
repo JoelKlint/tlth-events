@@ -6,6 +6,7 @@ import TopBar_smart from './TopBar_smart';
 import EventDetailViewContainer from './EventDetailViewContainer';
 import AddEventForm from './AddEventForm'
 import EditEventForm from './EditEventForm'
+import HeadsUpNotifier from './HeadsUpNotifier.jsx'
 
 export default class App extends React.Component {
 
@@ -65,6 +66,8 @@ export default class App extends React.Component {
         <EditEventForm/>
 
         <EventDetailViewContainer/>
+
+        <HeadsUpNotifier/>
 
 			</div>
 		);
