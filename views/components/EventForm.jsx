@@ -7,8 +7,8 @@ import TimePicker from 'material-ui/TimePicker';
 import Checkbox from 'material-ui/Checkbox';
 import moment from 'moment';
 import * as util from '../../util/EventFormUtil'
-import has from 'lodash/has'
-import includes from 'lodash/includes'
+import has from 'lodash/fp/has'
+import includes from 'lodash/fp/includes'
 import compact from 'lodash/fp/compact'
 import assign from 'lodash/fp/assign'
 import without from 'lodash/fp/without'
@@ -16,39 +16,14 @@ import concat from 'lodash/fp/concat'
 
 export default class EventForm extends Component {
 
-	constructor(props) {
-		super(props);
-		this.setName = this.setName.bind(this);
-		this.setDescription = this.setDescription.bind(this);
-		this.setLocation = this.setLocation.bind(this);
-		this.setStartDate = this.setStartDate.bind(this);
-		this.setStartTime = this.setStartTime.bind(this);
-		this.setEndDate = this.setEndDate.bind(this);
-		this.setEndTime = this.setEndTime.bind(this);
-		this.handleGuildClick = this.handleGuildClick.bind(this);
-		this.setUrl = this.setUrl.bind(this);
-		this.submitEvent = this.submitEvent.bind(this);
-	}
-
   updateFormData(newData) {
     const newFormData = assign(this.props.event)(newData)
     this.props.updateEventData(newFormData)
   }
 
-	setName(event, value) {
-    this.updateFormData({ name: value })
-	}
-
-	setDescription(event, value) {
-    this.updateFormData({ description: value })
-	}
-
-	setLocation(event, value) {
-    this.updateFormData({ location: value })
-	}
-
 	setStartDate(event, date) {
-    if( has(this.props.event, 'endDate') ) {
+    const hasEndDate = has('endDate')
+    if( hasEndDate(this.props.event) ) {
       this.updateFormData({ startDate: date })
     }
     else {
@@ -57,7 +32,8 @@ export default class EventForm extends Component {
 	}
 
 	setStartTime(event, time) {
-    if( has(this.props.event, 'endTime') ) {
+    const hasEndTime = has('endTime')
+    if( hasEndTime(this.props.event) ) {
       this.updateFormData({ startTime: time })
     }
     else {
@@ -66,28 +42,17 @@ export default class EventForm extends Component {
     }
 	}
 
-	setEndDate(event, date) {
-    this.updateFormData({ endDate: date })
-	}
-
-	setEndTime(event, time) {
-    this.updateFormData({ endTime: time })
-	}
-
 	handleGuildClick(event) {
     const guildID = event.target.getAttribute('data-guildID')
     let guilds = this.props.event.guilds
     guilds = includes(guildID, guilds) ? without([ guildID ], guilds) : concat(guilds, guildID)
     guilds = compact(guilds)
+    console.log(typeof guildID)
     this.updateFormData({ guilds: guilds })
 	}
 
-	setUrl(event, value) {
-    this.updateFormData({ url: value })
-	}
-
 	submitEvent() {
-    if( util.validateFormData(this.props.event, this.props.user.admin) ) {
+    if( this.props.validateForm() ) {
       const event = util.convertToEventObject(this.props.event)
       this.props.close()
       this.props.submit(event)
@@ -153,7 +118,7 @@ export default class EventForm extends Component {
       <FlatButton
         key={this.props.submitLabel}
         label={this.props.submitLabel}
-        onTouchTap={this.submitEvent}
+        onTouchTap={() => this.submitEvent()}
       />
     )
 
@@ -179,23 +144,23 @@ export default class EventForm extends Component {
 				<div style={styles.window}>
 					<TextField
 						floatingLabelText='Name'
-						onChange={this.setName}
+            onChange={(event, value) => this.updateFormData({ name: value })}
 						value={this.props.event.name}
 					/>
 					<TextField
 						floatingLabelText='Description'
 						multiLine={true}
-						onChange={this.setDescription}
+						onChange={(event, value) => this.updateFormData({ description: value })}
 						value={this.props.event.description}
 					/>
 					<TextField
 						floatingLabelText='Location'
-						onChange={this.setLocation}
+						onChange={(event, value) => this.updateFormData({ location: value })}
 						value={this.props.event.location}
 					/>
 					<TextField
 						floatingLabelText='URL'
-						onChange={this.setUrl}
+						onChange={(event, value) => this.updateFormData({ url: value })}
 						value={this.props.event.url}
 					/>
 					<div style={styles.window.time}>
@@ -203,7 +168,7 @@ export default class EventForm extends Component {
 							hintText='Start date'
 							autoOk={true}
 							textFieldStyle={styles.window.time.textField}
-							onChange={this.setStartDate}
+							onChange={(event, value) => this.setStartDate(event, value)}
 							value={this.props.event.startDate}
 						/>
 						<TimePicker
@@ -211,7 +176,7 @@ export default class EventForm extends Component {
 							format='24hr'
 							autoOk={true}
 							textFieldStyle={styles.window.time.textField}
-							onChange={this.setStartTime}
+							onChange={(event, value) => this.setStartTime(event, value)}
 							value={this.props.event.startTime}
 						/>
 					</div>
@@ -220,7 +185,7 @@ export default class EventForm extends Component {
 							hintText='End date'
 							autoOk={true}
 							textFieldStyle={styles.window.time.textField}
-							onChange={this.setEndDate}
+							onChange={(event, value) => this.updateFormData({ endDate: value })}
 							value={this.props.event.endDate}
 						/>
 						<TimePicker
@@ -228,7 +193,7 @@ export default class EventForm extends Component {
 							format='24hr'
 							autoOk={true}
 							textFieldStyle={styles.window.time.textField}
-							onChange={this.setEndTime}
+							onChange={(event, value) => this.updateFormData({ endTime: value })}
 							value={this.props.event.endTime}
 						/>
 					</div>
@@ -239,8 +204,8 @@ export default class EventForm extends Component {
 								label={guild.name}
 								style={styles.window.guildSelection.checkbox}
 								data-guildID={guild._id}
-								onCheck={this.handleGuildClick}
-                checked={includes(this.props.event.guilds, guild._id)}
+                onCheck={(event) => this.handleGuildClick(event)}
+                checked={includes(guild._id, this.props.event.guilds)}
 							/>
 						)}
 					</div>
@@ -263,8 +228,8 @@ EventForm.propTypes = {
 	submit: PropTypes.func.isRequired,
   submitLabel: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-	user: PropTypes.object.isRequired,
   event: PropTypes.object.isRequired,
   clearForm: PropTypes.func,
-  clearButtonEnabled: PropTypes.bool
+  clearButtonEnabled: PropTypes.bool,
+  validateForm: PropTypes.func.isRequired
 }
