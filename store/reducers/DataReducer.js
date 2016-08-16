@@ -1,6 +1,7 @@
 import merge from 'lodash/fp/merge'
 import set from 'lodash/fp/set'
 import unset from 'lodash/fp/unset'
+import assign from 'lodash/fp/assign'
 
 import {
   GET_ALL_EVENTS_REQUEST, GET_ALL_EVENTS_SUCCESS, GET_ALL_EVENTS_FAILURE,
@@ -39,16 +40,16 @@ export const data = (state = initialState, action) => {
     }
 
     case ADD_NEW_EVENT_REQUEST: {
-      const event = action.payload
-      const key = event.name + event.startDate
-      return set(['local', key], event, state)
+      let event = action.payload
+      const id = event.name + event.startDate
+      event = assign(action.payload, { _id: id, local: true })
+      return set(['events', id], event, state)
     }
 
     case ADD_NEW_EVENT_SUCCESS: {
       const event = action.payload
-      const key = event.name + event.startDate
-      let newState = unset([ 'local', key ], state)
-
+      const id = event.name + event.startDate
+      let newState = unset([ 'events', id ], state)
       const response = normalize(action.payload, eventSchema)
       return merge(newState, response.entities)
     }

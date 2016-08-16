@@ -1,26 +1,33 @@
 import { createSelector } from 'reselect'
-import values from 'lodash/values'
-import fp from 'lodash/fp'
+import values from 'lodash/fp/values'
+import union from 'lodash/fp/union'
+import filter from 'lodash/fp/filter'
 import moment from 'moment'
+import * as EventUtil from '../../util/EventUtil'
 
-const getAllEvents = (state) => state.data.events
-const getAllGuilds = (state) => state.data.guilds
-const getAllLocalEvents = (state) => state.data.local
+import fp from 'lodash/fp'
 
-const getActiveGuilds = (state) => state.activeGuilds
+// Other selectors
+import { getAllGuilds, getActiveGuilds } from './GuildSelector'
+
+export const getAllEvents = (state) => values(state.data.events)
+
+export const getNonSavedEvents = createSelector(
+  [ getAllEvents ],
+  (allEvents) => {
+    const filterUnsavedEvents = filter(event => EventUtil.isNotSaved(event))
+    return filterUnsavedEvents(allEvents)
+  }
+)
 
 export const getVisibleEvents = createSelector(
-  [ getAllEvents, getAllLocalEvents, getActiveGuilds ],
-  (events, localEvents, activeGuilds) => {
-    let persistentEvents = values(events)
-
+  [ getAllEvents, getNonSavedEvents, getActiveGuilds ],
+  (allEvents, localEvents, activeGuilds) => {
     const hasActiveGuild = fp.some(guild => fp.includes(guild, activeGuilds))
+    const filterVisibleEvents = fp.filter(event => hasActiveGuild(event.guilds))
 
-    const filter = fp.filter(event => hasActiveGuild(event.guilds))
-
-    let nonPersistentEvents = values(localEvents)
-
-    return fp.concat( filter(persistentEvents), nonPersistentEvents )
+    let visibleEvents = filterVisibleEvents(allEvents)
+    return union( visibleEvents, localEvents )
   }
 )
 

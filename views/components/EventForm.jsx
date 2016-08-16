@@ -10,6 +10,7 @@ import * as util from '../../util/EventFormUtil'
 import fp from 'lodash/fp'
 import has from 'lodash/has'
 import includes from 'lodash/includes'
+import compact from 'lodash/fp/compact'
 
 export default class EventForm extends Component {
 
@@ -74,7 +75,8 @@ export default class EventForm extends Component {
 	handleGuildClick(event) {
     const guildID = event.target.getAttribute('data-guildID')
     let guilds = this.props.event.guilds
-    guilds = _.includes(guilds, guildID) ?   _.without(guilds, guildID) : _.concat(guilds, guildID)
+    guilds = fp.includes(guildID, guilds) ? fp.without([ guildID ], guilds) : fp.concat(guilds, guildID)
+    guilds = compact(guilds)
     this.updateFormData({ guilds: guilds })
 	}
 

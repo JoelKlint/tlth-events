@@ -3,6 +3,8 @@ import CalendarHeader from './CalendarHeader.jsx';
 import moment from 'moment';
 import BigCalendar from 'react-big-calendar';
 import css from './calendar.css'
+import * as EventUtil from '../../util/EventUtil'
+import assign from 'lodash/fp/assign'
 
 export default class Calendar extends Component {
 
@@ -68,11 +70,20 @@ export default class Calendar extends Component {
 
     // Use this function to customize the style of individual events
     const eventCustomizer = (event, start, end, isSelected) => {
-      return {
-        style: {
-          // backgroundColor: '#FF6666',
-        }
+
+      let response = {}
+      if( EventUtil.isNotSaved(event) ) {
+        const unsavedColor = '#FF6666'
+        response = assign(response, {
+          style: {
+            backgroundColor: unsavedColor,
+            borderColor: unsavedColor
+          }
+        })
       }
+
+      return response
+
     }
 
 		return (
