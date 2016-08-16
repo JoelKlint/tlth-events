@@ -75,7 +75,8 @@ export const data = (state = initialState, action) => {
 
     case EDIT_EVENT_SUCCESS: {
       let response = normalize(action.payload, eventSchema)
-      return merge(state, response.entities)
+      const newEvents = assign(state.events, response.entities.events)
+      return assign(state, { events: newEvents })
     }
 
     case EDIT_EVENT_FAILURE: {
