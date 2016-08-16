@@ -24,7 +24,7 @@ const agent = {
 		Alert.success('Event saved')
 	},
   [EDIT_EVENT_FAILURE]: (action) => {
-		Alert.success('Event could not be saved')
+		Alert.failure('Event could not be saved')
 	}
 }
 
