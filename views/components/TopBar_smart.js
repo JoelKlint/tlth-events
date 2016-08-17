@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 import TopBar from './TopBar.jsx'
-import { openAddEventForm } from '../../actions/AddEventViewActions'
 import { getSubscribeLink } from '../../util/SubscribeUtil'
 import has from 'lodash/has'
+import UI from '../../store/actions/ui'
 
 const mapStateToProps = (state) => {
 	return {
@@ -15,7 +15,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
     openEventEditor: () => {
-      dispatch(openAddEventForm())
+      dispatch(UI.openAddEventForm())
     }
 	}
 }

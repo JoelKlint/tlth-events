@@ -1,7 +1,6 @@
 import moment from 'moment'
 import assign from 'lodash/fp/assign'
-
-import { OPEN_FORM, HIDE_FORM, UPDATE_EVENT_DATA } from '../../actions/EditEventViewActions';
+import UI from '../actions/ui'
 
 const initialState = {
   open: false,
@@ -11,7 +10,7 @@ const initialState = {
 export const editEventForm = (state = initialState, action) => {
   switch (action.type) {
 
-    case OPEN_FORM: {
+    case UI.OPEN_EDIT_EVENT_FORM: {
       const start = splitDateAndTime(action.event.startDate)
       const end = splitDateAndTime(action.event.endDate)
       let event = assign(action.event, {
@@ -23,11 +22,11 @@ export const editEventForm = (state = initialState, action) => {
       return assign(state, { event: event, open: true })
     }
 
-    case HIDE_FORM: {
+    case UI.HIDE_EDIT_EVENT_FORM: {
       return assign(state, { open: false })
     }
 
-    case UPDATE_EVENT_DATA: {
+    case UI.UPDATE_EDIT_EVENT_FORM_DATA: {
       return assign(state, { event: action.event })
     }
 

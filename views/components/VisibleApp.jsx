@@ -1,11 +1,9 @@
 import { connect } from 'react-redux';
 import App from './App.jsx';
-import { getAllEvents } from '../../actions/EventActions';
-import { viewEventDetails } from '../../actions/EventDetailViewActions'
-import { getAllGuilds } from '../../actions/GuildActions';
-import { handleGuildClick } from '../../actions/ActiveGuildsActions';
 import values from 'lodash/values';
 import Selector from '../../store/selectors'
+import API from '../../store/actions/api'
+import UI from '../../store/actions/ui'
 
 const mapStateToProps = (state) => {
 
@@ -19,16 +17,16 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		getAllEvents: () => {
-			dispatch(getAllEvents());
+			dispatch(API.getAllEvents());
 		},
 		getAllGuilds: () => {
-			dispatch(getAllGuilds());
+			dispatch(API.getAllGuilds());
 		},
 		handleGuildClick: (guild) => {
-			dispatch(handleGuildClick(guild));
+			dispatch(UI.addOrRemoveGuildFromFilter(guild));
 		},
     viewEventDetails: (event) => {
-      dispatch(viewEventDetails(event._id));
+      dispatch(UI.viewEventDetails(event._id));
     }
 	}
 }

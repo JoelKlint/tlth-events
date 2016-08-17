@@ -1,7 +1,6 @@
 import assign from 'lodash/fp/assign'
 import unset from 'lodash/fp/unset'
-
-import { VIEW_DETAILS, HIDE_DETAILS } from '../../actions/EventDetailViewActions';
+import UI from '../actions/ui'
 
 const initialState = {
   open: false,
@@ -10,11 +9,11 @@ const initialState = {
 export const eventViewer = (state = initialState, action) => {
   switch (action.type) {
 
-    case VIEW_DETAILS: {
+    case UI.VIEW_EVENT_DETAILS: {
       return assign(state, { open: true, eventID: action.eventID })
     }
 
-    case HIDE_DETAILS: {
+    case UI.HIDE_EVENT_DETAILS: {
       let newState = unset('eventID', state)
       return assign(newState, { open: false })
     }

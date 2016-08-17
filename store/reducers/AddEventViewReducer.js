@@ -1,6 +1,5 @@
 import assign from 'lodash/fp/assign'
-
-import { OPEN_FORM, HIDE_FORM, UPDATE_EVENT_DATA, CLEAR_EVENT_DATA } from '../../actions/AddEventViewActions';
+import UI from '../actions/ui'
 
 const initialState = {
   open: false,
@@ -12,19 +11,19 @@ export const addEventForm = (state = initialState, action) => {
 
   switch (action.type) {
 
-    case OPEN_FORM: {
+    case UI.OPEN_ADD_EVENT_FORM: {
       return assignToState({ open: true })
     }
 
-    case HIDE_FORM: {
+    case UI.HIDE_ADD_EVENT_FORM: {
       return assignToState({ open: false })
     }
 
-    case UPDATE_EVENT_DATA: {
+    case UI.UPDATE_ADD_EVENT_FORM_DATA: {
       return assignToState({ event: action.event })
     }
 
-    case CLEAR_EVENT_DATA: {
+    case UI.CLEAR_ADD_EVENT_FORM_DATA: {
       return assignToState({ event: {} })
     }
 

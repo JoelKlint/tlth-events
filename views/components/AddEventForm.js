@@ -1,10 +1,10 @@
 import { connect } from 'react-redux';
 import EventForm from './EventForm.jsx';
-import { addNewEvent } from '../../actions/EventActions';
-import { hideAddEventForm, updateAddEventData, clearAddEventData } from '../../actions/AddEventViewActions'
 import values from 'lodash/fp/values'
 import * as EventFormUtil from '../../util/EventFormUtil'
 import Selector from '../../store/selectors'
+import API from '../../store/actions/api'
+import UI from '../../store/actions/ui'
 
 const mapStateToProps = (state) => {
 
@@ -27,16 +27,16 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		submit: (event) => {
-			dispatch(addNewEvent(event));
+			dispatch(API.addNewEvent(event));
 		},
     close: () => {
-      dispatch(hideAddEventForm())
+      dispatch(UI.hideAddEventForm())
     },
     updateEventData: (event) => {
-      dispatch(updateAddEventData(event));
+      dispatch(UI.updateAddEventData(event));
     },
     clearForm: () => {
-      dispatch(clearAddEventData());
+      dispatch(UI.clearAddEventData());
     }
 	}
 }

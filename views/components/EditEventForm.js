@@ -1,13 +1,13 @@
 import { connect } from 'react-redux';
 import EventForm from './EventForm.jsx';
-import { hideEditEventForm, updateEditEventData } from '../../actions/EditEventViewActions'
-import { editEvent } from '../../actions/EventActions'
 import values from 'lodash/fp/values'
 import * as EventFormUtil from '../../util/EventFormUtil'
+
 import Selector from '../../store/selectors'
+import UI from '../../store/actions/ui'
+import API from '../../store/actions/api'
 
 const mapStateToProps = (state) => {
-
   const adminGuild = Selector.getAdminGuild(state)
   const eventFormData = Selector.getEditEventFormData(state)
 
@@ -26,13 +26,13 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		submit: (event) => {
-			dispatch(editEvent(event));
+			dispatch(API.editEvent(event));
 		},
     close: () => {
-      dispatch(hideEditEventForm())
+      dispatch(UI.hideEditEventForm())
     },
     updateEventData: (event) => {
-      dispatch(updateEditEventData(event));
+      dispatch(UI.updateEditEventData(event));
     }
 	}
 }
