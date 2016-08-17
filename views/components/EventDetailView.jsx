@@ -108,7 +108,7 @@ export default class EventDetailView extends Component {
 	renderButtons() {
 		const buttons = [];
 		const eventOwner = this.props.event.owner;
-    if( this.props.userIsOwner ) {
+    if( this.props.editAllowed ) {
       buttons.push(
       <FlatButton
         label='Edit'
@@ -239,7 +239,7 @@ export default class EventDetailView extends Component {
 
 EventDetailView.defaultProps = {
   event: {},
-  userIsOwner: false
+  editAllowed: false
 }
 
 EventDetailView.propTypes = {
@@ -255,5 +255,5 @@ EventDetailView.propTypes = {
   }),
 	open: PropTypes.bool.isRequired,
 	close: PropTypes.func.isRequired,
-  userIsOwner: PropTypes.bool
+  editAllowed: PropTypes.bool
 }

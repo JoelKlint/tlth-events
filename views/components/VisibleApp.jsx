@@ -5,13 +5,14 @@ import { viewEventDetails } from '../../actions/EventDetailViewActions'
 import { getAllGuilds } from '../../actions/GuildActions';
 import { handleGuildClick } from '../../actions/ActiveGuildsActions';
 import values from 'lodash/values';
-import { getVisibleEvents, getCurrentEvent } from '../../store/selectors/EventsSelector'
+import Selector from '../../store/selectors'
 
 const mapStateToProps = (state) => {
+
 	return {
-    events: getVisibleEvents(state),
-		guilds: values(state.data.guilds),
-		activeGuilds: state.activeGuilds
+    events: Selector.getVisibleEvents(state),
+    guilds: Selector.getAllGuilds(state),
+		activeGuilds: Selector.getActiveGuilds(state)
 	}
 }
 

@@ -4,16 +4,21 @@ import { hideEditEventForm, updateEditEventData } from '../../actions/EditEventV
 import { editEvent } from '../../actions/EventActions'
 import values from 'lodash/fp/values'
 import * as EventFormUtil from '../../util/EventFormUtil'
+import Selector from '../../store/selectors'
 
 const mapStateToProps = (state) => {
+
+  const adminGuild = Selector.getAdminGuild(state)
+  const eventFormData = Selector.getEditEventFormData(state)
+
 	return {
-		guilds: values(state.data.guilds),
-    open: state.editEventForm.open,
-    event: state.editEventForm.event,
+		guilds: Selector.getAllGuilds(state),
+    open: Selector.shouldEditEventFormBeOpen(state),
+    event: eventFormData,
     submitLabel: 'Save',
     title: 'Edit event',
     validateForm: () =>  {
-      return EventFormUtil.validateFormData(state.editEventForm.event, state.user.admin)
+      return EventFormUtil.validateFormData(eventFormData, adminGuild)
     }
 	}
 }

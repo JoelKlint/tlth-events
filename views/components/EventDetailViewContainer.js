@@ -3,17 +3,22 @@ import EventDetailView from './EventDetailView.jsx';
 import { deleteEvent } from '../../actions/EventActions';
 import { hideEventDetails } from '../../actions/EventDetailViewActions';
 import { openEditEventForm } from '../../actions/EditEventViewActions'
-import { getCurrentEvent } from '../../store/selectors/EventsSelector'
 import { unpopulateEventObject } from '../../util/EventFormUtil'
+
+import Selector from '../../store/selectors'
 
 import * as EventUtil from '../../util/EventUtil'
 
 
 const mapStateToProps = (state) => {
+
+  const currentEvent = Selector.getCurrentEvent(state)
+  const loggedInUser = Selector.getLoggedInUser(state)
+
 	return {
-    userIsOwner: EventUtil.userIsOwner(getCurrentEvent(state), state.user),
+    editAllowed: EventUtil.mayUserEdit(currentEvent, loggedInUser),
     open: state.eventViewer.open,
-    event: getCurrentEvent(state)
+    event: currentEvent
 	}
 }
 

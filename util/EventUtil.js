@@ -5,7 +5,7 @@ export const isNotSaved = (event) => {
   return event.local === true
 }
 
-export const userIsOwner = (event, user) => {
+export const mayUserEdit = (event, user) => {
   if(isNil(event) || isNil(user)) {
     return false
   }

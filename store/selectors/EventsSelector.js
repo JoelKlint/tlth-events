@@ -11,13 +11,13 @@ import moment from 'moment'
 import * as EventUtil from '../../util/EventUtil'
 
 // Other selectors
-import { getAllGuilds, getActiveGuilds } from './GuildSelector'
+import { _getAllGuildsAsMap, getActiveGuilds } from './GuildSelector'
 
-
-export const getAllEvents = (state) => state.data.events
+export const _getAllEventsAsMap = (state) => state.data.events
+export const getAllEvents = (state) => values(state.data.events)
 
 export const getNonSavedEvents = createSelector(
-  [ getAllEvents ],
+  [ _getAllEventsAsMap ],
   (allEvents) => {
     const filterUnsavedEvents = filter(event => EventUtil.isNotSaved(event))
     return filterUnsavedEvents(values(allEvents))
@@ -25,7 +25,7 @@ export const getNonSavedEvents = createSelector(
 )
 
 export const getVisibleEvents = createSelector(
-  [ getAllEvents, getNonSavedEvents, getActiveGuilds ],
+  [ _getAllEventsAsMap, getNonSavedEvents, getActiveGuilds ],
   (allEvents, localEvents, activeGuilds) => {
     const hasActiveGuild = some(guild => includes(guild, activeGuilds))
     const filterVisibleEvents = filter(event => hasActiveGuild(event.guilds))
@@ -35,10 +35,10 @@ export const getVisibleEvents = createSelector(
   }
 )
 
-const getVisibleEventID = (state) => state.eventViewer.eventID
+export const getVisibleEventID = (state) => state.eventViewer.eventID
 
 export const getCurrentEvent = createSelector(
-  [ getAllEvents, getAllGuilds, getVisibleEventID ],
+  [ _getAllEventsAsMap, _getAllGuildsAsMap, getVisibleEventID ],
   (events, guilds, currentEventID) => {
     if(isNil(currentEventID)) {
       return

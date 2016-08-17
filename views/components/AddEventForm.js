@@ -4,17 +4,22 @@ import { addNewEvent } from '../../actions/EventActions';
 import { hideAddEventForm, updateAddEventData, clearAddEventData } from '../../actions/AddEventViewActions'
 import values from 'lodash/fp/values'
 import * as EventFormUtil from '../../util/EventFormUtil'
+import Selector from '../../store/selectors'
 
 const mapStateToProps = (state) => {
+
+  const adminGuild = Selector.getAdminGuild(state)
+  const eventFormData = Selector.getAddEventFormData(state)
+
 	return {
-		guilds: values(state.data.guilds),
-    open: state.addEventForm.open,
-    event: state.addEventForm.event,
+		guilds: Selector.getAllGuilds(state),
+    open: Selector.shouldAddEventFormBeOpen(state),
+    event: eventFormData,
     clearButtonEnabled: true,
     submitLabel: 'Add event',
     title: 'Add event',
     validateForm: () =>  {
-      return EventFormUtil.validateFormData(state.addEventForm.event, state.user.admin)
+      return EventFormUtil.validateFormData(eventFormData, adminGuild)
     }
 	}
 }
