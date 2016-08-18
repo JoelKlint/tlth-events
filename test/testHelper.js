@@ -1,6 +1,6 @@
 import winston from 'winston';
 
-import { Event, Guild, User } from '../models';
+import { Event, Guild, User } from '../server/models';
 
 export const clearDb = (callback) => {
 	Event.remove()

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 const router = Router();
-import { Guild, User } from '../../../models';
+import { Guild, User } from '../../models';
 import cas from '../../middleware/cas';
 import ParameterError from '../../config/ParameterError';
 

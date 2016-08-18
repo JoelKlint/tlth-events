@@ -24,7 +24,7 @@ const cas = new CASAuthentication({
     destroy_session : false
 });
 
-import { User } from '../../models'
+import { User } from '../models'
 
 const attachUserToRequest = (req, res, next) => {
   User.findOne({ username: req.session.cas_user })

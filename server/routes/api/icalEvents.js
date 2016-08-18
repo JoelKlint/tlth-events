@@ -1,6 +1,6 @@
 import { Router } from 'express';
 const router = Router();
-import { Event, Guild } from '../../../models';
+import { Event, Guild } from '../../models';
 import { VCalendar, VEvent } from 'cozy-ical';
 import ParameterError from '../../config/ParameterError';
 import moment from 'moment';

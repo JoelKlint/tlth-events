@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import cas from '../middleware/cas';
-import { User } from '../../models';
+import { User } from '../models';
 import renderFromServer from '../../public/serverRenderer';
 import winston from 'winston';
 

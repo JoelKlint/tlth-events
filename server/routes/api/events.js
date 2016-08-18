@@ -1,6 +1,6 @@
 import { Router } from 'express';
 const router = Router();
-import { User, Event, Guild } from '../../../models';
+import { User, Event, Guild } from '../../models';
 import ParameterError from '../../config/ParameterError';
 import UnauthorizedError from '../../config/UnauthorizedError';
 import cas from '../../middleware/cas';
