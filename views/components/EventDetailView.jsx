@@ -84,7 +84,9 @@ export default class EventDetailView extends Component {
 					<div style={styles.content}>
 						<div style={styles.leftBlock}>
 
-							<p style={styles.leftChild}> {this.renderDate()} </p>
+              <p style={styles.leftChild}> {this.renderOwner()} </p>
+
+              <p style={styles.leftChild}> {this.renderDate()} </p>
 
 							<p style={styles.leftChild}> {this.renderTime()} </p>
 
@@ -150,6 +152,19 @@ export default class EventDetailView extends Component {
 			</div>
 			return title;
 	}
+
+  renderOwner() {
+    if( !has(this.props.event, 'owner') ) return;
+    const ownerStyles = {
+      paddingLeft: '0.4em',
+      margin: '0em'
+    }
+    return (
+      <span>
+        <h3 style={ownerStyles}>Hosted by: {this.props.event.owner.name}</h3>
+      </span>
+    )
+  }
 
 	renderDate() {
 		const dateFormat = 'D MMM';
