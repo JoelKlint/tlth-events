@@ -1,5 +1,4 @@
 import moment from 'moment';
-import mongoose from 'mongoose'
 
 /**
  * Generates unique numbers
@@ -13,7 +12,7 @@ const uniqueId = () => {
  * Generates MongoDB ID numbers
  */
 export const fakeDbId = () => {
-	return new mongoose.Types.ObjectId;
+  return counter++
 }
 
 /**
@@ -47,7 +46,7 @@ export const guild = () => {
 /**
  * Defines mockdata for an event
  */
-export const event = (ownerId = fakeDbId(), guildIdArray = [ fakeDbId() ]) => {
+export const event = (ownerGuildId = fakeDbId(), invitedGuilds = [ fakeDbId() ]) => {
 	return {
 		name: 'testevent ' + uniqueId(),
 		startDate: moment().toISOString(),

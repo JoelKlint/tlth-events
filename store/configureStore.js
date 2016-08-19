@@ -8,10 +8,10 @@ import alertSpy from './middleware/alerts'
 // Define what middleware to use in all environments
 const middlewares = [thunk, apiMiddleware, alertSpy]
 
-if( process.env.NODE_ENV === 'development' ) {
+// if( process.env.NODE_ENV === 'development' ) {
   const logger = createLogger()
   middlewares.push(logger)
-}
+// }
 
 const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 

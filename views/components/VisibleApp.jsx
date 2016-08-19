@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch) => {
 			dispatch(UI.addOrRemoveGuildFromFilter(guild));
 		},
     viewEventDetails: (event) => {
-      dispatch(UI.viewEventDetails(event._id));
+      dispatch(UI.viewEventDetails(event.id));
     }
 	}
 }

@@ -1,13 +1,13 @@
 import { connect } from 'react-redux'
 import TopBar from './TopBar.jsx'
 import { getSubscribeLink } from '../../util/SubscribeUtil'
-import has from 'lodash/has'
 import UI from '../../store/actions/ui'
+import Selector from '../../store/selectors'
 
 const mapStateToProps = (state) => {
 	return {
-		loggedIn: has(state.user, 'username'),
-    admin: has(state.user, 'admin'),
+    loggedIn: Selector.isUserLoggedIn(state),
+    userIsAdmin: Selector.isLoggedInUserAdmin(state),
     subscribeLink: getSubscribeLink(state)
 	}
 }

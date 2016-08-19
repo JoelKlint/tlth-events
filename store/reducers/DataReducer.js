@@ -6,13 +6,18 @@ import API from '../actions/api'
 
 import { normalize, Schema, arrayOf } from 'normalizr'
 
-const eventSchema = new Schema('events', { idAttribute: '_id' })
-const guildSchema = new Schema('guilds', { idAttribute: '_id' })
+const eventSchema = new Schema('events')
+const guildSchema = new Schema('guilds')
+const userSchema = new Schema('users')
 
 eventSchema.define({
-  owner: guildSchema,
-  guilds: arrayOf(guildSchema)
+  ownerGuild: guildSchema,
+  invitedGuilds: arrayOf(guildSchema)
 });
+
+guildSchema.define({
+  administrators: arrayOf(userSchema)
+})
 
 const initialState = {}
 
@@ -32,7 +37,7 @@ export const data = (state = initialState, action) => {
     case API.ADD_NEW_EVENT_REQUEST: {
       let event = action.payload
       const id = event.name + event.startDate
-      event = assign(action.payload, { _id: id, local: true })
+      event = assign(action.payload, { id: id, local: true })
       return set(['events', id], event, state)
     }
 
@@ -50,7 +55,7 @@ export const data = (state = initialState, action) => {
     }
 
     case API.DELETE_EVENT_SUCCESS: {
-      return unset([ 'events', action.payload._id ], state)
+      return unset([ 'events', action.payload.id ], state)
     }
 
     case API.DELETE_EVENT_FAILURE: {

@@ -9,9 +9,9 @@ export const addOrRemoveGuildFromFilter = (guildId) => {
 
 export const SET_GUILD_FILTER = 'SET_GUILD_FILTER'
 
-export const setFilter = (guilds) => {
+export const setFilter = (guildIds) => {
 	return {
 		type: SET_GUILD_FILTER,
-		guilds
+		guildIds
 	}
 }

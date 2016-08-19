@@ -28,8 +28,7 @@ export const getVisibleEvents = createSelector(
   [ _getAllEventsAsMap, getNonSavedEvents, getActiveGuilds ],
   (allEvents, localEvents, activeGuilds) => {
     const hasActiveGuild = some(guild => includes(guild, activeGuilds))
-    const filterVisibleEvents = filter(event => hasActiveGuild(event.guilds))
-
+    const filterVisibleEvents = filter(event => hasActiveGuild(event.invitedGuilds))
     let visibleEvents = filterVisibleEvents(values(allEvents))
     return union( visibleEvents, localEvents )
   }
@@ -40,13 +39,11 @@ export const getVisibleEventID = (state) => state.eventViewer.eventID
 export const getCurrentEvent = createSelector(
   [ _getAllEventsAsMap, _getAllGuildsAsMap, getVisibleEventID ],
   (events, guilds, currentEventID) => {
-    if(isNil(currentEventID)) {
-      return
-    }
+    if(isNil(currentEventID)) return
     let eventObject = clone(events[currentEventID])
     const populateGuildObject = map(guildID => guilds[guildID])
-    eventObject.guilds = populateGuildObject(eventObject.guilds)
-    eventObject.owner = guilds[eventObject.owner]
+    eventObject.invitedGuilds = populateGuildObject(eventObject.invitedGuilds)
+    eventObject.ownerGuild = guilds[eventObject.ownerGuildId]
     eventObject.startDate = moment(eventObject.startDate).toDate()
     eventObject.endDate = moment(eventObject.endDate).toDate()
     return eventObject

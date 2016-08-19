@@ -1,7 +1,9 @@
 import { Router } from 'express';
 const router = Router();
-import { Guild } from '../../models';
 import ParameterError from '../../config/ParameterError';
+import DoesNotExistError from '../../config/DoesNotExistError'
+import Models from '../../models'
+import assign from 'lodash/assign'
 
 /**
  * @api {get} /api/guilds Get all guilds
@@ -10,13 +12,14 @@ import ParameterError from '../../config/ParameterError';
  * @apiDescription
  * Get a list of all guilds
  */
-router.get('/', function(req, res, next) {
-	Guild.find().then(function(guilds) {
-		res.json(guilds);
-	})
-	.catch(function(err) {
-		return next(err);
-	})
+router.get('/', async (req, res, next) => {
+  try {
+    let guilds = await Models.Guild.findAll({ include: {all:true} })
+    res.json(guilds)
+  }
+  catch(err) {
+    return next(err)
+  }
 });
 
 /**
@@ -26,14 +29,14 @@ router.get('/', function(req, res, next) {
  * @apiDescription
  * Create a new guild
  */
-router.post('/', function(req, res, next) {
-	var guild = new Guild(req.body);
-	guild.save().then(function(guild) {
-		res.json(guild);
-	})
-	.catch(function(err) {
-		return next(err);
-	})
+router.post('/', async (req, res, next) => {
+  try {
+    let guild = await Models.Guild.create(req.body)
+    res.json(guild)
+  }
+  catch(err) {
+    return next(err)
+  }
 });
 
 /**
@@ -43,17 +46,28 @@ router.post('/', function(req, res, next) {
  * @apiDescription
  * Get a specific guild
  */
-router.get('/:guild_id', function(req, res, next) {
-	Guild.findById(req.params.guild_id).then(function(guild) {
-		if(!guild) {
-			const err = new ParameterError('Guild does not exist');
-			return next(err);
-		}
-		res.json(guild);
-	})
-	.catch(function(err) {
-		return next(err);
-	})
+router.get('/:guild_id', async (req, res, next) => {
+  try {
+    let guild = await Models.Guild.findById(req.params.guild_id)
+    if(!guild) return next(new DoesNotExistError())
+    res.json(guild)
+  }
+  catch(err) {
+    next(err)
+  }
+  return
+
+
+	// Guild.findById(req.params.guild_id).then(function(guild) {
+	// 	if(!guild) {
+	// 		const err = new ParameterError('Guild does not exist');
+	// 		return next(err);
+	// 	}
+	// 	res.json(guild);
+	// })
+	// .catch(function(err) {
+	// 	return next(err);
+	// })
 });
 
 /**
@@ -63,19 +77,18 @@ router.get('/:guild_id', function(req, res, next) {
  * @apiDescription
  * Edit a guild
  */
-router.put('/:guild_id', function(req, res, next) {
-	Guild.findByIdAndUpdate(req.params.guild_id, req.body).then(function(guild) {
-		if(!guild) {
-			const err = new ParameterError('Guild does not exist');
-			return next(err);
-		}
-		Guild.findById(req.params.guild_id)
-		.then(guild => res.json(guild))
-		.catch(err => next(err))
-	})
-	.catch(function(err) {
-		return next(err);
-	})
+router.put('/:guild_id', async (req, res, next) => {
+  try {
+    let guild = await Models.Guild.findById(req.params.guild_id)
+    if(!guild) return next(new DoesNotExistError())
+    guild = assign(guild, req.body)
+    await guild.save()
+    res.json(guild)
+  }
+  catch(err) {
+    next(err)
+  }
+  return
 });
 
 /**
@@ -85,17 +98,49 @@ router.put('/:guild_id', function(req, res, next) {
  * @apiDescription
  * Delete a guild
  */
-router.delete('/:guild_id', function(req, res, next) {
-	Guild.findByIdAndRemove(req.params.guild_id).then(function(guild) {
-		if(!guild) {
-			const err = new ParameterError('Guild does not exist');
-			return next(err);
-		}
-		res.json(guild);
-	})
-	.catch(function(err) {
-		return next(err);
-	})
+router.delete('/:guild_id', async (req, res, next) => {
+  try {
+    let guild = await Models.Guild.findById(req.params.guild_id)
+    if(!guild) return next(new DoesNotExistError())
+    await guild.destroy()
+    res.json(guild)
+  }
+  catch(err) {
+    next(err)
+  }
+  return
 });
+
+/**
+ * @api {post} /api/guilds/:guild_id/admin Add user as admin of guild
+ * @apiName Add user as admin of guild
+ * @apiGroup Guild
+ * @apiDescription
+ * Make user admin of a guild
+ */
+router.post('/:guild_id/admin', async (req, res, next) => {
+  try {
+    let guild = await Models.Guild.findById(req.params.guild_id)
+    await guild.addAdministrator(req.body.userId)
+    res.json(guild)
+  }
+  catch(err) {
+    next(err)
+  }
+  return
+})
+
+
+router.delete('/:guild_id/admin', async (req, res, next) => {
+  try {
+    let guild = await (Models.Guild.findById(req.params.guild_id))
+    await guild.removeAdministrator(req.body.userId)
+    res.json(guild)
+  }
+  catch(err) {
+    next(err)
+  }
+  return
+})
 
 export default router;

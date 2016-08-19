@@ -10,6 +10,7 @@ import has from 'lodash/has'
 import flow from 'lodash/fp/flow'
 import join from 'lodash/fp/join'
 import map from 'lodash/fp/map'
+import negate from 'lodash/fp/negate'
 
 const iconSize = '2x';
 const styles = {
@@ -109,7 +110,6 @@ export default class EventDetailView extends Component {
 
 	renderButtons() {
 		const buttons = [];
-		const eventOwner = this.props.event.owner;
     if( this.props.editAllowed ) {
       buttons.push(
       <FlatButton
@@ -128,7 +128,7 @@ export default class EventDetailView extends Component {
 	}
 
 	renderTitle() {
-		if( !has(this.props.event, 'guilds') ) return;
+		if( !this.props.event.invitedGuilds ) return;
 		const styles = {
 			base: {
 				display: 'flex',
@@ -147,21 +147,21 @@ export default class EventDetailView extends Component {
 					{ this.props.event.name }
 				</div>
 				<div>
-          { renderGuilds(this.props.event.guilds) }
+          { renderGuilds(this.props.event.invitedGuilds) }
 				</div>
 			</div>
 			return title;
 	}
 
   renderOwner() {
-    if( !has(this.props.event, 'owner') ) return;
+    if(!this.props.event.ownerGuild) return
     const ownerStyles = {
       paddingLeft: '0.4em',
       margin: '0em'
     }
     return (
       <span>
-        <h3 style={ownerStyles}>Hosted by: {this.props.event.owner.name}</h3>
+        Hosted by: {this.props.event.ownerGuild.name}
       </span>
     )
   }
@@ -205,9 +205,8 @@ export default class EventDetailView extends Component {
 		)
 	}
 
-
 	renderLocation() {
-		if( !has(this.props.event, 'location') ) return;
+		if( !this.props.event.location ) return
 		return (
 			<span>
 				<FontAwesome
@@ -222,7 +221,7 @@ export default class EventDetailView extends Component {
 	}
 
 	renderUrl() {
-		if( !has(this.props.event, 'url') ) return;
+		if( !this.props.event.url ) return;
 		return (
 			<a
 				href={this.props.event.url}
@@ -241,7 +240,7 @@ export default class EventDetailView extends Component {
 	}
 
 	renderDescription() {
-		if( !has(this.props.event, 'description') ) return;
+		if( !this.props.event.description ) return;
 		return this.props.event.description
 		.split('\n')
 		.map((line, key) => {
@@ -265,8 +264,8 @@ EventDetailView.propTypes = {
     startDate: PropTypes.instanceOf(Date),
     endDate: PropTypes.instanceOf(Date),
     url: PropTypes.string,
-    owner: PropTypes.object,
-    guilds: PropTypes.array
+    ownerGuild: PropTypes.object,
+    invitedGuilds: PropTypes.array
   }),
 	open: PropTypes.bool.isRequired,
 	close: PropTypes.func.isRequired,

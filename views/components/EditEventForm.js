@@ -8,7 +8,8 @@ import UI from '../../store/actions/ui'
 import API from '../../store/actions/api'
 
 const mapStateToProps = (state) => {
-  const adminGuild = Selector.getAdminGuild(state)
+
+  const adminGuild = Selector.getAdminGuildId(state)
   const eventFormData = Selector.getEditEventFormData(state)
 
 	return {

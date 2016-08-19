@@ -43,7 +43,7 @@ export default class GuildList extends Component {
 							<Guild
 								guild={guild}
 								handleClick={this.props.handleClick}
-								active={ includes(this.props.active, guild._id) }
+								active={ includes(this.props.active, guild.id) }
 							/>
 						</div>
 					)}

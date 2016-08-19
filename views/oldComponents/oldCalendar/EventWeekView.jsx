@@ -81,7 +81,7 @@ export default class EventWeekView extends React.Component {
 	}
 
 	isSaved() {
-		return this.props.event.has('_id');
+		return this.props.event.has('id');
 	}
 }
 

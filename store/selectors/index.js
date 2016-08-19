@@ -5,6 +5,7 @@ import * as Guild from './GuildSelector'
 import * as AddEventForm from './AddEventFormSelector'
 import * as EditEventForm from './EditEventFormSelector'
 import * as User from './UserSelector'
+import * as EventViewer from './EventViewerSelector'
 
 
 export default assignAll([
@@ -12,5 +13,6 @@ export default assignAll([
   Guild,
   AddEventForm,
   EditEventForm,
-  User
+  User,
+  EventViewer
 ])

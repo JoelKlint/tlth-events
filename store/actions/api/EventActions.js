@@ -46,7 +46,7 @@ export const DELETE_EVENT_FAILURE = 'DELETE_EVENT_FAILURE';
 export const deleteEvent = (event) => {
 	return {
 		[CALL_API]: {
-			endpoint: '/api/events/' + event._id,
+			endpoint: '/api/events/' + event.id,
 			method: 'DELETE',
 			types: [DELETE_EVENT_REQUEST, DELETE_EVENT_SUCCESS, DELETE_EVENT_FAILURE]
 		}
@@ -61,7 +61,7 @@ export const EDIT_EVENT_FAILURE = 'EDIT_EVENT_FAILURE';
 export const editEvent = (event) => {
   return {
     [CALL_API]: {
-      endpoint: '/api/events/' + event._id,
+      endpoint: '/api/events/' + event.id,
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(event),

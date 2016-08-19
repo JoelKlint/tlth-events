@@ -9,7 +9,7 @@ export default class Guild extends Component {
 	}
 
 	handleClick() {
-		this.props.handleClick(this.props.guild._id);
+		this.props.handleClick(this.props.guild.id);
 	}
 
 	render() {
@@ -37,7 +37,7 @@ export default class Guild extends Component {
 
 Guild.propTypes = {
   guild: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired
   }).isRequired,
 	handleClick: PropTypes.func.isRequired,

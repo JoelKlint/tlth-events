@@ -5,10 +5,11 @@ import * as EventFormUtil from '../../util/EventFormUtil'
 import Selector from '../../store/selectors'
 import API from '../../store/actions/api'
 import UI from '../../store/actions/ui'
+import assign from 'lodash/fp/assign'
 
 const mapStateToProps = (state) => {
 
-  const adminGuild = Selector.getAdminGuild(state)
+  const adminGuild = Selector.getAdminGuildId(state)
   const eventFormData = Selector.getAddEventFormData(state)
 
 	return {

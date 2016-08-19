@@ -5,6 +5,7 @@ import omit from 'lodash/fp/omit'
 import set from 'lodash/fp/set'
 import flow from 'lodash/fp/flow'
 import map from 'lodash/fp/map'
+import unset from 'lodash/fp/unset'
 import moment from 'moment'
 
 // Merge date and time object into one unified date object
@@ -17,7 +18,7 @@ const mergeDateAndTime = (date, time) => {
 }
 
 // Validate form data. Returns true if form is valid
-export const validateFormData = (event, adminGuild) => {
+export const validateFormData = (event, adminGuildId) => {
 
   // Validate name
   if( toString(event.name).length < 1 ) {
@@ -50,7 +51,7 @@ export const validateFormData = (event, adminGuild) => {
   }
 
   // Validate guilds
-  if( !includes(event.guilds, adminGuild._id) ) {
+  if( !includes(event.invitedGuilds, adminGuildId) ) {
     alert('You must enter your own guild')
     return false
   }
@@ -70,8 +71,8 @@ export const convertToEventObject = (event) => {
 
 // Unpopulates an event object. Use this prior to loading the EventForm with data
 export const unpopulateEventObject = (event) => {
-  const replaceWithIds = map(guild => guild._id)
-  event.guilds = replaceWithIds(event.guilds)
-  event.owner = event.owner._id
+  const replaceWithIds = map(guild => guild.id)
+  event.invitedGuilds = replaceWithIds(event.invitedGuilds)
+  event = unset('owner', event)
   return event
 }

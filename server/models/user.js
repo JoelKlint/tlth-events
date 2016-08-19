@@ -1,15 +1,19 @@
-import { Schema } from 'mongoose';
-import * as modelNames from './ModelNames';
+const User = (sequelize, DataTypes) => {
+  return sequelize.define('user', {
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        notEmpty: true
+      }
+    }
+  },
+  {
+    defaultScope: {
+      attributes: { exclude: ['updatedAt', 'createdAt'] }
+    }
+  })
+}
 
-const userSchema = new Schema({
-	username: { type: String, required: [ true, 'Username is required'] },
-	admin: { type: Schema.Types.ObjectId, ref: modelNames.Guild },
-	__v: { type: Number, select: false },
-	updatedAt: { type: Date, select: false },
-	createdAt: { type: Date, select: false }
-}, { timestamps: true } );
-
-import findOrCreate from 'mongoose-findorcreate';
-userSchema.plugin(findOrCreate);
-
-export default userSchema;
+export default User

@@ -4,9 +4,7 @@ import { unpopulateEventObject } from '../../util/EventFormUtil'
 import Selector from '../../store/selectors'
 import API from '../../store/actions/api'
 import UI from '../../store/actions/ui'
-
 import * as EventUtil from '../../util/EventUtil'
-
 
 const mapStateToProps = (state) => {
 
@@ -15,7 +13,7 @@ const mapStateToProps = (state) => {
 
 	return {
     editAllowed: EventUtil.mayUserEdit(currentEvent, loggedInUser),
-    open: state.eventViewer.open,
+    open: Selector.shouldEventViewerBeOpen(state),
     event: currentEvent
 	}
 }

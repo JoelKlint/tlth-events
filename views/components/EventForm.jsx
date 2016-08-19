@@ -43,12 +43,11 @@ export default class EventForm extends Component {
 	}
 
 	handleGuildClick(event) {
-    const guildID = event.target.getAttribute('data-guildID')
-    let guilds = this.props.event.guilds
+    const guildID = JSON.parse(event.target.getAttribute('data-guildID'))
+    let guilds = this.props.event.invitedGuilds
     guilds = includes(guildID, guilds) ? without([ guildID ], guilds) : concat(guilds, guildID)
     guilds = compact(guilds)
-    console.log(typeof guildID)
-    this.updateFormData({ guilds: guilds })
+    this.updateFormData({ invitedGuilds: guilds })
 	}
 
 	submitEvent() {
@@ -203,9 +202,9 @@ export default class EventForm extends Component {
 								key={index}
 								label={guild.name}
 								style={styles.window.guildSelection.checkbox}
-								data-guildID={guild._id}
+								data-guildID={JSON.stringify(guild.id)}
                 onCheck={(event) => this.handleGuildClick(event)}
-                checked={includes(guild._id, this.props.event.guilds)}
+                checked={includes(guild.id, this.props.event.invitedGuilds)}
 							/>
 						)}
 					</div>

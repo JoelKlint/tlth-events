@@ -15,7 +15,7 @@ export const activeGuilds = (state = initialState, action) => {
     }
 
     case UI.SET_GUILD_FILTER: {
-      return clone(action.guilds)
+      return clone(action.guildIds)
     }
 
     default:

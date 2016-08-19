@@ -1,23 +1,12 @@
 import winston from 'winston';
-
-import { Event, Guild, User } from '../server/models';
+import Models from '../server/models'
 
 export const clearDb = (callback) => {
-	Event.remove()
-	.then(() => {
-		return Guild.remove();
-	})
-	.then(() => {
-		return User.remove();
-	})
-	.then(() => callback())
-	.catch(err => callback(err));
+  Models.sequelize.sync({force:true})
 }
 
-export const removeAllEventsFromDb = (callback) => {
-	Event.remove()
-	.then(callback())
-	.catch(err => callback(err))
+export const removeAllEventsFromDb = async (callback) => {
+  await Models.Event.sync({force:true})
 }
 
 
@@ -27,7 +16,6 @@ import * as mockData from './mockData';
 *	        Mocks
 ***************************/
 
-import mongoose from 'mongoose';
 export const generateFakeDbId = () => {
 	return mockData.fakeDbId();
 }
@@ -35,35 +23,34 @@ export const generateFakeDbId = () => {
 /***************************
 *	        Users
 ***************************/
-export const createSavedUser = () => {
+export const createSavedUser = async () => {
 	const userData = mockData.user();
-	return User.create(userData)
+  return await Models.User.create(userData)
 }
 
-export const createSavedAdmin = () => {
-	return createSavedGuild()
-	.then(guild => {
-		const adminData = mockData.admin(guild.id);
-		return User.create(adminData)
-	})
-	.then(admin => {
-		return admin;
-	})
-	.catch(err => done(err))
+export const createSavedAdmin = async () => {
+  try {
+    let guild = await createSavedGuild()
+    let admin = await Models.User.create(mockData.admin(guild.id))
+    return admin
+  }
+  catch(err) {
+    winston.err(err)
+  }
 }
 
 
 /***************************
 *	        Guilds
 ***************************/
-export const createSavedGuild = () => {
+export const createSavedGuild = async () => {
 	const guildData = mockData.guild();
-	return Guild.create(guildData)
+  return await Models.Guild.create(guildData)
 }
 
 export const createNonSavedGuild = () => {
 	const guildData = mockData.guild();
-	return new Guild(req.body);
+  return Models.Guild.build(req.body)
 }
 
 export const generateGuildData = () => {
@@ -75,16 +62,16 @@ export const generateGuildData = () => {
 /***************************
 *	        Events
 ***************************/
-export const createSavedEvent = () => {
-	return createSavedAdmin()
-	.then(admin => {
-		const eventData = mockData.event(admin.admin, admin.admin)
-		return Event.create(eventData)
-	})
-	.then(event => {
-		return event;
-	})
-	.catch(err => winston.err(err))
+export const createSavedEvent = async () => {
+  try {
+    let admin = await createSavedAdmin()
+    let event = Models.Event.create(mockData.event(admin.adminGuildId, [admin.adminGuildId]))
+    return event
+  }
+  catch(err) {
+    winston.err(err)
+  }
+  return
 }
 
 export const generateEventData = (ownerId, guildIdArray) => {

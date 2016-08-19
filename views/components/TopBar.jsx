@@ -65,7 +65,7 @@ export default class TopBar extends Component {
 			/>
 		);
 
-		!this.props.admin ? '' : buttons.push(
+		!this.props.userIsAdmin ? '' : buttons.push(
 			<FlatButton
 				label='Add event'
 				onTouchTap={this.props.openEventEditor}
@@ -87,10 +87,10 @@ export default class TopBar extends Component {
 
 TopBar.propTypes = {
 	loggedIn: PropTypes.bool,
-	admin: PropTypes.bool,
+	userIsAdmin: PropTypes.bool,
 	openEventEditor: PropTypes.func.isRequired
 }
 TopBar.defaultProps = {
 	loggedIn: false,
-	admin: false
+	userIsAdmin: false
 }
