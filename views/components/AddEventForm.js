@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import EventForm from './EventForm.jsx';
 import values from 'lodash/fp/values'
-import * as EventFormUtil from '../../util/EventFormUtil'
 import Selector from '../../store/selectors'
 import API from '../../store/actions/api'
 import UI from '../../store/actions/ui'
@@ -20,7 +19,12 @@ const mapStateToProps = (state) => {
     submitLabel: 'Add event',
     title: 'Add event',
     validateForm: () =>  {
-      return EventFormUtil.validateFormData(eventFormData, adminGuild)
+      if( !eventFormData.isValid(adminGuild) ) {
+        alert(eventFormData.getErrorMessage())
+      }
+      else {
+        return true
+      }
     }
 	}
 }
@@ -28,7 +32,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		submit: (event) => {
-			dispatch(API.addNewEvent(event));
+      let apiData = event.toEvent()
+			dispatch(API.addNewEvent(apiData));
 		},
     close: () => {
       dispatch(UI.hideAddEventForm())

@@ -6,13 +6,13 @@ import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 import Checkbox from 'material-ui/Checkbox';
 import moment from 'moment';
-import * as util from '../../util/EventFormUtil'
 import has from 'lodash/fp/has'
 import includes from 'lodash/fp/includes'
 import compact from 'lodash/fp/compact'
 import assign from 'lodash/fp/assign'
 import without from 'lodash/fp/without'
 import concat from 'lodash/fp/concat'
+import FormEvent from '../../objects/FormEvent'
 
 export default class EventForm extends Component {
 
@@ -22,8 +22,7 @@ export default class EventForm extends Component {
   }
 
 	setStartDate(event, date) {
-    const hasEndDate = has('endDate')
-    if( hasEndDate(this.props.event) ) {
+    if( this.props.event.endDate ) {
       this.updateFormData({ startDate: date })
     }
     else {
@@ -32,8 +31,7 @@ export default class EventForm extends Component {
 	}
 
 	setStartTime(event, time) {
-    const hasEndTime = has('endTime')
-    if( hasEndTime(this.props.event) ) {
+    if( this.props.event.endTime ) {
       this.updateFormData({ startTime: time })
     }
     else {
@@ -52,9 +50,8 @@ export default class EventForm extends Component {
 
 	submitEvent() {
     if( this.props.validateForm() ) {
-      const event = util.convertToEventObject(this.props.event)
       this.props.close()
-      this.props.submit(event)
+      this.props.submit(this.props.event)
       this.props.clearForm()
     }
 	}
@@ -131,7 +128,6 @@ export default class EventForm extends Component {
         </div>
       </div>
     ]
-
 		return (
 			<Dialog
 				open={this.props.open}
@@ -227,7 +223,7 @@ EventForm.propTypes = {
 	submit: PropTypes.func.isRequired,
   submitLabel: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  event: PropTypes.object.isRequired,
+  event: PropTypes.instanceOf(FormEvent).isRequired,
   clearForm: PropTypes.func,
   clearButtonEnabled: PropTypes.bool,
   validateForm: PropTypes.func.isRequired

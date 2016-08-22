@@ -1,9 +1,10 @@
 import assign from 'lodash/fp/assign'
 import UI from '../actions/ui'
+import FormEvent from '../../objects/FormEvent'
 
 const initialState = {
   open: false,
-  event: {}
+  event: new FormEvent()
 }
 
 export const addEventForm = (state = initialState, action) => {
@@ -20,11 +21,11 @@ export const addEventForm = (state = initialState, action) => {
     }
 
     case UI.UPDATE_ADD_EVENT_FORM_DATA: {
-      return assignToState({ event: action.event })
+      return assignToState({ event: new FormEvent(action.event) })
     }
 
     case UI.CLEAR_ADD_EVENT_FORM_DATA: {
-      return assignToState({ event: {} })
+      return assignToState({ event: new FormEvent() })
     }
 
     default:

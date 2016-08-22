@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
 import EventDetailView from './EventDetailView.jsx';
-import { unpopulateEventObject } from '../../util/EventFormUtil'
 import Selector from '../../store/selectors'
 import API from '../../store/actions/api'
 import UI from '../../store/actions/ui'
 import * as EventUtil from '../../util/EventUtil'
+import Event from '../../objects/Event'
 
 const mapStateToProps = (state) => {
 
@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
 	return {
     editAllowed: EventUtil.mayUserEdit(currentEvent, loggedInUser),
     open: Selector.shouldEventViewerBeOpen(state),
-    event: currentEvent
+    event: new Event(currentEvent)
 	}
 }
 
@@ -27,7 +27,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(UI.hideEventDetails());
     },
     editEvent: (event) => {
-      const unpopulatedEvent = unpopulateEventObject(event)
+      const unpopulatedEvent = event.unpopulate()
       dispatch(UI.openEditEventForm(unpopulatedEvent));
     }
 	}
