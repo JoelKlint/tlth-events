@@ -4,10 +4,13 @@ import moment from 'moment';
 import { eventStyles, linkStyles } from '../ConstantStyles.js';
 import FontAwesome from 'react-fontawesome';
 import FlatButton from 'material-ui/FlatButton';
+import * as EventUtil from '../../util/EventUtil'
+
+import has from 'lodash/has'
 import flow from 'lodash/fp/flow'
 import join from 'lodash/fp/join'
 import map from 'lodash/fp/map'
-import Event from '../../objects/Event'
+import negate from 'lodash/fp/negate'
 
 const iconSize = '2x';
 const styles = {
@@ -56,6 +59,8 @@ export default class EventDetailView extends Component {
 		this.renderUrl = this.renderUrl.bind(this);
 		this.renderDescription = this.renderDescription.bind(this);
 		this.renderButtons = this.renderButtons.bind(this);
+		this.deleteAndClose = this.deleteAndClose.bind(this);
+    this.handleEditEventClick = this.handleEditEventClick.bind(this);
 	}
 
 	deleteAndClose() {
@@ -73,27 +78,27 @@ export default class EventDetailView extends Component {
 			<Dialog
 				open={this.props.open}
 				onRequestClose={this.props.close}
-				title={this.renderTitle(this.props.event)}
+				title={this.renderTitle()}
 				actions={this.renderButtons()}
 			>
 				<div style={styles.base}>
 					<div style={styles.content}>
 						<div style={styles.leftBlock}>
 
-              <p style={styles.leftChild}> {this.renderOwner(this.props.event)} </p>
+              <p style={styles.leftChild}> {this.renderOwner()} </p>
 
-              <p style={styles.leftChild}> {this.renderDate(this.props.event)} </p>
+              <p style={styles.leftChild}> {this.renderDate()} </p>
 
-							<p style={styles.leftChild}> {this.renderTime(this.props.event)} </p>
+							<p style={styles.leftChild}> {this.renderTime()} </p>
 
-							<p style={styles.leftChild}> {this.renderLocation(this.props.event)} </p>
+							<p style={styles.leftChild}> {this.renderLocation()} </p>
 
-							<p style={styles.leftChild}> {this.renderUrl(this.props.event)} </p>
+							<p style={styles.leftChild}> {this.renderUrl()} </p>
 
 						</div>
 
 						<div style={styles.rightBlock}>
-							{this.renderDescription(this.props.event)}
+							{this.renderDescription()}
 						</div>
 					</div>
 					<div style={styles.bottomSpacer}></div>
@@ -109,20 +114,21 @@ export default class EventDetailView extends Component {
       buttons.push(
       <FlatButton
         label='Edit'
-        onTouchTap={() => this.handleEditEventClick()}
+        onTouchTap={this.handleEditEventClick}
       />
       );
 			buttons.push(
 				<FlatButton
 					label='Delete'
-					onTouchTap={() => this.deleteAndClose()}
+					onTouchTap={this.deleteAndClose}
 				/>
 			);
 		}
 		return buttons;
 	}
 
-	renderTitle(event) {
+	renderTitle() {
+		if( !this.props.event.invitedGuilds ) return;
 		const styles = {
 			base: {
 				display: 'flex',
@@ -130,35 +136,44 @@ export default class EventDetailView extends Component {
 			}
 		}
 
-    const formatGuildNames = flow(
+    const renderGuilds = flow(
       map(guild => guild.name),
       join(' ')
     )
+
 		const title =
 			<div style={styles.base}>
 				<div>
-          { event.name }
+					{ this.props.event.name }
 				</div>
 				<div>
-          { formatGuildNames(event.invitedGuilds) }
+          { renderGuilds(this.props.event.invitedGuilds) }
 				</div>
 			</div>
 			return title;
 	}
 
-  renderOwner(event) {
+  renderOwner() {
+    if(!this.props.event.ownerGuild) return
     const ownerStyles = {
       paddingLeft: '0.4em',
       margin: '0em'
     }
     return (
       <span>
-        Hosted by: { event.ownerGuildName }
+        Hosted by: {this.props.event.ownerGuild.name}
       </span>
     )
   }
 
-	renderDate(event) {
+	renderDate() {
+		const dateFormat = 'D MMM';
+		const startDate = moment(this.props.event.startDate);
+		const endDate = moment(this.props.event.endDate);
+		let dateString = startDate.format(dateFormat);
+		if(endDate.isAfter(startDate, 'day')) {
+			dateString += ' - ' + endDate.format(dateFormat);
+		}
 		return (
 			<span>
 				<FontAwesome
@@ -167,12 +182,16 @@ export default class EventDetailView extends Component {
 					fixedWidth={true}
 					style={eventStyles.dateIcon}
 				/>
-      { event.getDateAsString() }
+			{dateString}
 			</span>
 		)
 	}
 
-	renderTime(event) {
+	renderTime() {
+		const timeFormat = 'HH:mm'
+		const startTime = moment(this.props.event.startDate).format(timeFormat);
+		const endTime = moment(this.props.event.endDate).format(timeFormat);
+		const timeString =  startTime + ' - ' + endTime;
 		return (
 			<span>
 				<FontAwesome
@@ -181,13 +200,13 @@ export default class EventDetailView extends Component {
 					fixedWidth={true}
 					style={eventStyles.timeIcon}
 				/>
-      { event.getTimeAsString() }
+			{timeString}
 			</span>
 		)
 	}
 
-	renderLocation(event) {
-    if( !event.location ) return
+	renderLocation() {
+		if( !this.props.event.location ) return
 		return (
 			<span>
 				<FontAwesome
@@ -196,16 +215,16 @@ export default class EventDetailView extends Component {
 					fixedWidth={true}
 					style={eventStyles.locationIcon}
 				/>
-      { event.location }
+				{this.props.event.location}
 			</span>
 		)
 	}
 
-	renderUrl(event) {
-		if( !event.url ) return;
+	renderUrl() {
+		if( !this.props.event.url ) return;
 		return (
 			<a
-				href={event.url}
+				href={this.props.event.url}
 				target='_blank'
 				style={linkStyles}
 			>
@@ -220,9 +239,9 @@ export default class EventDetailView extends Component {
 		)
 	}
 
-	renderDescription(event) {
-		if( !event.description ) return;
-		return event.description
+	renderDescription() {
+		if( !this.props.event.description ) return;
+		return this.props.event.description
 		.split('\n')
 		.map((line, key) => {
 			return (
@@ -233,12 +252,21 @@ export default class EventDetailView extends Component {
 }
 
 EventDetailView.defaultProps = {
-  event: new Event(),
+  event: {},
   editAllowed: false
 }
 
 EventDetailView.propTypes = {
-  event: PropTypes.instanceOf(Event).isRequired,
+  event: PropTypes.shape({
+    name: PropTypes.string,
+    description: PropTypes.string,
+    location: PropTypes.string,
+    startDate: PropTypes.instanceOf(Date),
+    endDate: PropTypes.instanceOf(Date),
+    url: PropTypes.string,
+    ownerGuild: PropTypes.object,
+    invitedGuilds: PropTypes.array
+  }),
 	open: PropTypes.bool.isRequired,
 	close: PropTypes.func.isRequired,
   editAllowed: PropTypes.bool

@@ -1,8 +1,8 @@
 import winston from 'winston';
 import Models from '../server/models'
 
-export const clearDb = async (callback) => {
-  await Models.sequelize.sync({force:true})
+export const clearDb = (callback) => {
+  Models.sequelize.sync({force:true})
 }
 
 export const removeAllEventsFromDb = async (callback) => {
