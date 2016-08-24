@@ -1,3 +1,4 @@
+import clone from 'lodash/fp/clone'
 import merge from 'lodash/fp/merge'
 import set from 'lodash/fp/set'
 import unset from 'lodash/fp/unset'
@@ -64,8 +65,10 @@ export const data = (state = initialState, action) => {
     }
 
     case API.EDIT_EVENT_REQUEST: {
-      // This must be handled
-      return state;
+      let event = clone(action.payload)
+      let serverVersion = clone(state.events[event.id])
+      event = assign(event, { local: true, serverVersion: serverVersion })
+      return set(['events', event.id], event, state)
     }
 
     case API.EDIT_EVENT_SUCCESS: {

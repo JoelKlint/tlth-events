@@ -52,9 +52,8 @@ export default class EventForm extends Component {
 
 	submitEvent() {
     if( this.props.validateForm() ) {
-      const event = util.convertToEventObject(this.props.event)
       this.props.close()
-      this.props.submit(event)
+      this.props.submit(this.props.event)
       this.props.clearForm()
     }
 	}

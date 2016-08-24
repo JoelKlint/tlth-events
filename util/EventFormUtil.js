@@ -59,8 +59,9 @@ export const validateFormData = (event, adminGuildId) => {
   return true
 }
 
+
 // Converts the Event form data to an Event Object
-export const convertToEventObject = (event) => {
+export const toEventObject = (event) => {
   const convertObject = flow(
     omit([ 'startTime', 'endTime' ]),
     set('startDate', mergeDateAndTime(event.startDate, event.startTime)),

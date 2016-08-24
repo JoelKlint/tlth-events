@@ -28,6 +28,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		submit: (event) => {
+      let apiData = EventFormUtil.convertToEventObject(event)
+      apiData = EventFormUtil.unpopulateEventObject(apiData)
 			dispatch(API.addNewEvent(event));
 		},
     close: () => {

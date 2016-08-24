@@ -33,7 +33,8 @@ export const addNewEvent = (event) => {
 					payload: event
 				},
 				ADD_NEW_EVENT_SUCCESS,
-				ADD_NEW_EVENT_FAILURE]
+				ADD_NEW_EVENT_FAILURE
+      ]
 		}
 	}
 }
@@ -65,7 +66,14 @@ export const editEvent = (event) => {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(event),
-      types: [EDIT_EVENT_REQUEST, EDIT_EVENT_SUCCESS, EDIT_EVENT_FAILURE]
+      types: [
+				{
+					type: EDIT_EVENT_REQUEST,
+					payload: event
+				},
+				EDIT_EVENT_SUCCESS,
+				EDIT_EVENT_FAILURE
+      ]
     }
   }
 }

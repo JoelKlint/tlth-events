@@ -27,8 +27,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(UI.hideEventDetails());
     },
     editEvent: (event) => {
-      const unpopulatedEvent = unpopulateEventObject(event)
-      dispatch(UI.openEditEventForm(unpopulatedEvent));
+      let formEvent = EventUtil.toFormEventData(event)
+      dispatch(UI.openEditEventForm(formEvent));
     }
 	}
 }

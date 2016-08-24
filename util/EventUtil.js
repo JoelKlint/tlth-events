@@ -4,7 +4,31 @@ import map from 'lodash/fp/map'
 import join from 'lodash/fp/join'
 import flow from 'lodash/fp/flow'
 import get from 'lodash/fp/get'
+import assign from 'lodash/fp/assign'
 import moment from 'moment'
+
+const splitDateAndTime = (dateTime) => {
+  dateTime = moment(dateTime);
+  let time = moment().set('hour', dateTime.hours())
+  time = time.set('minute', dateTime.minutes())
+  let date = dateTime.set('hour', 0).set('minute', 0)
+  return [date.toDate(), time.toDate()]
+}
+
+export const toFormEventData = (event) => {
+  const start = splitDateAndTime(event.startDate)
+  const end = splitDateAndTime(event.endDate)
+  let formEventData = assign(event, {
+    startDate: start[0],
+    startTime: start[1],
+    endDate: end[0],
+    endTime: end[1]
+  })
+  formEventData.invitedGuilds = map(guild => guild.id)(formEventData.invitedGuilds)
+  formEventData.ownerGuild = formEventData.ownerGuild.id
+  return formEventData
+}
+
 
 export const isNotSaved = (event) => {
   return event.local === true
