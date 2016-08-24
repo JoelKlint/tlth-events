@@ -6,15 +6,20 @@ import API from '../../store/actions/api'
 import UI from '../../store/actions/ui'
 import * as EventUtil from '../../util/EventUtil'
 
+let adminGuildId
+let eventId
+
 const mapStateToProps = (state) => {
 
   const currentEvent = Selector.getCurrentEvent(state)
   const loggedInUser = Selector.getLoggedInUser(state)
+  adminGuildId = Selector.getAdminGuildId(state)
 
 	return {
     editAllowed: EventUtil.mayUserEdit(currentEvent, loggedInUser),
     open: Selector.shouldEventViewerBeOpen(state),
-    event: currentEvent
+    event: currentEvent,
+    userMayDeleteInvitation: EventUtil.mayUserDeclineInvitation(currentEvent, loggedInUser)
 	}
 }
 
@@ -29,6 +34,10 @@ const mapDispatchToProps = (dispatch) => {
     editEvent: (event) => {
       let formEvent = EventUtil.toFormEventData(event)
       dispatch(UI.openEditEventForm(formEvent));
+    },
+    declineEventInvitation: (eventId) => {
+      dispatch(API.declineEventInvitation(eventId, adminGuildId))
+      dispatch(UI.hideEventDetails())
     }
 	}
 }

@@ -20,6 +20,12 @@ const agent = {
 	},
   [API.EDIT_EVENT_FAILURE]: (action) => {
 		Alert.error('Event could not be saved')
+	},
+  [API.DECLINE_EVENT_INVITATION_SUCCESS]: (action) => {
+		Alert.success('Invitation declined')
+	},
+  [API.DECLINE_EVENT_INVITATION_FAILURE]: (action) => {
+		Alert.error('Could not decline invitation')
 	}
 }
 

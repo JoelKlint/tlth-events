@@ -1,4 +1,5 @@
 import clone from 'lodash/fp/clone'
+import without from 'lodash/fp/without'
 import merge from 'lodash/fp/merge'
 import set from 'lodash/fp/set'
 import unset from 'lodash/fp/unset'
@@ -80,6 +81,22 @@ export const data = (state = initialState, action) => {
     case API.EDIT_EVENT_FAILURE: {
       // This must be handled
       return state;
+    }
+
+    case API.DECLINE_EVENT_INVITATION_REQUEST: {
+      return state
+    }
+
+    case API.DECLINE_EVENT_INVITATION_SUCCESS: {
+      const eventId = action.payload.eventId
+      const guildId = action.payload.guildId
+      let newEvent = clone(state.events[eventId])
+      newEvent.invitedGuilds = without([guildId], newEvent.invitedGuilds)
+      return set(['events', eventId], newEvent, state)
+    }
+
+    case API.DECLINE_EVENT_INVITATION_FAILURE: {
+      return state
     }
 
     default:

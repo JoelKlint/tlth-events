@@ -5,7 +5,20 @@ import join from 'lodash/fp/join'
 import flow from 'lodash/fp/flow'
 import get from 'lodash/fp/get'
 import assign from 'lodash/fp/assign'
+import includes from 'lodash/fp/includes'
 import moment from 'moment'
+
+export const mayUserDeclineInvitation = (event, user) => {
+  if(isNil(event) || isNil(user)) {
+    return false
+  }
+  if( isEqual(event.ownerGuild.id, user.adminGuildId) ) {
+    return false
+  }
+  const userAdminGuildId = user.adminGuildId
+  const invitedGuilds = map(guild => guild.id)(event.invitedGuilds)
+  return includes(userAdminGuildId, invitedGuilds)
+}
 
 const splitDateAndTime = (dateTime) => {
   dateTime = moment(dateTime);

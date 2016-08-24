@@ -77,3 +77,23 @@ export const editEvent = (event) => {
     }
   }
 }
+
+export const DECLINE_EVENT_INVITATION_REQUEST = 'DECLINE_EVENT_INVITATION_REQUEST';
+export const DECLINE_EVENT_INVITATION_SUCCESS = 'DECLINE_EVENT_INVITATION_SUCCESS';
+export const DECLINE_EVENT_INVITATION_FAILURE = 'DECLINE_EVENT_INVITATION_FAILURE';
+
+export const declineEventInvitation = (eventId, guildId) => {
+  return {
+    [CALL_API]: {
+      endpoint: '/api/events/' + eventId + '/invitation',
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ guildId: guildId }),
+      types: [
+        DECLINE_EVENT_INVITATION_REQUEST,
+        DECLINE_EVENT_INVITATION_SUCCESS,
+        DECLINE_EVENT_INVITATION_FAILURE
+      ]
+    }
+  }
+}

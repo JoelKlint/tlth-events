@@ -109,22 +109,52 @@ export default class EventDetailView extends Component {
 	}
 
 	renderButtons() {
-		const buttons = [];
+    const leftBottomActions = []
+    if( this.props.userMayDeleteInvitation ) {
+      leftBottomActions.push(
+        <FlatButton
+          key='Decline invitation'
+          label='Decline invitation'
+          onTouchTap={() => this.props.declineEventInvitation(this.props.event.id)}
+        />
+      )
+    }
+
+    const rightBottomActions = []
     if( this.props.editAllowed ) {
-      buttons.push(
-      <FlatButton
-        label='Edit'
-        onTouchTap={this.handleEditEventClick}
-      />
-      );
-			buttons.push(
-				<FlatButton
+      rightBottomActions.push(
+        <FlatButton
+          key='Edit'
+          label='Edit'
+          onTouchTap={this.handleEditEventClick}
+        />
+      )
+      rightBottomActions.push(
+        <FlatButton
+          key='Delete'
 					label='Delete'
 					onTouchTap={this.deleteAndClose}
 				/>
-			);
-		}
-		return buttons;
+      )
+    }
+
+    const style = {
+      display: 'flex',
+      justifyContent: 'space-between'
+    }
+
+    let bottomButtons = [
+      <div style={style}>
+        <div>
+          {leftBottomActions}
+        </div>
+        <div>
+          {rightBottomActions}
+        </div>
+      </div>
+    ]
+
+    return bottomButtons
 	}
 
 	renderTitle() {
@@ -253,7 +283,8 @@ export default class EventDetailView extends Component {
 
 EventDetailView.defaultProps = {
   event: {},
-  editAllowed: false
+  editAllowed: false,
+  userMayDeleteInvitation: false
 }
 
 EventDetailView.propTypes = {
@@ -269,5 +300,6 @@ EventDetailView.propTypes = {
   }),
 	open: PropTypes.bool.isRequired,
 	close: PropTypes.func.isRequired,
-  editAllowed: PropTypes.bool
+  editAllowed: PropTypes.bool,
+  userMayDeleteInvitation: PropTypes.bool
 }
