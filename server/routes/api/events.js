@@ -7,6 +7,7 @@ import cas from '../../middleware/cas';
 import assign from 'lodash/assign'
 import Models from '../../models'
 import includes from 'lodash/includes'
+import Auth from '../../middleware/authorization'
 
 /**
  * @api {get} /events Get all events
@@ -25,8 +26,6 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-
-import Auth from '../../middleware/authorization'
 /**
  * @api {post} /events Create event
  * @apiName Create event
@@ -37,14 +36,6 @@ import Auth from '../../middleware/authorization'
  */
 router.post('/', cas.block, Auth.admin, async (req, res, next) => {
   try {
-    // validate user is admin so it is allowed to create events.
-    // Validate the event is created for the guild the user is admin of
-    // Then set event owner to the guild user is admin of
-    // Get the guilds from request that exists
-    // Create the event
-    //
-
-    // Validate user is admin ---> via middleware
     let eventParams = req.body
 
     // Validate the event is created for the guild the user is admin of
@@ -65,47 +56,6 @@ router.post('/', cas.block, Auth.admin, async (req, res, next) => {
   catch(err) {
     return next(err)
   }
-
-
-
-  // try {
-  //   // Clear values which should not be set from outside
-  //   delete req.body.owner;
-  //
-  //   // Create object for building parameters for the new event
-  //   const eventParams = req.body;
-  //
-  //   // Validate user is admin
-  //   if(!req.user || !req.user.admin) { return next(new UnauthorizedError()) }
-  //   // Make admin guild owner
-  //   eventParams.owner = req.user.admin
-  //
-  //   // Validate endDate is later than startDate
-  //   if(eventParams.endDate <= eventParams.startDate) {
-  //     return next(new ParameterError('End date must be after startDate'))
-  //   }
-  //
-  //   // Get the guilds from the request that exists
-  //   const guilds = await Guild.find({ _id: { $in: req.body.guilds } }, '_id')
-  //
-  //   // Validate event is created for the admin's guild
-  //   const areAdminedByUser = (guild) => {
-  //     return eventParams.owner == guild.id ? true : false
-  //   }
-  //   if(!guilds.some(areAdminedByUser)) {
-  //     return next(new ParameterError('You must create an event for your own guild'));
-  //   }
-  //   // Add existing guilds to the event data
-  //   eventParams.guilds = guilds;
-  //
-  //   // Create the event
-  //   let event = await Event.create(eventParams)
-  //   event = await Event.populate(event, 'guilds owner')
-  //   res.json(event);
-  // }
-  // catch(err) {
-  //   return next(err)
-  // }
 });
 
 /**
@@ -168,5 +118,27 @@ router.delete('/:event_id', async (req, res, next) => {
   }
   return
 });
+
+/*
+ * @api {delete} /events/:event_id/invitation Decline an invitation to an event
+ * @apiName Delete event invitation
+ * @apiGroup Event
+ * @apiDescription
+ * Delete an event invitation.
+*/
+router.delete('/:event_id/invitation', async (req, res, next) => {
+  try {
+    let invitation = await Models.Invitation.find({
+      where: { eventId: req.params.event_id, guildId: req.body.guildId }
+    })
+    if(!invitation) return next(new DoesNotExistError())
+    await invitation.destroy()
+    res.json(invitation)
+  }
+  catch(err) {
+    next(err)
+  }
+  return
+})
 
 export default router;
