@@ -5,7 +5,6 @@ import * as EventFormUtil from '../../util/EventFormUtil'
 import Selector from '../../store/selectors'
 import API from '../../store/actions/api'
 import UI from '../../store/actions/ui'
-import assign from 'lodash/fp/assign'
 
 const mapStateToProps = (state) => {
 
@@ -28,8 +27,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		submit: (event) => {
-      let apiData = EventFormUtil.toEventObject(event)
-			dispatch(API.addNewEvent(event));
+      let apiData = EventFormUtil.toApiData(event)
+			dispatch(API.addNewEvent(apiData));
 		},
     close: () => {
       dispatch(UI.hideAddEventForm())
