@@ -9,7 +9,7 @@ import guildRoutes from './api/guilds';
 const applyApiRoutes = (app) => {
 	const router = express.Router();
 	router.use('/events', eventRoutes);
-	// router.use('/ical-events', icalEventRoutes);
+	router.use('/ical-events', icalEventRoutes);
 	router.use('/users', userRoutes);
 	router.use('/guilds', guildRoutes);
 
