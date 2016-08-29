@@ -6,6 +6,7 @@ import * as AddEventForm from './AddEventFormSelector'
 import * as EditEventForm from './EditEventFormSelector'
 import * as User from './UserSelector'
 import * as EventViewer from './EventViewerSelector'
+import * as UI from './UISelector'
 
 
 export default assignAll([
@@ -14,5 +15,6 @@ export default assignAll([
   AddEventForm,
   EditEventForm,
   User,
-  EventViewer
+  EventViewer,
+	UI
 ])

@@ -56,11 +56,14 @@ export default class TopBar extends Component {
 	}
 
 	renderLoggedInButtons() {
+		// Decide current label
+
 		let counter = 1;
 		const buttons = [];
 		buttons.push(
 			<FlatButton
-				label='Dashboard'
+				label={this.props.mainViewSwitchLabel}
+				onTouchTap={this.props.changeMainView}
 				key={counter++}
 			/>
 		);

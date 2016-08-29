@@ -7,6 +7,8 @@ import includes from 'lodash/fp/includes'
 import clone from 'lodash/fp/clone'
 import map from 'lodash/fp/map'
 import isNil from 'lodash/fp/isNil'
+import pickBy from 'lodash/fp/pickBy'
+import sortBy from 'lodash/fp/sortBy'
 import moment from 'moment'
 import * as EventUtil from '../../util/EventUtil'
 
@@ -47,5 +49,16 @@ export const getCurrentEvent = createSelector(
     eventObject.startDate = moment(eventObject.startDate).toDate()
     eventObject.endDate = moment(eventObject.endDate).toDate()
     return eventObject
+  }
+)
+
+import { getAdminGuildId } from './UserSelector'
+
+export const getEventsHostedByAdminSorted = createSelector(
+	[ _getAllEventsAsMap, getAdminGuildId ],
+  (allEvents, adminGuildId) => {
+    let filteredEvents = pickBy(event => event.ownerGuildId === adminGuildId)(allEvents)
+    filteredEvents = values(filteredEvents)
+    return sortBy(event => event.startDate)(filteredEvents)
   }
 )

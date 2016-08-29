@@ -42,7 +42,6 @@ export const toFormEventData = (event) => {
   return formEventData
 }
 
-
 export const isNotSaved = (event) => {
   return event.local === true
 }
@@ -85,4 +84,11 @@ export const getDateAsString = (event) => {
     dateString += ' - ' + endDate.format(dateFormat);
   }
   return dateString
+}
+
+export const getTimeAsString = (event) => {
+  const timeFormat = 'HH:mm'
+  const startTime = moment(event.startDate).format(timeFormat);
+  const endTime = moment(event.endDate).format(timeFormat);
+  return startTime + ' - ' + endTime;
 }

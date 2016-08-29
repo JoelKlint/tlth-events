@@ -74,7 +74,7 @@ const toEventObject = (event) => {
 
 export const toApiData = (event) => {
   let response = toEventObject(event)
-  return omitBy(isEmpty, response)
+  return omitBy(flow(toString, isEmpty), response)
 }
 
 // Unpopulates an event object. Use this prior to loading the EventForm with data

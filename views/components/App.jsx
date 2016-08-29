@@ -7,6 +7,7 @@ import EventDetailViewContainer from './EventDetailViewContainer';
 import AddEventForm from './AddEventForm'
 import EditEventForm from './EditEventForm'
 import HeadsUpNotifier from './HeadsUpNotifier.jsx'
+import MainContainer_smart from './MainContainer_smart.js'
 
 export default class App extends React.Component {
 
@@ -56,7 +57,7 @@ export default class App extends React.Component {
 							handleGuildClick={this.props.handleGuildClick}
 						/>
 					</div>
-					<Calendar
+					<MainContainer_smart
 						events={this.props.events}
             onEventClick={this.props.viewEventDetails}
 					/>

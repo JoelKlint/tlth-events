@@ -5,6 +5,7 @@ import { user } from './UserReducer';
 import { eventViewer } from './EventViewerReducer'
 import { addEventForm } from './AddEventViewReducer'
 import { editEventForm } from './EditEventViewReducer'
+import UI from './UIReducer'
 
 const reducer = combineReducers({
   data,
@@ -12,7 +13,8 @@ const reducer = combineReducers({
   user,
   eventViewer,
   addEventForm,
-  editEventForm
+  editEventForm,
+	UI
 })
 
 export default reducer;
