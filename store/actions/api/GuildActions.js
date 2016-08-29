@@ -13,3 +13,44 @@ export const getAllGuilds = () => {
 		}
 	}
 }
+
+
+export const MAKE_USER_ADMIN_OF_GUILD_REQUEST = 'MAKE_USER_ADMIN_OF_GUILD_REQUEST';
+export const MAKE_USER_ADMIN_OF_GUILD_SUCCESS = 'MAKE_USER_ADMIN_OF_GUILD_SUCCESS';
+export const MAKE_USER_ADMIN_OF_GUILD_FAILURE = 'MAKE_USER_ADMIN_OF_GUILD_FAILURE';
+
+export const makeUserAdminOfGuild = (guildId, userId) => {
+  return {
+    [CALL_API]: {
+      endpoint: '/api/guilds/' + guildId + '/admin',
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: userId }),
+      types: [
+        MAKE_USER_ADMIN_OF_GUILD_REQUEST,
+        MAKE_USER_ADMIN_OF_GUILD_SUCCESS,
+        MAKE_USER_ADMIN_OF_GUILD_FAILURE
+      ]
+    }
+  }
+}
+
+export const REMOVE_USER_ADMIN_OF_GUILD_REQUEST = 'REMOVE_USER_ADMIN_OF_GUILD_REQUEST';
+export const REMOVE_USER_ADMIN_OF_GUILD_SUCCESS = 'REMOVE_USER_ADMIN_OF_GUILD_SUCCESS';
+export const REMOVE_USER_ADMIN_OF_GUILD_FAILURE = 'REMOVE_USER_ADMIN_OF_GUILD_FAILURE';
+
+export const removeUserAdminOfGuild = (guildId, userId) => {
+  return {
+    [CALL_API]: {
+      endpoint: '/api/guilds/' + guildId + '/admin',
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: userId }),
+      types: [
+        REMOVE_USER_ADMIN_OF_GUILD_REQUEST,
+        REMOVE_USER_ADMIN_OF_GUILD_SUCCESS,
+        REMOVE_USER_ADMIN_OF_GUILD_FAILURE
+      ]
+    }
+  }
+}

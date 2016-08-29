@@ -6,6 +6,7 @@ const AlertTemplate = (props) => {
 
   const handleClick = () => {
     Alert.close(props.id);
+    props.customFields.onClick ? props.customFields.onClick() : null
   }
 
   return (

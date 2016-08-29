@@ -122,6 +122,7 @@ router.post('/:guild_id/admin', async (req, res, next) => {
   try {
     let guild = await Models.Guild.findById(req.params.guild_id)
     await guild.addAdministrator(req.body.userId)
+    guild = await guild.reload()
     res.json(guild)
   }
   catch(err) {
@@ -133,8 +134,9 @@ router.post('/:guild_id/admin', async (req, res, next) => {
 
 router.delete('/:guild_id/admin', async (req, res, next) => {
   try {
-    let guild = await (Models.Guild.findById(req.params.guild_id))
+    let guild = await Models.Guild.findById(req.params.guild_id)
     await guild.removeAdministrator(req.body.userId)
+    guild = await guild.reload()
     res.json(guild)
   }
   catch(err) {

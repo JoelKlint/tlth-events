@@ -14,7 +14,7 @@ import Models from '../../models'
  */
 router.get('/', async (req, res, next) => {
   try {
-    let users = await Models.User.findAll({ attributes: { exclude: [] } })
+    let users = await Models.User.findAll()
     res.json(users)
   }
   catch(err) {

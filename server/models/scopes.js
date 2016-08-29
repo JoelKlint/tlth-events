@@ -17,9 +17,21 @@ const addUserScopes = (Models) => {
   })
 }
 
+const addGuildScopes = (Models) => {
+  Models.Guild.addScope('defaultScope', {
+    include: [
+      {
+        model: Models.User,
+        as: 'administrators'
+      }
+    ]
+  }, { override: true })
+}
+
 const addScopes = (Models) => {
   addEventScopes(Models)
   addUserScopes(Models)
+  addGuildScopes(Models)
 }
 
 export default addScopes

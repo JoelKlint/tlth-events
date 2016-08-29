@@ -26,6 +26,18 @@ const agent = {
 	},
   [API.DECLINE_EVENT_INVITATION_FAILURE]: (action) => {
 		Alert.error('Could not decline invitation')
+	},
+  [API.MAKE_USER_ADMIN_OF_GUILD_SUCCESS]: (action) => {
+		Alert.success('New admin added')
+	},
+  [API.MAKE_USER_ADMIN_OF_GUILD_FAILURE]: (action) => {
+		Alert.error('Could not add new admin')
+	},
+  [API.REMOVE_USER_ADMIN_OF_GUILD_SUCCESS]: (action) => {
+		Alert.success('Admin removed')
+	},
+  [API.REMOVE_USER_ADMIN_OF_GUILD_FAILURE]: (action) => {
+		Alert.error('Could not remove admin')
 	}
 }
 

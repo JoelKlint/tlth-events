@@ -4,6 +4,7 @@ import merge from 'lodash/fp/merge'
 import set from 'lodash/fp/set'
 import unset from 'lodash/fp/unset'
 import assign from 'lodash/fp/assign'
+import defaults from 'lodash/fp/defaults'
 import API from '../actions/api'
 
 import { normalize, Schema, arrayOf } from 'normalizr'
@@ -96,6 +97,49 @@ export const data = (state = initialState, action) => {
     }
 
     case API.DECLINE_EVENT_INVITATION_FAILURE: {
+      return state
+    }
+
+    case API.GET_ALL_USERS_REQUEST: {
+      return state
+    }
+
+    case API.GET_ALL_USERS_SUCCESS: {
+      let response = normalize(action.payload, arrayOf(userSchema))
+      return merge(state, response.entities)
+    }
+
+    case API.GET_ALL_USERS_FAILURE: {
+      return state
+    }
+
+    case API.MAKE_USER_ADMIN_OF_GUILD_REQUEST: {
+      return state
+    }
+
+    case API.MAKE_USER_ADMIN_OF_GUILD_SUCCESS: {
+      let response = normalize(action.payload, guildSchema)
+      const guildId = response.result
+      const guild = response.entities.guilds[guildId]
+      return set(['guilds', guildId], guild, state)
+    }
+
+    case API.MAKE_USER_ADMIN_OF_GUILD_FAILURE: {
+      return state
+    }
+
+    case API.REMOVE_USER_ADMIN_OF_GUILD_REQUEST: {
+      return state
+    }
+
+    case API.REMOVE_USER_ADMIN_OF_GUILD_SUCCESS: {
+      let response = normalize(action.payload, guildSchema)
+      const guildId = response.result
+      const guild = response.entities.guilds[guildId]
+      return set(['guilds', guildId], guild, state)
+    }
+
+    case API.REMOVE_USER_ADMIN_OF_GUILD_FAILURE: {
       return state
     }
 

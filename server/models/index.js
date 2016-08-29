@@ -7,7 +7,7 @@ if(NODE_ENV === 'test') {
 }
 
 // Connect to database
-const sequelize = new Sequelize(dbUri)
+const sequelize = new Sequelize(dbUri, { logging: false })
 
 // Import all models
 const modelNames = [
