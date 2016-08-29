@@ -1,4 +1,4 @@
-Does not work in Chrome. Works in Safari
+Works in Safari, Chrome & Firefox
 
 #Instructions
 1. npm install

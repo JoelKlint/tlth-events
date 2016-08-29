@@ -34,6 +34,7 @@ export default class App extends React.Component {
 			},
 			content: {
 				display: 'flex',
+        height: '100%'
 			},
 			sideBar: {
 				display: 'flex',

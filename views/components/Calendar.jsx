@@ -49,6 +49,7 @@ export default class Calendar extends Component {
 			eventsHolder: {
 				width: '100%',
 				display: 'flex',
+        flexGrow: '1'
 			}
 		}
 		const calendarFormats = {
