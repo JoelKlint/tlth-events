@@ -11,9 +11,11 @@ if(NODE_ENV === 'test' || NODE_ENV === 'development') {
   devMode = true;
 }
 
+const BASE_URL = process.env.IP + ':' + process.env.PORT
+
 const cas = new CASAuthentication({
     cas_url     : 'https://cas.lu.se/cas',
-    service_url : 'http://localhost:3000',
+    service_url : 'http://' + BASE_URL,
 		cas_version     : '2.0',
 		renew           : false,
     is_dev_mode     : devMode,

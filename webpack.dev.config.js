@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 var path = require('path');
+require('dotenv').config()
 
 module.exports = {
 	entry: [
@@ -35,7 +36,7 @@ module.exports = {
 		inline: true,
 		contentBase: path.resolve(__dirname, 'views'),
 		proxy: {
-			'/api/*': 'http://localhost:3000'
+			'/api/*': 'http://localhost:' + process.env.PORT
 		}
 	}
 }

@@ -16,7 +16,8 @@ applyRoutes(app);
 import applyPostRouteMiddleware from './middleware/postRoute';
 applyPostRouteMiddleware(app);
 
-app.listen(3000)
-winston.info('Server is listening on port 3000');
+const port = process.env.PORT
+app.listen(port)
+winston.info('Server is listening on port ' + port);
 
 export default app;

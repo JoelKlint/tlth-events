@@ -2,7 +2,12 @@ import Selector from '../store/selectors'
 import join from 'lodash/fp/join'
 import isEmpty from 'lodash/isEmpty'
 
-const baseUrl = 'webcal://localhost:3000/api/ical-events?guild='
+// If we are in browser environment
+let BASE_URL = ''
+if( typeof window !== 'undefined' ) {
+  BASE_URL = window.location.host
+}
+const baseIcalUrl = 'webcal://' + BASE_URL + '/api/ical-events?guild='
 
 export const getSubscribeLink = (state) => {
   const activeGuildNames = Selector.getAllActiveGuildNames(state)
@@ -11,5 +16,5 @@ export const getSubscribeLink = (state) => {
   }
   const buildUrlParams = join('&guild=')
 
-  return baseUrl + buildUrlParams(activeGuildNames)
+  return baseIcalUrl + buildUrlParams(activeGuildNames)
 }

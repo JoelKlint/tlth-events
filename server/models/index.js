@@ -1,7 +1,6 @@
 import Sequelize from 'sequelize'
-const port = 3000
-let dbUri = 'postgres://qwgqyjhj:kK1Jh1G73sti8bJUaTipn9Mr67ugb7X7@horton.elephantsql.com:5432/qwgqyjhj'
 const NODE_ENV = process.env.NODE_ENV;
+let dbUri = process.env.DB_URI
 if(NODE_ENV === 'test') {
   dbUri = 'postgres://hxmaiqjb:M6fkgV9OYWmbzvMUr8jCZZSqSCdCMkNZ@horton.elephantsql.com:5432/hxmaiqjb'
 }
